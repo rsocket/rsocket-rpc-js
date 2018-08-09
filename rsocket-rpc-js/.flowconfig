@@ -19,7 +19,7 @@ module.system=haste
 esproposal.class_static_fields=enable
 esproposal.class_instance_fields=enable
 
-module.name_mapper='^proteus-js-\([^/]+\)$' -> '<PROJECT_ROOT>/packages/\1/src/index.js'
+module.name_mapper='^rsocket-rpc-\([^/]+\)$' -> '<PROJECT_ROOT>/packages/\1/src/index.js'
 
 munge_underscores=true
 
