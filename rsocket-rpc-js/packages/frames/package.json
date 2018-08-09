@@ -1,0 +1,30 @@
+{
+  "name": "rsocket-rpc-frames",
+  "repository": "https://github.com/netifi/rsocket-js-rpc",
+  "version": "0.0.1",
+  "description": "RSocket JavaScript RPC Frames Definitions",
+  "contributors": [
+    "Ryland Degnan <ryland@netifi.com>",
+    "Kyle Bahr <kyle@netifi.com>"
+  ],
+  "bugs": {
+    "url": "https://github.com/netifi/rsocket-js-rpc/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "rsocket"
+  ],
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo 'Please run `npm test` from the root of the repo' && exit 1",
+    "build": "npm run build-js && npm run build-flow",
+    "build-js": "babel-node ../../resources/buildJs.js",
+    "build-flow": "babel-node ../../resources/buildFlow.js",
+    "prepublish": "node ../../resources/prepublish.js"
+  },
+  "dependencies": {
+    "rsocket-core": "^0.0.7"
+  }
+}
