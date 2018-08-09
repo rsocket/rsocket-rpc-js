@@ -1,0 +1,41 @@
+{
+  "name": "rsocket-rpc-tracing",
+  "repository": "https://github.com/netifi/rsocket-js-rpc",
+  "version": "0.0.7",
+  "description": "RSocket JavaScript RPC Tracing Support",
+  "contributors": [
+    "Kyle Bahr <kyle@netifi.com>"
+  ],
+  "bugs": {
+    "url": "https://github.com/netifi/rsocket-js-rpc/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "rsocket"
+  ],
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo 'Please run `npm test` from the root of the repo' && exit 1",
+    "build": "npm run build-js && npm run build-flow",
+    "build-js": "babel-node ../../resources/buildJs.js",
+    "build-flow": "babel-node ../../resources/buildFlow.js",
+    "prepublish": "node ../../resources/prepublish.js",
+    "protoc": "protoc --proto_path=proto --js_out=import_style=commonjs,binary:src --proteus_out=src --plugin=protoc-gen-proteus=node_modules/.bin/proteus_js_protoc_plugin proto/**/*.proto proto/**/**/*.proto"
+  },
+  "devDependencies": {
+    "http": "^0.0.0",
+    "rsocket-tcp-client": "^0.0.7"
+  },
+  "dependencies": {
+    "lodash.clone": "^4.5.0",
+    "long": "^4.0.0",
+    "opentracing": "^0.14.3",
+    "rsocket-rpc-core": "^0.0.0",
+    "rsocket-rpc-frames": "^0.0.0",
+    "rsocket-core": "^0.0.7",
+    "rsocket-flowable": "^0.0.7",
+    "rsocket-types": "^0.0.7"
+  }
+}
