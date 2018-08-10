@@ -1,3 +1,15 @@
+#JS ignores
 node_modules/
 dist/
+
+#Java ignores
+generated/
+.gradle/
+gradlew/
+gradlew
+gradlew.bat
+out/
+build/
+
+#Other ignores
 .idea/
