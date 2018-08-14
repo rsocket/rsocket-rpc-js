@@ -1,0 +1,48 @@
+{
+  "name": "rsocket-rpc-protobuf",
+  "repository": "https://github.com/netifi/rsocket-rpc",
+  "version": "0.0.3",
+  "description": "RSocket RPC JavaScript Codegen Plugin for Protobuf Compiler",
+  "contributors": [
+    "Ryland Degnan <ryland@netifi.com>",
+    "Kyle Bahr <kyle@netifi.com>"
+  ],
+  "bugs": {
+    "url": "https://github.com/netifi/rsocket-rpc/issues"
+  },
+  "keywords": [
+    "rsocket",
+    "protobuf"
+  ],
+  "bin": {
+    "rsocket_rpc_js_protoc_plugin": "./protoc_plugin.js"
+  },
+  "files": [
+    "src/proteus/core.pb.cc",
+    "src/proteus/core.pb.h",
+    "src/js_generator.cc",
+    "src/js_generator.h",
+    "src/js_generator_helpers.h",
+    "src/js_plugin.cc",
+    "CMakeLists.txt",
+    "index.js",
+    "protoc_plugin.js",
+    "LICENSE"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "install": "prebuild-install || cmake-js rebuild",
+    "rebuild": "prebuild --backend cmake-js --include-regex .* --compile",
+    "prebuild": "prebuild --backend cmake-js --include-regex .* --all --strip --verbose",
+    "protoc": "protoc --proto_path=proto --cpp_out=src proto/proteus/core.proto",
+    "test": "npm run install && protoc --proto_path=proto --js_out=import_style=commonjs,binary:build --rsocket_rpc_out=build --plugin=protoc-gen-rsocket_rpc=build/Release/rsocket_rpc_js_plugin proto/proteus/simpleservice.proto"
+  },
+  "dependencies": {
+    "cmake-js": "^3.6.2",
+    "prebuild-install": "^4.0.0"
+  },
+  "devDependencies": {
+    "prebuild": "^7.6.0",
+    "prebuild-ci": "^2.2.3"
+  }
+}
