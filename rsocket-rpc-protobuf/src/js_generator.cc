@@ -130,27 +130,17 @@ void PrintMethod(const MethodDescriptor* method, Printer* out) {
   if (method->client_streaming()) {
     out->Print(vars, "$client_name$.prototype.$method_name$ = function $method_name$(messages, metadata) {\n");
     out->Indent();
-    out->Print("var once = false;\n");
     out->Print("const map = {};\n");
     out->Print(vars, "return this.$method_name$Trace(map)(new rsocket_flowable.Flowable(subscriber => {\n");
     out->Indent();
-    out->Print(vars, "var dataBuf = Buffer.from(message.serializeBinary());\n");
+    out->Print(vars, "var dataBuf;\n");
     out->Print(vars, "var tracingMetadata = rsocket_rpc_tracing.mapToBuffer(map);\n");
-    out->Print(vars, "var metadataBuf = rsocket_rpc_frames.encodeMetadata('$service_name$', '$name$', tracingMetadata, metadata || Buffer.alloc(0));\n");
+    out->Print(vars, "var metadataBuf ;\n");
     out->Indent();
     out->Print("this._rs.requestChannel(messages.map(function (message) {\n");
     out->Indent();
-    out->Print("var dataBuf = Buffer.from(message.serializeBinary());\n");
-    out->Print("if (!once) {\n");
-    out->Indent();
-    out->Print("once = true;\n");
-    out->Print(vars, "var metadataBuf = rsocket_rpc_frames.encodeMetadata('$service_name$', '$name$', Buffer.alloc(0), metadata || Buffer.alloc(0));\n");
-    out->Outdent();
-    out->Print("} else {\n");
-    out->Indent();
-    out->Print("metadataBuf = Buffer.alloc(0);\n");
-    out->Outdent();
-    out->Print("}\n");
+    out->Print("dataBuf = Buffer.from(message.serializeBinary());\n");
+    out->Print(vars, "metadataBuf = rsocket_rpc_frames.encodeMetadata('$service_name$', '$name$', tracingMetadata, metadata || Buffer.alloc(0));\n");
     out->Print("return {\n");
     out->Indent();
     out->Print(
@@ -294,7 +284,34 @@ void PrintClient(const ServiceDescriptor* service, Printer* out) {
 }
 
 void PrintServer(const ServiceDescriptor* service, Printer* out) {
+
   std::map<string, string> vars;
+
+  std::vector<const MethodDescriptor*> fire_and_forget;
+  std::vector<const MethodDescriptor*> request_response;
+  std::vector<const MethodDescriptor*> request_stream;
+  std::vector<const MethodDescriptor*> request_channel;
+
+  for (int i = 0; i < service->method_count(); ++i) {
+      const MethodDescriptor* method = service->method(i);
+      const ProteusOptions options = method->options().GetExtension(io::netifi::proteus::options);
+      bool client_streaming = method->client_streaming();
+      bool server_streaming = method->server_streaming();
+
+      if (client_streaming) {
+        request_channel.push_back(method);
+      } else if (server_streaming) {
+        request_stream.push_back(method);
+      } else {
+        const Descriptor* output_type = method->output_type();
+        if (options.fire_and_forget()) {
+          fire_and_forget.push_back(method);
+        } else {
+          request_response.push_back(method);
+        }
+      }
+  }
+
   out->Print(GetNodeComments(service, true).c_str());
   vars["server_name"] = service->name() + "Server";
   out->Print(vars, "var $server_name$ = function () {\n");
@@ -320,34 +337,59 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
           out->Print(vars, "this.$method_name$Trace = rsocket_rpc_tracing.traceSingleAsChild(tracer, \"$service_short_name$.$method_name$\", {\"proteus.service\": \"$service_name$\"}, {\"proteus.type\": \"server\"});\n");
         }
   }
+  out->Print("this._channelSwitch = (payload, restOfMessages) => {\n");
+  out->Indent();
+  out->Print("if (payload.metadata == null) {\n");
+  out->Indent();
+  out->Print("return rsocket_flowable.Flowable.error(new Error('metadata is empty'));\n");
+  out->Outdent();
+  out->Print("}\n");
+  out->Print("var method = rsocket_rpc_frames.getMethod(payload.metadata);\n");
+  out->Print("var spanContext = rsocket_rpc_tracing.deserializeTraceData(this._tracer, payload.metadata);\n");
+  out->Print("let deserializedMessages;\n");
+  out->Print("switch(method){\n");
+  out->Indent();
+  for (vector<const MethodDescriptor*>::iterator it = request_channel.begin(); it != request_channel.end(); ++it) {
+        const MethodDescriptor* method = *it;
+        const Descriptor* input_type = method->input_type();
+        vars["method_name"] = LowercaseFirstLetter(method->name());
+        vars["name"] = method->name();
+        vars["input_type"] = NodeObjectPath(input_type);
+
+        out->Print(vars, "case '$name$':\n");
+        out->Indent();
+        out->Print(vars, "deserializedMessages = restOfMessages.map(message => $input_type$.deserializeBinary(message));\n");
+        out->Print(vars, "return this.$method_name$Trace(spanContext)(\n");
+        out->Indent();
+        out->Print("this._service\n");
+        out->Indent();
+        out->Print(vars, ".$method_name$(deserializedMessages, payload.metadata)\n");
+        out->Print(".map(function (message) {\n");
+        out->Indent();
+        out->Print("return {\n");
+        out->Indent();
+        out->Print("data: Buffer.from(message.serializeBinary()),\n");
+        out->Print("metadata: Buffer.alloc(0)\n");
+        out->Outdent();
+        out->Print("}\n");
+        out->Outdent();
+        out->Print("})\n");
+        out->Outdent();
+        out->Print(");\n");
+        out->Outdent();
+        out->Outdent();
+      }
+  out->Print("default:\n");
+  out->Indent();
+  out->Print("return rsocket_flowable.Flowable.error(new Error('unknown method'));\n");
+  out->Outdent();
+  out->Outdent();
+  out->Print("}\n");
+  out->Outdent();
+  out->Print("};\n");
 
   out->Outdent();
   out->Print("}\n");
-
-  std::vector<const MethodDescriptor*> fire_and_forget;
-  std::vector<const MethodDescriptor*> request_response;
-  std::vector<const MethodDescriptor*> request_stream;
-  std::vector<const MethodDescriptor*> request_channel;
-
-  for (int i = 0; i < service->method_count(); ++i) {
-    const MethodDescriptor* method = service->method(i);
-    const ProteusOptions options = method->options().GetExtension(io::netifi::proteus::options);
-    bool client_streaming = method->client_streaming();
-    bool server_streaming = method->server_streaming();
-
-    if (client_streaming) {
-      request_channel.push_back(method);
-    } else if (server_streaming) {
-      request_stream.push_back(method);
-    } else {
-      const Descriptor* output_type = method->output_type();
-      if (options.fire_and_forget()) {
-        fire_and_forget.push_back(method);
-      } else {
-        request_response.push_back(method);
-      }
-    }
-  }
 
   // Fire and forget
   out->Print(vars, "$server_name$.prototype.fireAndForget = function fireAndForget(payload) {\n");
@@ -518,9 +560,52 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
   out->Print("};\n");
 
   // Request-Channel
-  out->Print(vars, "$server_name$.prototype.requestChannel = function requestChannel(payload) {\n");
+  out->Print(vars, "$server_name$.prototype.requestChannel = function requestChannel(payloads) {\n");
   out->Indent();
-  out->Print("return rsocket_flowable.Flowable.error(new Error('requestChannel() is not implemented'));\n");
+  out->Print("let once = false;\n");
+  out->Print("return new rsocket_flowable.Flowable(subscriber => {\n");
+  out->Indent();
+  out->Print("const payloadProxy = new rsocket_rpc_core.QueuingFlowableProcessor();\n");
+  out->Print("payloads.subscribe({\n");
+  out->Indent();
+  out->Print("onNext: payload => {\n");
+  out->Indent();
+  out->Print("if(!once){\n");
+  out->Indent();
+  out->Print("once = true;\n");
+  out->Print("try{\n");
+  out->Indent();
+  out->Print("let result = this._channelSwitch(payload, payloadProxy);\n");
+  out->Print("result.subscribe(subscriber);\n");
+  out->Outdent();
+  out->Print("} catch (error){\n");
+  out->Indent();
+  out->Print("subscriber.onError(error);\n");
+  out->Outdent();
+  out->Print("}\n");
+  out->Outdent();
+  out->Print("}\n");
+  out->Print("payloadProxy.onNext(payload.data);\n");
+  out->Outdent();
+  out->Print("},\n");
+  out->Print("onError: error => {\n");
+  out->Indent();
+  out->Print("payloadProxy.onError(error);\n");
+  out->Outdent();
+  out->Print("},\n");
+  out->Print("onComplete: () => {\n");
+  out->Indent();
+  out->Print("payloadProxy.onComplete();\n");
+  out->Outdent();
+  out->Print("},\n");
+  out->Print("onSubscribe: subscription => {\n");
+  out->Indent();
+  out->Print("payloadProxy.onSubscribe(subscription);\n");
+  out->Outdent();
+  out->Print("}\n");
+  out->Print("});\n");
+  out->Outdent();
+  out->Print("});\n");
   out->Outdent();
   out->Print("};\n");
 
@@ -540,6 +625,7 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
 
 void PrintImports(const FileDescriptor* file, Printer* out) {
   out->Print("var rsocket_rpc_frames = require('rsocket-rpc-frames');\n");
+  out->Print("var rsocket_rpc_core = require('rsocket-rpc-core');\n");
   out->Print("var rsocket_rpc_tracing = require('rsocket-rpc-tracing');\n");
   out->Print("var rsocket_flowable = require('rsocket-flowable');\n");
   if (file->message_type_count() > 0) {
