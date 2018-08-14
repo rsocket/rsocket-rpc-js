@@ -21,6 +21,7 @@ import type {Responder, Payload} from 'rsocket-types';
 import {Flowable, Single} from 'rsocket-flowable';
 
 import {getService} from 'rsocket-rpc-frames';
+import QueuingFlowableProcessor from './QueuingFlowableProcessor';
 
 export default class RequestHandlingRSocket
   implements Responder<Buffer, Buffer> {
@@ -94,7 +95,47 @@ export default class RequestHandlingRSocket
   requestChannel(
     payloads: Flowable<Payload<Buffer, Buffer>>,
   ): Flowable<Payload<Buffer, Buffer>> {
-    return Flowable.error(new Error('requestChannel() is not implemented'));
+    const payloadsProxy = new QueuingFlowableProcessor();
+    let once = false;
+    return new Flowable(subscriber => {
+      payloads.subscribe({
+        onNext: payload => {
+          if (!once) {
+            once = true;
+            try {
+              if (payload.metadata === undefined || payload.metadata === null) {
+                Flowable.error(new Error('metadata is empty')).subscribe(
+                  subscriber,
+                );
+              } else {
+                const service = getService(payload.metadata);
+                const handler = this._registeredServices.get(service);
+                if (handler === undefined || handler === null) {
+                  Flowable.error(
+                    new Error('can not find service ' + service),
+                  ).subscribe(subscriber);
+                } else {
+                  handler.requestChannel(payloadsProxy).subscribe(subscriber);
+                }
+              }
+            } catch (error) {
+              //Message back to the caller
+              subscriber.onError(error);
+            }
+          }
+          payloadsProxy.onNext(payload);
+        },
+        onError: error => {
+          payloadsProxy.onError(error);
+        },
+        onComplete: () => {
+          payloadsProxy.onComplete();
+        },
+        onSubscribe: subscription => {
+          payloadsProxy.onSubscribe(subscription);
+        },
+      });
+    });
   }
 
   metadataPush(payload: Payload<Buffer, Buffer>): Single<void> {

@@ -14,7 +14,7 @@
 ./flow/
 
 [options]
-module.system=haste
+module.system=node
 
 esproposal.class_static_fields=enable
 esproposal.class_instance_fields=enable
