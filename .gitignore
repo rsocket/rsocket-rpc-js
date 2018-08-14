@@ -1,6 +1,7 @@
 #JS ignores
 node_modules/
 dist/
+prebuilds/
 
 #Java ignores
 generated/
