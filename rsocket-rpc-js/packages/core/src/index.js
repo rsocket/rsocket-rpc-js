@@ -22,6 +22,7 @@ import RequestHandlingRSocket from './RequestHandlingRSocket';
 import UnwrappingRSocket from './UnwrappingRSocket';
 import RpcClient from './RpcClient';
 import DeferredConnectingRSocket from './DeferredConnectingRSocket';
+import QueuingFlowableProcessor from './QueuingFlowableProcessor';
 
 /**
  * The public API of the `core` package.
@@ -33,4 +34,5 @@ export {
   UnwrappingRSocket,
   RpcClient,
   DeferredConnectingRSocket,
+  QueuingFlowableProcessor,
 };

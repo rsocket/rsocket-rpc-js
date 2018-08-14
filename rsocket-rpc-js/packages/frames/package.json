@@ -1,7 +1,7 @@
 {
   "name": "rsocket-rpc-frames",
   "repository": "https://github.com/netifi/rsocket-js-rpc",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "RSocket JavaScript RPC Frames Definitions",
   "contributors": [
     "Ryland Degnan <ryland@netifi.com>",
@@ -25,6 +25,6 @@
     "prepublish": "node ../../resources/prepublish.js"
   },
   "dependencies": {
-    "rsocket-core": "^0.0.7"
+    "rsocket-core": "^0.0.9"
   }
 }
