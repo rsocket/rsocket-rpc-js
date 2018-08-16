@@ -1,4 +1,5 @@
 # rsocket-rpc
+[![Build Status](https://travis-ci.org/netifi/rsocket-rpc.svg?branch=master)](https://travis-ci.org/netifi/rsocket-rpc)
 
 [RSocket](http://rsocket.io) RPC implementation.
 
