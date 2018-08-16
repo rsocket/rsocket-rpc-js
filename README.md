@@ -1,7 +1,7 @@
 # rsocket-rpc
 [![Build Status](https://travis-ci.org/netifi/rsocket-rpc.svg?branch=master)](https://travis-ci.org/netifi/rsocket-rpc)
 
-[RSocket](http://rsocket.io) RPC implementation.
+The standard RPC implementation for [RSocket](http://rsocket.io).
 
 ## License
 Copyright 2017 [Netifi Inc](https://www.netifi.com).
