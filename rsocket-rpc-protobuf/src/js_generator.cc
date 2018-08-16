@@ -151,7 +151,9 @@ void PrintMethod(const MethodDescriptor* method, Printer* out) {
     out->Outdent();
     out->Print("})).map(function (payload) {\n");
     out->Indent();
-    out->Print(vars, "return $output_type$.deserializeBinary(payload.data);\n");
+    out->Print("//TODO: resolve either 'https://github.com/rsocket/rsocket-js/issues/19' or 'https://github.com/google/protobuf/issues/1319'\n");
+    out->Print("var binary = payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);\n");
+    out->Print(vars, "return $output_type$.deserializeBinary(binary);\n");
     out->Outdent();
     out->Print("}).subscribe(subscriber);\n");
     out->Outdent();
@@ -177,7 +179,9 @@ void PrintMethod(const MethodDescriptor* method, Printer* out) {
       out->Outdent();
       out->Print("}).map(function (payload) {\n");
       out->Indent();
-      out->Print(vars, "return $output_type$.deserializeBinary(payload.data);\n");
+      out->Print("//TODO: resolve either 'https://github.com/rsocket/rsocket-js/issues/19' or 'https://github.com/google/protobuf/issues/1319'\n");
+      out->Print("var binary = payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);\n");
+      out->Print(vars, "return $output_type$.deserializeBinary(binary);\n");
       out->Outdent();
       out->Print("}).subscribe(subscriber);\n");
       out->Outdent();
@@ -225,7 +229,9 @@ void PrintMethod(const MethodDescriptor* method, Printer* out) {
       out->Outdent();
       out->Print("}).map(function (payload) {\n");
       out->Indent();
-      out->Print(vars, "return $output_type$.deserializeBinary(payload.data);\n");
+      out->Print("//TODO: resolve either 'https://github.com/rsocket/rsocket-js/issues/19' or 'https://github.com/google/protobuf/issues/1319'\n");
+      out->Print("var binary = payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);\n");
+      out->Print(vars, "return $output_type$.deserializeBinary(binary);\n");
       out->Outdent();
       out->Print("}).subscribe(subscriber);\n");
       out->Outdent();
