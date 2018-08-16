@@ -27,6 +27,13 @@ project(':core') {
     apply from: file('../gradle/java.gradle')
 }
 
+project(':core-idl') {
+    description = 'RSocket RPC IDL'
+    ext.artifactName = 'core-idl'
+
+    apply from: file('../gradle/java.gradle')
+}
+
 project(':frames') {
     description = 'RSocket RPC Frames'
     ext.artifactName = 'frames'

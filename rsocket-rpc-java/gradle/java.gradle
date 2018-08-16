@@ -97,61 +97,40 @@ test {
     }
 }
 
-if ("$version".contains('SNAPSHOT') || "$version".contains('RC')) {
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
-                artifact sourcesJar
-                artifact javadocJar
-            }
-        }
-        repositories {
-            maven {
-                url = version.contains('SNAPSHOT') ? 'https://artifactory.netifiinc.com/artifactory/libs-snapshot-local' : 'https://artifactory.netifiinc.com/artifactory/libs-release-local'
-                credentials {
-                    username = project.hasProperty('netifiArtifactoryUsername') ? project.property('netifiArtifactoryUsername') : System.getenv('NETIFI_ARTIFACTORY_USERNAME')
-                    password = project.hasProperty('netifiArtifactoryPassword') ? project.property('netifiArtifactoryPassword') : System.getenv('NETIFI_ARTIFACTORY_PASSWORD')
-                }
-            }
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
         }
     }
-} else {
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
-                artifact sourcesJar
-                artifact javadocJar
-            }
-        }
-    }
+}
 
-    bintray {
-        user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-        key = project.hasProperty('bintrayKey') ? project.property('bintrayKey') : System.getenv('BINTRAY_KEY')
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayKey') ? project.property('bintrayKey') : System.getenv('BINTRAY_KEY')
 
-        publications = ['mavenJava']
+    publications = ['mavenJava']
 
-        //dryRun = true
-        publish = (osdetector.os == 'osx')
-        override = true
+    //dryRun = true
+    publish = (osdetector.os == 'osx')
+    override = true
 
-        pkg {
-            repo = 'netifi-oss'
-            name = "${artifactName}".toString()
-            userOrg = 'netifi'
-            desc = "${project.description}"
-            websiteUrl = 'https://github.com/netifi/rsocket-rpc'
-            issueTrackerUrl = 'https://github.com/netifi/rsocket-rpc/issues'
-            vcsUrl = 'https://github.com/netifi/rsocket-rpc.git'
-            licenses = ['Apache-2.0']
-            githubRepo = 'netifi/rsocket-rpc'
-            githubReleaseNotesFile = 'CHANGELOG.md'
+    pkg {
+        repo = 'netifi-oss'
+        name = "${artifactName}".toString()
+        userOrg = 'netifi'
+        desc = "${project.description}"
+        websiteUrl = 'https://github.com/netifi/rsocket-rpc'
+        issueTrackerUrl = 'https://github.com/netifi/rsocket-rpc/issues'
+        vcsUrl = 'https://github.com/netifi/rsocket-rpc.git'
+        licenses = ['Apache-2.0']
+        githubRepo = 'netifi/rsocket-rpc'
+        githubReleaseNotesFile = 'CHANGELOG.md'
 
-            version {
-                name = "$project.version".toString()
-            }
+        version {
+            name = "$project.version".toString()
         }
     }
 }
