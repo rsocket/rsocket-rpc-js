@@ -21,6 +21,7 @@
 import type {
   ConnectionStatus,
   DuplexConnection,
+  Encodable,
   Payload,
   ReactiveSocket,
   SetupFrame,
@@ -35,17 +36,12 @@ import {CONNECTION_STREAM_ID, FLAGS, FRAME_TYPES} from 'rsocket-core';
 import {MAJOR_VERSION, MINOR_VERSION} from 'rsocket-core/build/RSocketVersion';
 import {createClientMachine} from 'rsocket-core/build/RSocketMachine';
 
-import {FrameTypes, encodeFrame} from 'rsocket-rpc-frames';
-
 export type ClientConfig<D, M> = {|
   serializers?: PayloadSerializers<D, M>,
   setup: {|
-    group: string,
-    destination: string,
     keepAlive: number,
     lifetime: number,
-    accessKey: number,
-    accessToken: Buffer,
+    metadata?: Encodable,
   |},
   transport: DuplexConnection,
   responder?: Responder<D, M>,
@@ -58,14 +54,6 @@ export default class RpcClient<D, M> {
   constructor(config: ClientConfig<D, M>) {
     this._config = config;
     this._connection = null;
-  }
-
-  group(): string {
-    return this._config.setup.group;
-  }
-
-  destination(): string {
-    return this._config.setup.destination;
   }
 
   close(): void {
@@ -163,23 +151,8 @@ class RpcSocket<D, M> implements ReactiveSocket<D, M> {
   }
 
   _buildSetupFrame(config: ClientConfig<D, M>): SetupFrame {
-    const {
-      group,
-      destination,
-      keepAlive,
-      lifetime,
-      accessKey,
-      accessToken,
-    } = config.setup;
-    const metadata = encodeFrame({
-      type: FrameTypes.DESTINATION_SETUP,
-      majorVersion: null,
-      minorVersion: null,
-      destination,
-      group,
-      accessKey,
-      accessToken,
-    });
+    const {keepAlive, lifetime, metadata} = config.setup;
+
     return {
       flags: FLAGS.METADATA,
       keepAlive,

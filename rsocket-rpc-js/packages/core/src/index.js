@@ -19,9 +19,7 @@
 'use strict';
 
 import RequestHandlingRSocket from './RequestHandlingRSocket';
-import UnwrappingRSocket from './UnwrappingRSocket';
 import RpcClient from './RpcClient';
-import DeferredConnectingRSocket from './DeferredConnectingRSocket';
 import QueuingFlowableProcessor from './QueuingFlowableProcessor';
 
 /**
@@ -29,10 +27,4 @@ import QueuingFlowableProcessor from './QueuingFlowableProcessor';
  */
 export type {ClientConfig} from './RpcClient';
 
-export {
-  RequestHandlingRSocket,
-  UnwrappingRSocket,
-  RpcClient,
-  DeferredConnectingRSocket,
-  QueuingFlowableProcessor,
-};
+export {RequestHandlingRSocket, RpcClient, QueuingFlowableProcessor};

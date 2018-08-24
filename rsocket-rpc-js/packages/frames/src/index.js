@@ -16,12 +16,6 @@
  * @flow
  */
 
-export * from './Types';
-
-export {FrameTypes, getFrameTypeName} from './Frame';
-
-export {encodeFrame, decodeFrame} from './BinaryFraming';
-
 export {
   encodeMetadata,
   getVersion,
