@@ -72,7 +72,7 @@ The Frames package exports this helper functions to extract useful data from RSo
 
 Adding tracing is done through the utility functions provided by `Tracing` (packages/tracing/src/Tracing.js). There are two entry methods, `trace` for Clients to use and `traceAsChild` which is assuming a Server context. `trace` acts on maps of key/value pairs whereas `traceAsChild` works on an OpenTracing SpanContext, i.e. assuming a trace context already exists.
 
-These methods may appear awkward to use so included a couple of examples for a Client and a Server
+These methods may appear awkward to use so included are a couple of examples for a Client and a Server
 
 Here is an example of an `InfoClient` that has a method `getInfo` which streams Info back to the caller
 
