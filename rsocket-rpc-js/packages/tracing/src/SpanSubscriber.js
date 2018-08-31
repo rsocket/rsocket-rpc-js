@@ -31,13 +31,12 @@ export class SpanSubscriber<T> implements ISubscriber<T>, ISubscription {
 
     if (tags) {
       const finalTags = {};
-      tags.forEach(tagArr => {
-        tagArr.forEach(tag => {
-          Object.keys(tag).forEach(key => {
-            finalTags[key] = tag[key];
-          });
+      tags.forEach(tag => {
+        Object.keys(tag).forEach(key => {
+          finalTags[key] = tag[key];
         });
       });
+
       options.tags = finalTags;
     }
 

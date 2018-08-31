@@ -1,0 +1,26 @@
+{
+  "name": "rsocket-rpc-metrics",
+  "version": "0.0.0",
+  "description": "Base metrics definitions for RSocket RPC users",
+  "main": "index.js",
+  "repository": "https://github.com/netifi/rsocket-js-rpc",
+  "author": "Kyle Bahr",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "test": "echo 'Please run `npm test` from the root of the repo' && exit 1",
+    "build": "npm run build-js && npm run build-flow",
+    "build-js": "babel-node ../../resources/buildJs.js",
+    "build-flow": "babel-node ../../resources/buildFlow.js",
+    "prepublish": "node ../../resources/prepublish.js",
+    "protoc": "protoc --proto_path=idl --js_out=import_style=commonjs,binary:src --rsocket_rpc_out=src --plugin=protoc-gen-rsocket_rpc=node_modules/.bin/rsocket_rpc_js_protoc_plugin idl/**/*.proto "
+  },
+  "devDependencies": {
+    "google-protobuf": "^3.6.1",
+    "rsocket-rpc-protobuf": "^0.0.5"
+  },
+  "dependencies": {
+    "rsocket-flowable": "^0.0.9",
+    "rsocket-types": "^0.0.9"
+  }
+}
