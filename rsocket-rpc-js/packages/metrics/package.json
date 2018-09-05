@@ -1,8 +1,11 @@
 {
   "name": "rsocket-rpc-metrics",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Base metrics definitions for RSocket RPC users",
-  "main": "index.js",
+  "files": [
+    "dist/"
+  ],
+  "main": "dist/index.js",
   "repository": "https://github.com/netifi/rsocket-js-rpc",
   "author": "Kyle Bahr",
   "license": "MIT",

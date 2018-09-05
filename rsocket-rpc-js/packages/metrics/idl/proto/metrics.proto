@@ -40,14 +40,14 @@ message MeterMeasurement {
     MeterStatistic statistic = 2;
 }
 
-message MeterTest {
+message Meter {
     MeterId id                        = 1;
     repeated MeterMeasurement measure = 2;
 }
 
 message MetricsSnapshot {
     map<string, string> tags          = 1;
-    repeated MeterTest meters = 2;
+    repeated Meter meters = 2;
 }
 
 message Skew {

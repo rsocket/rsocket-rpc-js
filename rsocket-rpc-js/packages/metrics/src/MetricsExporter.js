@@ -18,6 +18,7 @@
 
 'use strict';
 
+import {ISubscriber} from 'rsocket-types';
 import {Flowable} from 'rsocket-flowable';
 import {
   Meter,
@@ -41,7 +42,8 @@ export default class MetricsExporter {
   exportPeriodSeconds: number;
   batchSize: number;
   intervalHandle: any;
-  cancel: () => void;
+  remoteSubscriber: ?ISubscriber<MetricsSnapshot>;
+  remoteCancel: () => void;
 
   constructor(
     handler: MetricsSnapshotHandlerClient,
@@ -52,7 +54,7 @@ export default class MetricsExporter {
     this.handler = handler;
     this.registry = registry;
     this.exportPeriodSeconds = exportPeriodSeconds;
-    this.batchSize = batchSize;
+    this.batchSize = batchSize; // TODO: use this to window the snapshots
   }
 
   start() {
@@ -71,15 +73,20 @@ export default class MetricsExporter {
           restart(this);
         },
         onSubscribe: subscription => {
-          this.cancel = subscription.cancel;
-          subscription.request(Number.MAX_SAFE_INTEGER);
+          this.remoteCancel = subscription.cancel;
+          subscription.request(2147483647); // FaceBook thing - their Flowable only allows this
         },
       });
   }
 
   stop() {
-    if (this.cancel) {
-      this.cancel();
+    if (this.remoteCancel) {
+      this.remoteCancel();
+    }
+
+    if (this.remoteSubscriber) {
+      this.remoteSubscriber.onComplete();
+      this.remoteSubscriber = null;
     }
 
     if (this.intervalHandle) {
@@ -105,24 +112,37 @@ function getMetricsSnapshotStream(
       return;
     }
 
-    let pending = 0;
+    // Retain handle to subscriber so that we can complete on manual stop
+    exporter.remoteSubscriber = subscriber;
 
+    let pending = 0;
+    console.log(
+      'Setting interval for ' +
+        exporter.exportPeriodSeconds * 1000 +
+        ' milliseconds',
+    );
     exporter.intervalHandle = setInterval(() => {
       if (pending > 0) {
-        subscriber.onNext(
-          Array.prototype.concat
-            .apply([], exporter.registry.meters().map(convert))
-            .reduce((snapshot, meter) => {
-              snapshot.addMeters(meter);
-              return snapshot;
-            }, new MetricsSnapshot()),
+        const allMeters = Array.prototype.concat.apply(
+          [],
+          exporter.registry.meters().map(convert),
         );
+        const meterSnapshot = allMeters.reduce((snapshot, meter) => {
+          snapshot.addMeters(meter);
+          return snapshot;
+        }, new MetricsSnapshot());
+
+        subscriber.onNext(meterSnapshot);
         pending--;
       }
-    }, exporter.exportPeriodSeconds);
+    }, exporter.exportPeriodSeconds * 1000);
 
     subscriber.onSubscribe({
-      cancel: exporter.stop,
+      cancel: () => {
+        // They won't care about the "complete" in this case, remove reference
+        exporter.remoteSubscriber = null;
+        exporter.stop();
+      },
       request: n => {
         pending += n;
       },
@@ -201,30 +221,33 @@ function convertTimer(imeter: IMeter): Meter[] {
   //Add meters for percentiles of interest
   const valuesSnapshot = timer.percentiles();
   Object.keys(valuesSnapshot).forEach(percentile => {
-    const meter = new Meter();
-
     const value = toNanoseconds(valuesSnapshot[percentile]);
-    const percentileTag = new MeterTag();
-    percentileTag.setKey('percentile');
-    percentileTag.setValue(percentile);
+    // Make sure we're dealing with a real value before pushing
+    if (!isNaN(value)) {
+      const meter = new Meter();
 
-    const meterId = new MeterId();
-    meterId.setName(name);
-    meterId.setTagList(tags);
-    meterId.addTag(percentileTag);
-    meterId.setType(MeterType.TIMER);
-    meterId.setDescription(timer.description);
-    meterId.setBaseunit('nanoseconds');
+      const percentileTag = new MeterTag();
+      percentileTag.setKey('percentile');
+      percentileTag.setValue(percentile);
 
-    meter.setId(meterId);
+      const meterId = new MeterId();
+      meterId.setName(name);
+      tags.forEach(tag => meterId.addTag(tag));
+      meterId.addTag(percentileTag);
+      meterId.setType(MeterType.TIMER);
+      meterId.setDescription(timer.description);
+      meterId.setBaseunit('nanoseconds');
 
-    const measure = new MeterMeasurement();
-    measure.setValue(value);
-    measure.setStatistic(statisticTypeLookup(timer.statistic));
+      meter.setId(meterId);
 
-    meter.addMeasure(measure);
+      const measure = new MeterMeasurement();
+      measure.setValue(value);
+      measure.setStatistic(statisticTypeLookup(timer.statistic));
 
-    meters.push(meter);
+      meter.addMeasure(measure);
+
+      meters.push(meter);
+    }
   });
 
   //add a meter for total count and max time
@@ -232,7 +255,7 @@ function convertTimer(imeter: IMeter): Meter[] {
 
   const meterId = new MeterId();
   meterId.setName(name);
-  meterId.setTagList(tags);
+  tags.forEach(tag => meterId.addTag(tag));
   meterId.setType(MeterType.TIMER);
   meterId.setDescription(timer.description);
   meterId.setBaseunit('nanoseconds');
@@ -271,7 +294,7 @@ function basicConverter(imeter: IMeter): Meter[] {
 
     const meterId = new MeterId();
     meterId.setName(name);
-    meterId.setTagList(tags);
+    tags.forEach(tag => meterId.addTag(tag));
     meterId.addTag(ewmaTag);
     meterId.setType(meterTypeLookup(imeter.type));
     meterId.setDescription(imeter.description);
@@ -290,38 +313,6 @@ function basicConverter(imeter: IMeter): Meter[] {
 
   return meters;
 }
-
-// function convertCounter(imeter: IMeter): Meter[] {
-//   if (!(imeter instanceof Counter)) {
-//     throw new Error('Meter is not an instance of Timer');
-//   }
-//
-//   const counter = (imeter: Counter);
-//   const meters = [];
-//   const name = counter.name;
-//   const tags = convertTags(counter.tags);
-//
-//   const meterId = new MeterId();
-//   meterId.setName(name);
-//   meterId.setTagList(tags);
-//   meterId.setType(MeterType.COUNTER);
-//   meterId.setDescription(counter.description);
-//   meterId.setBaseunit(counter.units);
-//
-//   const meter = new Meter();
-//
-//   meter.setId(meterId);
-//
-//   const measure = new MeterMeasurement();
-//   measure.setValue(counter.count);
-//   measure.setStatistic(statisticTypeLookup(counter.statistic));
-//
-//   meter.addMeasure(measure);
-//
-//   meters.push(meter);
-//
-//   return meters;
-// }
 
 function convertTags(tags: RawMeterTag[]): MeterTag[] {
   return (tags || []).map(tag => {

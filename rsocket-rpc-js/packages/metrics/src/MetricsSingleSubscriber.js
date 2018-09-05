@@ -95,6 +95,6 @@ class MetricsSingleSubscriber<T> implements IFutureSubscriber<T> {
   cancel(): void {
     this._cancelled.inc();
     this._timer.update(new Date().getTime() - this._start);
-    this._cancel();
+    this._cancel && this._cancel();
   }
 }

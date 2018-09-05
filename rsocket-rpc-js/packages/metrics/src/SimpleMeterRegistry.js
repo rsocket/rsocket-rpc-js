@@ -35,12 +35,11 @@ export default class SimpleMeterRegistry implements IMeterRegistry {
       type: meter.type,
     };
 
-    if (this.meterMap[id]) {
-      throw new Error(
-        'BaseMeter with id ' + JSON.stringify(id) + ' already exists',
-      );
+    if (!this.meterMap[id]) {
+      this.meterMap[id] = [];
     }
-    this.meterMap[id] = meter;
+
+    this.meterMap[id].push(meter);
   }
 
   registerMeters(meters: IMeter[]): void {
@@ -48,6 +47,9 @@ export default class SimpleMeterRegistry implements IMeterRegistry {
   }
 
   meters(): IMeter[] {
-    return Object.keys(this.meterMap).map(key => this.meterMap[key]);
+    return Array.prototype.concat.apply(
+      [],
+      Object.keys(this.meterMap).map(key => this.meterMap[key]),
+    );
   }
 }

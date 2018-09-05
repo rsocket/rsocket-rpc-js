@@ -76,12 +76,12 @@ export default class MetricsSubscriber<T>
   }
 
   request(n: number) {
-    this._subscription.request(n);
+    this._subscription && this._subscription.request(n);
   }
 
   cancel() {
     this._cancelled.inc();
     this._timer.update(new Date().getTime() - this._start);
-    this._subscription.cancel();
+    this._subscription && this._subscription.cancel();
   }
 }
