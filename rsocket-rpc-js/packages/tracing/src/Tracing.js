@@ -1,4 +1,5 @@
 import {UTF8Encoder, BufferEncoder, createBuffer} from 'rsocket-core';
+import {ISubscriber} from 'rsocket-types';
 import {Flowable, Single} from 'rsocket-flowable';
 
 import {SpanSubscriber} from './SpanSubscriber';
@@ -116,7 +117,7 @@ export function trace<T>(
             name,
             null,
             metadata,
-            tags,
+            ...tags,
           );
         });
       };
@@ -141,7 +142,7 @@ export function traceAsChild<T>(
             name,
             context,
             null,
-            tags,
+            ...tags,
           );
         });
       };
@@ -159,7 +160,7 @@ export function traceSingle<T>(
   if (tracer && name) {
     return (metadata: Object) => {
       return (single: Single<T>) => {
-        return createSpanSingle(single, tracer, name, null, metadata, tags);
+        return createSpanSingle(single, tracer, name, null, metadata, ...tags);
       };
     };
   } else {
@@ -174,8 +175,8 @@ export function traceSingleAsChild<T>(
 ): SpanContext => (Single<T>) => Single<T> {
   if (tracer && name) {
     return (context: SpanContext) => {
-      return (single: Flowable<T>) => {
-        return createSpanSingle(single, tracer, name, context, null, tags);
+      return (single: Single<T>) => {
+        return createSpanSingle(single, tracer, name, context, null, ...tags);
       };
     };
   } else {

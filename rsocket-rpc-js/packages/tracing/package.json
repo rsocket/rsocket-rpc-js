@@ -21,8 +21,7 @@
     "build": "npm run build-js && npm run build-flow",
     "build-js": "babel-node ../../resources/buildJs.js",
     "build-flow": "babel-node ../../resources/buildFlow.js",
-    "prepublish": "node ../../resources/prepublish.js",
-    "protoc": "protoc --proto_path=proto --js_out=import_style=commonjs,binary:src --proteus_out=src --plugin=protoc-gen-proteus=node_modules/.bin/proteus_js_protoc_plugin proto/**/*.proto proto/**/**/*.proto"
+    "prepublish": "node ../../resources/prepublish.js"
   },
   "devDependencies": {
     "http": "^0.0.0",

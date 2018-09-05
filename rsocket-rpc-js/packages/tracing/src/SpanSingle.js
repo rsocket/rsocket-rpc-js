@@ -1,4 +1,4 @@
-import {Single, IFutureSubscriber} from 'rsocket-flowable';
+import {Single, IFutureSubscriber} from 'rsocket-flowable/build/Single';
 import {Tracer, Span, SpanContext, FORMAT_TEXT_MAP} from 'opentracing';
 
 export function createSpanSingle(
@@ -48,11 +48,9 @@ class SpanSingleSubscriber implements IFutureSubscriber<T> {
 
     if (tags) {
       const finalTags = {};
-      tags.forEach(tagArr => {
-        tagArr.forEach(tag => {
-          Object.keys(tag).forEach(key => {
-            finalTags[key] = tag[key];
-          });
+      tags.forEach(tag => {
+        Object.keys(tag).forEach(key => {
+          finalTags[key] = tag[key];
         });
       });
       options.tags = finalTags;

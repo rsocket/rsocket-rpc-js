@@ -131,7 +131,9 @@ void PrintMethod(const MethodDescriptor* method, Printer* out) {
     out->Print(vars, "$client_name$.prototype.$method_name$ = function $method_name$(messages, metadata) {\n");
     out->Indent();
     out->Print("const map = {};\n");
-    out->Print(vars, "return this.$method_name$Trace(map)(new rsocket_flowable.Flowable(subscriber => {\n");
+    out->Print(vars, "return this.$method_name$Metrics(\n");
+    out->Indent();
+    out->Print(vars, "this.$method_name$Trace(map)(new rsocket_flowable.Flowable(subscriber => {\n");
     out->Indent();
     out->Print(vars, "var dataBuf;\n");
     out->Print(vars, "var tracingMetadata = rsocket_rpc_tracing.mapToBuffer(map);\n");
@@ -152,12 +154,14 @@ void PrintMethod(const MethodDescriptor* method, Printer* out) {
     out->Print("})).map(function (payload) {\n");
     out->Indent();
     out->Print("//TODO: resolve either 'https://github.com/rsocket/rsocket-js/issues/19' or 'https://github.com/google/protobuf/issues/1319'\n");
-    out->Print("var binary = payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);\n");
+    out->Print("var binary = !payload.data || payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);\n");
     out->Print(vars, "return $output_type$.deserializeBinary(binary);\n");
     out->Outdent();
     out->Print("}).subscribe(subscriber);\n");
     out->Outdent();
     out->Print("})\n");
+    out->Outdent();
+    out->Print(")\n");
     out->Outdent();
     out->Print(");\n");
   } else {
@@ -165,7 +169,9 @@ void PrintMethod(const MethodDescriptor* method, Printer* out) {
     out->Indent();
     if (method->server_streaming()) {
       out->Print("const map = {};\n");
-      out->Print(vars, "return this.$method_name$Trace(map)(new rsocket_flowable.Flowable(subscriber => {\n");
+      out->Print(vars, "return this.$method_name$Metrics(\n");
+      out->Indent();
+      out->Print(vars, "this.$method_name$Trace(map)(new rsocket_flowable.Flowable(subscriber => {\n");
       out->Indent();
       out->Print(vars, "var dataBuf = Buffer.from(message.serializeBinary());\n");
       out->Print(vars, "var tracingMetadata = rsocket_rpc_tracing.mapToBuffer(map);\n");
@@ -180,29 +186,22 @@ void PrintMethod(const MethodDescriptor* method, Printer* out) {
       out->Print("}).map(function (payload) {\n");
       out->Indent();
       out->Print("//TODO: resolve either 'https://github.com/rsocket/rsocket-js/issues/19' or 'https://github.com/google/protobuf/issues/1319'\n");
-      out->Print("var binary = payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);\n");
+      out->Print("var binary = !payload.data || payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);\n");
       out->Print(vars, "return $output_type$.deserializeBinary(binary);\n");
       out->Outdent();
       out->Print("}).subscribe(subscriber);\n");
       out->Outdent();
       out->Print("})\n");
       out->Outdent();
+      out->Print(")\n");
+      out->Outdent();
       out->Print(");\n");
     } else if (options.fire_and_forget()) {
       out->Print("const map = {};\n");
-      out->Print(vars, "this.$method_name$Trace(map)(new rsocket_flowable.Single(function (subscriber) {\n");
+      out->Print(vars, "this.$method_name$Metrics(new rsocket_flowable.Single(function (subscriber) {\n");
       out->Indent();
-      out->Print("subscriber.onSubscribe();\n");
-      out->Print("subscriber.onComplete();\n");
-      out->Outdent();
-      out->Print("})).subscribe({ onSubscribe: function onSubscribe() {}, onComplete: function onComplete() {} });\n");
-        /*
-
-        this.pingFireAndForgetTrace(map)(new rsocket_flowable.Single(function (subscriber) {
-              subscriber.onSubscribe();
-              subscriber.onComplete();
-            })).subscribe({ onSubscribe: function onSubscribe() {}, onComplete: function onComplete() {} });
-        */
+      out->Print(vars, "this.$method_name$Trace(map)(new rsocket_flowable.Single(function (innerSub) {\n");
+      out->Indent();
       out->Print(vars, "var dataBuf = Buffer.from(message.serializeBinary());\n");
       out->Print(vars, "var tracingMetadata = rsocket_rpc_tracing.mapToBuffer(map);\n");
       out->Print(vars, "var metadataBuf = rsocket_rpc_frames.encodeMetadata('$service_name$', '$name$', tracingMetadata, metadata || Buffer.alloc(0));\n");
@@ -213,9 +212,18 @@ void PrintMethod(const MethodDescriptor* method, Printer* out) {
           "metadata: metadataBuf\n");
       out->Outdent();
       out->Print("});\n");
+      out->Print("innerSub.onSubscribe();\n");
+      out->Print("innerSub.onComplete();\n");
+      out->Outdent();
+      out->Print("})).subscribe({ onSubscribe: function onSubscribe() {subscriber.onSubscribe();}, onComplete: function onComplete() {subscriber.onComplete();} });\n");
+      out->Outdent();
+      out->Print("})).subscribe({ onSubscribe: function onSubscribe() {}, onComplete: function onComplete() {} });\n");
+
     } else {
       out->Print("const map = {};\n");
-      out->Print(vars, "return this.$method_name$Trace(map)(new rsocket_flowable.Single(subscriber => {\n");
+      out->Print(vars, "return this.$method_name$Metrics(\n");
+      out->Indent();
+      out->Print(vars, "this.$method_name$Trace(map)(new rsocket_flowable.Single(subscriber => {\n");
       out->Indent();
       out->Print(vars, "var dataBuf = Buffer.from(message.serializeBinary());\n");
       out->Print(vars, "var tracingMetadata = rsocket_rpc_tracing.mapToBuffer(map);\n");
@@ -230,12 +238,14 @@ void PrintMethod(const MethodDescriptor* method, Printer* out) {
       out->Print("}).map(function (payload) {\n");
       out->Indent();
       out->Print("//TODO: resolve either 'https://github.com/rsocket/rsocket-js/issues/19' or 'https://github.com/google/protobuf/issues/1319'\n");
-      out->Print("var binary = payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);\n");
+      out->Print("var binary = !payload.data || payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);\n");
       out->Print(vars, "return $output_type$.deserializeBinary(binary);\n");
       out->Outdent();
       out->Print("}).subscribe(subscriber);\n");
       out->Outdent();
       out->Print("})\n");
+      out->Outdent();
+      out->Print(")\n");
       out->Outdent();
       out->Print(");\n");
     }
@@ -251,7 +261,7 @@ void PrintClient(const ServiceDescriptor* service, Printer* out) {
   vars["client_name"] = service->name() + "Client";
   out->Print(vars, "var $client_name$ = function () {\n");
   out->Indent();
-  out->Print(vars, "function $client_name$(rs, tracer) {\n");
+  out->Print(vars, "function $client_name$(rs, tracer, meterRegistry) {\n");
   out->Indent();
   out->Print("this._rs = rs;\n");
   out->Print("this._tracer = tracer;\n");
@@ -268,9 +278,11 @@ void PrintClient(const ServiceDescriptor* service, Printer* out) {
       vars["output_type"] = NodeObjectPath(output_type);
       if(method->client_streaming() ||
          method->server_streaming()){
-         out->Print(vars, "this.$method_name$Trace = rsocket_rpc_tracing.trace(tracer, \"$service_short_name$.$method_name$\", {\"rsocket.service\": \"$service_name$\"}, {\"rsocket.rpc.role\": \"client\"});\n");
+         out->Print(vars, "this.$method_name$Trace = rsocket_rpc_tracing.trace(tracer, \"$service_short_name$\", {\"service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"role\": \"client\"});\n");
+         out->Print(vars, "this.$method_name$Metrics = rsocket_rpc_metrics.timed(meterRegistry, \"$service_short_name$\", {\"service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"role\": \"client\"});\n");
       } else {
-        out->Print(vars, "this.$method_name$Trace = rsocket_rpc_tracing.traceSingle(tracer, \"$service_short_name$.$method_name$\", {\"rsocket.service\": \"$service_name$\"}, {\"rsocket.rpc.role\": \"client\"});\n");
+        out->Print(vars, "this.$method_name$Trace = rsocket_rpc_tracing.traceSingle(tracer, \"$service_short_name$\", {\"service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"role\": \"client\"});\n");
+        out->Print(vars, "this.$method_name$Metrics = rsocket_rpc_metrics.timedSingle(meterRegistry, \"$service_short_name$\", {\"service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"role\": \"client\"});\n");
       }
   }
   out->Outdent();
@@ -322,7 +334,7 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
   vars["server_name"] = service->name() + "Server";
   out->Print(vars, "var $server_name$ = function () {\n");
   out->Indent();
-  out->Print(vars, "function $server_name$(service, tracer) {\n");
+  out->Print(vars, "function $server_name$(service, tracer, meterRegistry) {\n");
   out->Indent();
   out->Print("this._service = service;\n");
   out->Print("this._tracer = tracer;\n");
@@ -338,9 +350,11 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
         vars["output_type"] = NodeObjectPath(output_type);
         if(method->client_streaming() ||
            method->server_streaming()){
-           out->Print(vars, "this.$method_name$Trace = rsocket_rpc_tracing.traceAsChild(tracer, \"$service_short_name$.$method_name$\", {\"rsocket.service\": \"$service_name$\"}, {\"rsocket.rpc.role\": \"server\"});\n");
+           out->Print(vars, "this.$method_name$Trace = rsocket_rpc_tracing.traceAsChild(tracer, \"$service_short_name$\", {\"service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"role\": \"server\"});\n");
+           out->Print(vars, "this.$method_name$Metrics = rsocket_rpc_metrics.timed(meterRegistry, \"$service_short_name$\", {\"service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"role\": \"server\"});\n");
         } else {
-          out->Print(vars, "this.$method_name$Trace = rsocket_rpc_tracing.traceSingleAsChild(tracer, \"$service_short_name$.$method_name$\", {\"rsocket.service\": \"$service_name$\"}, {\"rsocket.rpc.role\": \"server\"});\n");
+          out->Print(vars, "this.$method_name$Trace = rsocket_rpc_tracing.traceSingleAsChild(tracer, \"$service_short_name$\", {\"service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"role\": \"server\"});\n");
+          out->Print(vars, "this.$method_name$Metrics = rsocket_rpc_metrics.timedSingle(meterRegistry, \"$service_short_name$\", {\"service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"role\": \"server\"});\n");
         }
   }
   out->Print("this._channelSwitch = (payload, restOfMessages) => {\n");
@@ -365,7 +379,9 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
         out->Print(vars, "case '$name$':\n");
         out->Indent();
         out->Print(vars, "deserializedMessages = restOfMessages.map(message => $input_type$.deserializeBinary(message));\n");
-        out->Print(vars, "return this.$method_name$Trace(spanContext)(\n");
+        out->Print(vars, "return this.$method_name$Metrics(\n");
+        out->Indent();
+        out->Print(vars, "this.$method_name$Trace(spanContext)(\n");
         out->Indent();
         out->Print("this._service\n");
         out->Indent();
@@ -380,6 +396,8 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
         out->Print("}\n");
         out->Outdent();
         out->Print("})\n");
+        out->Outdent();
+        out->Print(")\n");
         out->Outdent();
         out->Print(");\n");
         out->Outdent();
@@ -421,13 +439,17 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
 
       out->Print(vars, "case '$name$':\n");
       out->Indent();
-      out->Print(vars, "this.$method_name$Trace(spanContext)(new rsocket_flowable.Single(function (subscriber) {\n");
+      out->Print(vars, "this.$method_name$Metrics(new rsocket_flowable.Single(function (subscriber) {\n");
       out->Indent();
-      out->Print("subscriber.onSubscribe();\n");
-      out->Print("subscriber.onComplete();\n");
-      out->Print("})).subscribe({ onSubscribe: function onSubscribe() {}, onComplete: function onComplete() {} });\n");
-      out->Outdent();
+      out->Print(vars, "this.$method_name$Trace(spanContext)(new rsocket_flowable.Single(function (innerSub) {\n");
+      out->Indent();
       out->Print(vars, "this._service.$method_name$($input_type$.deserializeBinary(payload.data), payload.metadata)\n");
+      out->Print("innerSub.onSubscribe();\n");
+      out->Print("innerSub.onComplete();\n");
+      out->Outdent();
+      out->Print("}).subscribe({ onSubscribe: function onSubscribe() {subscriber.onSubscribe();}, onComplete: function onComplete() {subscriber.onComplete();} });\n");
+      out->Outdent();
+      out->Print("})).subscribe({ onSubscribe: function onSubscribe() {}, onComplete: function onComplete() {} });\n");
       out->Print("break;\n");
       out->Outdent();
     }
@@ -467,7 +489,9 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
 
       out->Print(vars, "case '$name$':\n");
       out->Indent();
-      out->Print(vars, "return this.$method_name$Trace(spanContext)(\n");
+      out->Print(vars, "return this.$method_name$Metrics(\n");
+      out->Indent();
+      out->Print(vars, "this.$method_name$Trace(spanContext)(\n");
       out->Indent();
       out->Print("this._service\n");
       out->Print(vars, ".$method_name$($input_type$.deserializeBinary(payload.data), payload.metadata)\n");
@@ -481,6 +505,8 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
       out->Print("}\n");
       out->Outdent();
       out->Print("})\n");
+      out->Outdent();
+      out->Print(")\n");
       out->Outdent();
       out->Print(");\n");
       out->Outdent();
@@ -528,7 +554,9 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
 
       out->Print(vars, "case '$name$':\n");
       out->Indent();
-      out->Print(vars, "return this.$method_name$Trace(spanContext)(\n");
+      out->Print(vars, "return this.$method_name$Metrics(\n");
+      out->Indent();
+      out->Print(vars, "this.$method_name$Trace(spanContext)(\n");
       out->Indent();
       out->Print("this._service\n");
       out->Indent();
@@ -543,6 +571,8 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
       out->Print("}\n");
       out->Outdent();
       out->Print("})\n");
+      out->Outdent();
+      out->Print(")\n");
       out->Outdent();
       out->Print(");\n");
       out->Outdent();
@@ -609,6 +639,7 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
   out->Print("payloadProxy.onSubscribe(subscription);\n");
   out->Outdent();
   out->Print("}\n");
+  out->Outdent();
   out->Print("});\n");
   out->Outdent();
   out->Print("});\n");
@@ -633,6 +664,7 @@ void PrintImports(const FileDescriptor* file, Printer* out) {
   out->Print("var rsocket_rpc_frames = require('rsocket-rpc-frames');\n");
   out->Print("var rsocket_rpc_core = require('rsocket-rpc-core');\n");
   out->Print("var rsocket_rpc_tracing = require('rsocket-rpc-tracing');\n");
+  out->Print("var rsocket_rpc_metrics = require('rsocket-rpc-metrics').Metrics;\n");
   out->Print("var rsocket_flowable = require('rsocket-flowable');\n");
   if (file->message_type_count() > 0) {
     string file_path =
