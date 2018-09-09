@@ -16,8 +16,8 @@
  *
  */
 
-#ifndef PROTEUS_COMPILER_JS_GENERATOR_H
-#define PROTEUS_COMPILER_JS_GENERATOR_H
+#ifndef RSOCKET_RPC_COMPILER_JS_GENERATOR_H
+#define RSOCKET_RPC_COMPILER_JS_GENERATOR_H
 
 #include <iostream>
 #include <string>
@@ -31,4 +31,4 @@ string GenerateFile(const google::protobuf::FileDescriptor* file);
 
 }  // namespace rsocket_rpc_js_generator
 
-#endif  // PROTEUS_COMPILER_JS_GENERATOR_H
+#endif  // RSOCKET_RPC_COMPILER_JS_GENERATOR_H

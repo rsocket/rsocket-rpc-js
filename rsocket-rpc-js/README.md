@@ -1,12 +1,12 @@
 # RSocket JavaScript RPC
 
-<a href='https://travis-ci.org/netifi-proteus/proteus-js'><img src='https://travis-ci.org/netifi-proteus/proteus-js.svg?branch=master'></a>
+<a href='https://travis-ci.org/netifi/rsocket-rpc'><img src='https://travis-ci.org/netifi/rsocket-rpc.svg?branch=master'></a>
 
 ## Documentation
 
 ## Bugs and Feedback
 
-For bugs, questions, and discussions please use the [Github Issues](https://github.com/netifi/rsocket-js-rpc/issues).
+For bugs, questions, and discussions please use the [Github Issues](https://github.com/netifi/rsocket-rpc/issues).
 
 ## License
 Copyright 2017 Netifi Inc.

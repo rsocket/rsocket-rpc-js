@@ -26,4 +26,4 @@ Prettifies the code base, or tests that it is already prettified. This script is
 
 ### `bumpVersion.js`
 
-Dependency-aware helper script for bumping a package version number. For example `resources/bumpVersion.js --patch frames` will bump the "proteus-js-frames" package from version "x.y.z" to "x.y.z+1", and also bump all the packages that depend on it (directly or transitively).
+Dependency-aware helper script for bumping a package version number. For example `resources/bumpVersion.js --patch frames` will bump the "rsocket-rpc-frames" package from version "x.y.z" to "x.y.z+1", and also bump all the packages that depend on it (directly or transitively).

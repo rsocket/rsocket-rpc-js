@@ -16,8 +16,8 @@
  *
  */
 
-#ifndef PROTEUS_COMPILER_JS_GENERATOR_HELPERS_H
-#define PROTEUS_COMPILER_JS_GENERATOR_HELPERS_H
+#ifndef RSOCKET_RPC_COMPILER_JS_GENERATOR_HELPERS_H
+#define RSOCKET_RPC_COMPILER_JS_GENERATOR_HELPERS_H
 
 #include <iostream>
 #include <map>
@@ -287,4 +287,4 @@ inline string GetNodeComments(const DescriptorType* desc, bool leading) {
 
 }  // namespace rsocket_rpc_js_generator
 
-#endif  // PROTEUS_COMPILER_JS_GENERATOR_HELPERS_H
+#endif  // RSOCKET_RPC_COMPILER_JS_GENERATOR_HELPERS_H

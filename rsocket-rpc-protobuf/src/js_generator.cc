@@ -19,7 +19,7 @@
 #include <map>
 
 #include "js_generator_helpers.h"
-#include "proteus/core.pb.h"
+#include "rsocket/options.pb.h"
 #include <google/protobuf/io/printer.h>
 #include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 
@@ -29,7 +29,7 @@ using google::protobuf::MethodDescriptor;
 using google::protobuf::ServiceDescriptor;
 using google::protobuf::io::Printer;
 using google::protobuf::io::StringOutputStream;
-using io::netifi::proteus::ProteusOptions;
+using io::rsocket::rpc::RSocketMethodOptions;
 
 namespace rsocket_rpc_js_generator {
 namespace {
@@ -118,7 +118,7 @@ string NodeObjectPath(const Descriptor* descriptor) {
 void PrintMethod(const MethodDescriptor* method, Printer* out) {
   const Descriptor* input_type = method->input_type();
   const Descriptor* output_type = method->output_type();
-  const ProteusOptions options = method->options().GetExtension(io::netifi::proteus::options);
+  const RSocketMethodOptions options = method->options().GetExtension(io::rsocket::rpc::options);
 
   std::map<string, string> vars;
   vars["client_name"] = method->service()->name() + "Client";
@@ -312,7 +312,7 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
 
   for (int i = 0; i < service->method_count(); ++i) {
       const MethodDescriptor* method = service->method(i);
-      const ProteusOptions options = method->options().GetExtension(io::netifi::proteus::options);
+      const RSocketMethodOptions options = method->options().GetExtension(io::rsocket::rpc::options);
       bool client_streaming = method->client_streaming();
       bool server_streaming = method->server_streaming();
 

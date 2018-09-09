@@ -16,7 +16,7 @@
  *
  */
 
-// Generates Javascript Proteus service interface out of Protobuf IDL.
+// Generates Javascript RSocket RPC service interface out of Protobuf IDL.
 
 #include <memory>
 
@@ -31,10 +31,10 @@
 using rsocket_rpc_js_generator::GenerateFile;
 using rsocket_rpc_js_generator::GetJSServiceFilename;
 
-class ProteusJsGenerator : public google::protobuf::compiler::CodeGenerator {
+class RSocketRpcJsGenerator : public google::protobuf::compiler::CodeGenerator {
  public:
-  ProteusJsGenerator() {}
-  ~ProteusJsGenerator() {}
+  RSocketRpcJsGenerator() {}
+  ~RSocketRpcJsGenerator() {}
 
   bool Generate(const google::protobuf::FileDescriptor* file,
                 const string& parameter,
@@ -57,6 +57,6 @@ class ProteusJsGenerator : public google::protobuf::compiler::CodeGenerator {
 };
 
 int main(int argc, char* argv[]) {
-  ProteusJsGenerator generator;
+  RSocketRpcJsGenerator generator;
   return google::protobuf::compiler::PluginMain(argc, argv, &generator);
 }

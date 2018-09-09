@@ -17,7 +17,7 @@ find_package(Protobuf REQUIRED)
 include_directories(${PROTOBUF_INCLUDE_DIR})
 
 add_executable(${PROJECT_NAME}
-    src/proteus/core.pb.cc
+    src/rsocket/options.pb.cc
     src/js_plugin.cc
     src/js_generator.cc)
 

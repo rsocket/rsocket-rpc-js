@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package io.netifi.proteus.rpc;
+package io.rsocket.rpc;
 
 import "google/protobuf/empty.proto";
-import "proteus/core.proto";
+import "rsocket/options.proto";
 
 service SimpleService {
   // Request / Response
@@ -11,7 +11,7 @@ service SimpleService {
 
   // Fire-and-Forget
   rpc FireAndForget (SimpleRequest) returns (google.protobuf.Empty) {
-    option (proteus.options) = {
+    option (io.rsocket.rpc.options) = {
       fire_and_forget: true
     };
   }
