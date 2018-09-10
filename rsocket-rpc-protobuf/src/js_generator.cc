@@ -278,10 +278,10 @@ void PrintClient(const ServiceDescriptor* service, Printer* out) {
       vars["output_type"] = NodeObjectPath(output_type);
       if(method->client_streaming() ||
          method->server_streaming()){
-         out->Print(vars, "this.$method_name$Trace = rsocket_rpc_tracing.trace(tracer, \"$service_short_name$\", {\"service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"role\": \"client\"});\n");
+         out->Print(vars, "this.$method_name$Trace = rsocket_rpc_tracing.trace(tracer, \"$service_short_name$\", {\"rsocket.rpc.service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"rsocket.rpc.role\": \"client\"});\n");
          out->Print(vars, "this.$method_name$Metrics = rsocket_rpc_metrics.timed(meterRegistry, \"$service_short_name$\", {\"service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"role\": \"client\"});\n");
       } else {
-        out->Print(vars, "this.$method_name$Trace = rsocket_rpc_tracing.traceSingle(tracer, \"$service_short_name$\", {\"service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"role\": \"client\"});\n");
+        out->Print(vars, "this.$method_name$Trace = rsocket_rpc_tracing.traceSingle(tracer, \"$service_short_name$\", {\"rsocket.rpc.service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"rsocket.rpc.role\": \"client\"});\n");
         out->Print(vars, "this.$method_name$Metrics = rsocket_rpc_metrics.timedSingle(meterRegistry, \"$service_short_name$\", {\"service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"role\": \"client\"});\n");
       }
   }
@@ -350,10 +350,10 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
         vars["output_type"] = NodeObjectPath(output_type);
         if(method->client_streaming() ||
            method->server_streaming()){
-           out->Print(vars, "this.$method_name$Trace = rsocket_rpc_tracing.traceAsChild(tracer, \"$service_short_name$\", {\"service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"role\": \"server\"});\n");
+           out->Print(vars, "this.$method_name$Trace = rsocket_rpc_tracing.traceAsChild(tracer, \"$service_short_name$\", {\"rsocket.rpc.service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"rsocket.rpc.role\": \"server\"});\n");
            out->Print(vars, "this.$method_name$Metrics = rsocket_rpc_metrics.timed(meterRegistry, \"$service_short_name$\", {\"service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"role\": \"server\"});\n");
         } else {
-          out->Print(vars, "this.$method_name$Trace = rsocket_rpc_tracing.traceSingleAsChild(tracer, \"$service_short_name$\", {\"service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"role\": \"server\"});\n");
+          out->Print(vars, "this.$method_name$Trace = rsocket_rpc_tracing.traceSingleAsChild(tracer, \"$service_short_name$\", {\"rsocket.rpc.service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"rsocket.rpc.role\": \"server\"});\n");
           out->Print(vars, "this.$method_name$Metrics = rsocket_rpc_metrics.timedSingle(meterRegistry, \"$service_short_name$\", {\"service\": \"$service_name$\"}, {\"method\": \"$method_name$\"}, {\"role\": \"server\"});\n");
         }
   }
