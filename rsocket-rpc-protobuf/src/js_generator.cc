@@ -378,7 +378,7 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
 
         out->Print(vars, "case '$name$':\n");
         out->Indent();
-        out->Print("deserializedMessages = restOfMessages.map(message => {\n");
+        out->Print("deserializedMessages = restOfMessages.map(payload => {\n");
         out->Indent();
         out->Print("var binary = !payload.data || payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);\n");
         out->Print(vars, "return $input_type$.deserializeBinary(binary);\n");
@@ -497,10 +497,11 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
       out->Indent();
       out->Print(vars, "return this.$method_name$Metrics(\n");
       out->Indent();
-      out->Print(vars, "this.$method_name$Trace(spanContext)(\n");
+      out->Print(vars, "this.$method_name$Trace(spanContext)(new rsocket_flowable.Single(subscriber => {\n");
       out->Indent();
       out->Print("var binary = !payload.data || payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);\n");
-      out->Print("this._service\n");
+      out->Print("return this._service\n");
+      out->Indent();
       out->Print(vars, ".$method_name$($input_type$.deserializeBinary(binary), payload.metadata)\n");
       out->Print(".map(function (message) {\n");
       out->Indent();
@@ -511,12 +512,15 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
       out->Outdent();
       out->Print("}\n");
       out->Outdent();
-      out->Print("})\n");
+      out->Print("}).subscribe(subscriber);\n");
+      out->Outdent();
+      out->Print("}\n");
+      out->Outdent();
+      out->Print(")\n");
       out->Outdent();
       out->Print(")\n");
       out->Outdent();
       out->Print(");\n");
-      out->Outdent();
     }
     out->Print("default:\n");
     out->Indent();
@@ -563,10 +567,10 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
       out->Indent();
       out->Print(vars, "return this.$method_name$Metrics(\n");
       out->Indent();
-      out->Print(vars, "this.$method_name$Trace(spanContext)(\n");
+      out->Print(vars, "this.$method_name$Trace(spanContext)(new rsocket_flowable.Flowable(subscriber => {\n");
       out->Indent();
       out->Print("var binary = !payload.data || payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);\n");
-      out->Print("this._service\n");
+      out->Print("return this._service\n");
       out->Indent();
       out->Print(vars, ".$method_name$($input_type$.deserializeBinary(binary), payload.metadata)\n");
       out->Print(".map(function (message) {\n");
@@ -578,13 +582,15 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
       out->Outdent();
       out->Print("}\n");
       out->Outdent();
-      out->Print("})\n");
+      out->Print("}).subscribe(subscriber);\n");
+      out->Outdent();
+      out->Print("}\n");
+      out->Outdent();
+      out->Print(")\n");
       out->Outdent();
       out->Print(")\n");
       out->Outdent();
       out->Print(");\n");
-      out->Outdent();
-      out->Outdent();
     }
     out->Print("default:\n");
     out->Indent();
