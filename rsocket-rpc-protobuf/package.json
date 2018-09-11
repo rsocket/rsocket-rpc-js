@@ -24,6 +24,7 @@
     "src/js_generator.h",
     "src/js_generator_helpers.h",
     "src/js_plugin.cc",
+    "proto/rsocket/options.proto",
     "CMakeLists.txt",
     "index.js",
     "protoc_plugin.js",

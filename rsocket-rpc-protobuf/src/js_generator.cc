@@ -198,9 +198,9 @@ void PrintMethod(const MethodDescriptor* method, Printer* out) {
       out->Print(");\n");
     } else if (options.fire_and_forget()) {
       out->Print("const map = {};\n");
-      out->Print(vars, "this.$method_name$Metrics(new rsocket_flowable.Single(function (subscriber) {\n");
+      out->Print(vars, "this.$method_name$Metrics(new rsocket_flowable.Single(subscriber => {\n");
       out->Indent();
-      out->Print(vars, "this.$method_name$Trace(map)(new rsocket_flowable.Single(function (innerSub) {\n");
+      out->Print(vars, "this.$method_name$Trace(map)(new rsocket_flowable.Single(innerSub => {\n");
       out->Indent();
       out->Print(vars, "var dataBuf = Buffer.from(message.serializeBinary());\n");
       out->Print(vars, "var tracingMetadata = rsocket_rpc_tracing.mapToBuffer(map);\n");
@@ -378,7 +378,12 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
 
         out->Print(vars, "case '$name$':\n");
         out->Indent();
-        out->Print(vars, "deserializedMessages = restOfMessages.map(message => $input_type$.deserializeBinary(message));\n");
+        out->Print("deserializedMessages = restOfMessages.map(message => {\n");
+        out->Indent();
+        out->Print("var binary = !payload.data || payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);\n");
+        out->Print(vars, "return $input_type$.deserializeBinary(binary);\n");
+        out->Outdent();
+        out->Print("});\n");
         out->Print(vars, "return this.$method_name$Metrics(\n");
         out->Indent();
         out->Print(vars, "this.$method_name$Trace(spanContext)(\n");
@@ -439,15 +444,16 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
 
       out->Print(vars, "case '$name$':\n");
       out->Indent();
-      out->Print(vars, "this.$method_name$Metrics(new rsocket_flowable.Single(function (subscriber) {\n");
+      out->Print(vars, "this.$method_name$Metrics(new rsocket_flowable.Single(subscriber => {\n");
       out->Indent();
-      out->Print(vars, "this.$method_name$Trace(spanContext)(new rsocket_flowable.Single(function (innerSub) {\n");
+      out->Print(vars, "this.$method_name$Trace(spanContext)(new rsocket_flowable.Single(innerSub => {\n");
       out->Indent();
-      out->Print(vars, "this._service.$method_name$($input_type$.deserializeBinary(payload.data), payload.metadata)\n");
+      out->Print("var binary = !payload.data || payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);\n");
+      out->Print(vars, "this._service.$method_name$($input_type$.deserializeBinary(binary), payload.metadata);\n");
       out->Print("innerSub.onSubscribe();\n");
       out->Print("innerSub.onComplete();\n");
       out->Outdent();
-      out->Print("}).subscribe({ onSubscribe: function onSubscribe() {subscriber.onSubscribe();}, onComplete: function onComplete() {subscriber.onComplete();} });\n");
+      out->Print("}).subscribe({ onSubscribe: function onSubscribe() {subscriber.onSubscribe();}, onComplete: function onComplete() {subscriber.onComplete();} }));\n");
       out->Outdent();
       out->Print("})).subscribe({ onSubscribe: function onSubscribe() {}, onComplete: function onComplete() {} });\n");
       out->Print("break;\n");
@@ -493,8 +499,9 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
       out->Indent();
       out->Print(vars, "this.$method_name$Trace(spanContext)(\n");
       out->Indent();
+      out->Print("var binary = !payload.data || payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);\n");
       out->Print("this._service\n");
-      out->Print(vars, ".$method_name$($input_type$.deserializeBinary(payload.data), payload.metadata)\n");
+      out->Print(vars, ".$method_name$($input_type$.deserializeBinary(binary), payload.metadata)\n");
       out->Print(".map(function (message) {\n");
       out->Indent();
       out->Print("return {\n");
@@ -558,9 +565,10 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
       out->Indent();
       out->Print(vars, "this.$method_name$Trace(spanContext)(\n");
       out->Indent();
+      out->Print("var binary = !payload.data || payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);\n");
       out->Print("this._service\n");
       out->Indent();
-      out->Print(vars, ".$method_name$($input_type$.deserializeBinary(payload.data), payload.metadata)\n");
+      out->Print(vars, ".$method_name$($input_type$.deserializeBinary(binary), payload.metadata)\n");
       out->Print(".map(function (message) {\n");
       out->Indent();
       out->Print("return {\n");
@@ -669,16 +677,21 @@ void PrintImports(const FileDescriptor* file, Printer* out) {
   if (file->message_type_count() > 0) {
     string file_path =
         GetRelativePath(file->name(), GetJSMessageFilename(file->name()));
-    out->Print("var $module_alias$ = require('$file_path$');\n", "module_alias",
-               ModuleAlias(file->name()), "file_path", file_path);
+        //We need these options for fire_and_forget, but we don't want to try and include the file in our services
+        if( file_path.find("./rsocket/options_pb.js") != 0){
+            out->Print("var $module_alias$ = require('$file_path$');\n", "module_alias",
+                       ModuleAlias(file->name()), "file_path", file_path);
+        }
   }
 
   for (int i = 0; i < file->dependency_count(); i++) {
     string file_path = GetRelativePath(
         file->name(), GetJSMessageFilename(file->dependency(i)->name()));
-    out->Print("var $module_alias$ = require('$file_path$');\n", "module_alias",
-               ModuleAlias(file->dependency(i)->name()), "file_path",
-               file_path);
+        if( file_path.find("./rsocket/options_pb.js") != 0){
+            out->Print("var $module_alias$ = require('$file_path$');\n", "module_alias",
+                       ModuleAlias(file->dependency(i)->name()), "file_path",
+                       file_path);
+        }
   }
   out->Print("\n");
 }
