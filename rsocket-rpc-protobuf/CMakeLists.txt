@@ -11,6 +11,8 @@ else()
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libstdc++ -static-libgcc")
 endif()
 
+add_compile_options(/MT$<$<CONFIG:Debug>:d>)
+
 include(FindProtobuf)
 find_package(Protobuf REQUIRED)
 
