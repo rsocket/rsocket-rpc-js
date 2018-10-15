@@ -9,7 +9,6 @@ matrix:
     - tar -xzvf protobuf-cpp-3.6.1.tar.gz
     - pushd protobuf-3.6.1 && ./configure --disable-shared && make && sudo make install
       && popd
-    script: "./ci/travis.sh"
   - os: osx
     osx_image: xcode9.4
     language: generic
@@ -21,7 +20,6 @@ matrix:
     - EDITOR="sed -i '' 's/system \".\/configure\",/system \".\/configure\", \"--disable-shared\",/g'"
       brew edit protobuf
     - brew install protobuf
-    script: "./ci/travis.sh"
 language: node_js
 node_js:
   - "node"
