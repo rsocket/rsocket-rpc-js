@@ -1,0 +1,33 @@
+sudo: required
+matrix:
+  include:
+  - os: linux
+    jdk: oraclejdk8
+    language: generic
+    before_install:
+    - wget https://github.com/google/protobuf/releases/download/v3.6.1/protobuf-cpp-3.6.1.tar.gz
+    - tar -xzvf protobuf-cpp-3.6.1.tar.gz
+    - pushd protobuf-3.6.1 && ./configure --disable-shared && make && sudo make install
+      && popd
+  - os: osx
+    osx_image: xcode9.4
+    language: generic
+    env:
+    - HOMEBREW_TEMP="/tmp"
+    - LDFLAGS="/usr/local/lib/libprotobuf.a /usr/local/lib/libprotoc.a"
+    before_install:
+    - brew update
+    - EDITOR="sed -i '' 's/system \".\/configure\",/system \".\/configure\", \"--disable-shared\",/g'"
+      brew edit protobuf
+    - brew install protobuf
+language: node_js
+node_js:
+  - "node"
+cache: yarn
+
+before_install:
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - export PATH="$HOME/.yarn/bin:$PATH"
+
+script:
+  - yarn install && yarn test
