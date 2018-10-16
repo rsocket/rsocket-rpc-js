@@ -270,7 +270,8 @@ Meaning we open a channel and push `MetricsSnapshot`s and receive time `Skew`s f
 Assume we have an RSocket server that supports WebSockets on `localhost`. We have an RSocket-based service client called MyServiceClient. We want to capture tracing and metrics data. In real code, we would likely encapsulate that within the MyServiceClient, but for demonstration purposes we will make everything very explicit.
 
 ```angular2html
-
+const {RequestHandlingRSocket,
+       RpcClient} = require('rsocket-rpc-core');
 const Tracing = require('rsocket-rpc-tracing');
 const {Metrics,
        SimpleMeterRegistry, 
@@ -285,7 +286,8 @@ const local = 'ws://localhost:8088/';
 const keepAlive = 60000 /* 60s in ms */;
 const lifetime = 360000 /* 360s in ms */;
 const transport = new RSocketWebsocketClient({url:local}, BufferEncoders);
-const rsocketClient = new RpcClient({setup:{keepAlive, lifetime}, transport});
+const responder = new RequestHandlingRSocket(); // Will address this at the end
+const rsocketClient = new RpcClient({setup:{keepAlive, lifetime}, transport, responder});
 
 // We need a few references declared ahead of an rsocket being available 
 const meters = new SimpleMeterRegistry();
@@ -346,6 +348,85 @@ tracedTimedStream.subscribe({
 
 ```
 
+#### Wiring up the Responder
+
+At the beginning, we added a canned Responder class from the Core package, `RequestHandlingRSocket`. It takes for granted that callers are using the Metadata helpers to package metadata about the service calls in question.
+
+Its relevant method is
+
+```angular2html
+addService(service: string, handler: Responder<Buffer, Buffer>)
+```
+
+Aside from this, it implements (and delegates) the RSocket methods to handling services. Responder is an alias for this that implies that it will have those methods invoked by a remote caller rather than act as a local caller to a remote callee.
+
+In our example, let's add a responder to our client that provides a method for a remote caller to inject config updates.
+
+```angular2html
+
+const configUpdater = {
+    fireAndForget: function(){
+        //Not supported but has no expected return
+    },
+    requestStream: function(payload){
+        return Flowable.error("requestStream is not supported");
+    },
+    requestChannel: function(payloads){
+        return Flowable.error("requestStream is not supported");
+    },
+    requestResponse: function(payload){
+        const newConfig = deserializeConfig(payload.data);
+        // apply new config;
+        return Single.of("OK");
+    }
+}
+
+responder.addService("example.rsocket.configUpdater", configUpdater);
+```
+
+And now our RpcClient will also respond to requests from the server to update its configuration that are directed to the service "example.rsocket.configUpdater".
+
+We can also add tracing and metrics here though again, in Production code this would all be encapsulated in service/client implementations but for demo purposes we're doing it inline and explicitly.
+
+```angular2html
+const serviceMetricsWrapper = Metrics.timedSingle(meters, "myClient.updateConfig", {timezone: "GMT-7"});
+
+const serviceTracing = Tracing.traceSingleAsChild(myTracer, "myClient.updateConfig", {clientType: "Chrome Browser"});
+
+const configUpdater = {
+    fireAndForget: function(){
+        //Not supported but has no expected return
+    },
+    requestStream: function(payload){
+        return Flowable.error("requestStream is not supported");
+    },
+    requestChannel: function(payloads){
+        return Flowable.error("requestStream is not supported");
+    },
+    requestResponse: function(payload){
+        const spanContext = Tracing.deserializeTraceData(myTracer, payload.metadata);
+        return serviceTracing(spanContext) // We've closed over the tracing span context, now Single => Single
+        (serviceMetricsWrapper( //This wrapper's signature is Single => Single
+                new Single(subscriber => {
+                    subscriber.onSubscribe();
+                    const newConfig = deserializeConfig(payload.data);                    
+                    // apply new config;
+                    subscriber.onComplete("OK");
+                })
+            ) // We've now wrapped the original call in metrics
+        );
+    }
+}
+```
+
+Let's break this down because it's hard to follow at first.
+
+* We are extracting the span context from the caller, if any, with the `deserializeTraceData` method
+* We feed this into the `traceSingleAsChild` method which captures the span context and will weave it through a `Single` (its signature is Single => Single)
+* We further use the Metrics wrapping method `timedSingle` to weave timing and count metrics through a `Single` (signature also Single => Single))
+* And finally, we create a new Single inline that has the same logic as before, only it waits for a subscriber (meaning call to `subscribe`) to do anything so that we can start our metrics timing and trace on-demand from the caller.
+
+And with that, we have an RpcClient that can make and serve instrumented calls over the same RSocket.
 
 ## Bugs and Feedback
 
