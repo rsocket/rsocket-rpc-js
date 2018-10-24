@@ -21,10 +21,16 @@
 import RequestHandlingRSocket from './RequestHandlingRSocket';
 import RpcClient from './RpcClient';
 import QueuingFlowableProcessor from './QueuingFlowableProcessor';
+import SwithTranformOperator from './SwithTranformOperator';
 
 /**
  * The public API of the `core` package.
  */
 export type {ClientConfig} from './RpcClient';
 
-export {RequestHandlingRSocket, RpcClient, QueuingFlowableProcessor};
+export {
+  RequestHandlingRSocket,
+  RpcClient,
+  QueuingFlowableProcessor,
+  SwithTranformOperator,
+};
