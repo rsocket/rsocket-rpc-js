@@ -4,34 +4,38 @@
 var rsocket_rpc_frames = require('rsocket-rpc-frames');
 var rsocket_rpc_core = require('rsocket-rpc-core');
 var rsocket_rpc_tracing = require('rsocket-rpc-tracing');
+var rsocket_rpc_metrics = require('rsocket-rpc-metrics').Metrics;
 var rsocket_flowable = require('rsocket-flowable');
 var proto_metrics_pb = require('../proto/metrics_pb.js');
 
 var MetricsSnapshotHandlerClient = function () {
-  function MetricsSnapshotHandlerClient(rs, tracer) {
+  function MetricsSnapshotHandlerClient(rs, tracer, meterRegistry) {
     this._rs = rs;
     this._tracer = tracer;
-    this.streamMetricsTrace = rsocket_rpc_tracing.trace(tracer, "MetricsSnapshotHandler.streamMetrics", {"rsocket.service": "io.rsocket.rpc.metrics.om.MetricsSnapshotHandler"}, {"rsocket.rpc.role": "client"});
+    this.streamMetricsTrace = rsocket_rpc_tracing.trace(tracer, "MetricsSnapshotHandler", {"rsocket.rpc.service": "io.rsocket.rpc.metrics.om.MetricsSnapshotHandler"}, {"method": "streamMetrics"}, {"rsocket.rpc.role": "client"});
+    this.streamMetricsMetrics = rsocket_rpc_metrics.timed(meterRegistry, "MetricsSnapshotHandler", {"service": "io.rsocket.rpc.metrics.om.MetricsSnapshotHandler"}, {"method": "streamMetrics"}, {"role": "client"});
   }
   MetricsSnapshotHandlerClient.prototype.streamMetrics = function streamMetrics(messages, metadata) {
     const map = {};
-    return this.streamMetricsTrace(map)(new rsocket_flowable.Flowable(subscriber => {
-      var dataBuf;
-      var tracingMetadata = rsocket_rpc_tracing.mapToBuffer(map);
-      var metadataBuf ;
-        this._rs.requestChannel(messages.map(function (message) {
-          dataBuf = Buffer.from(message.serializeBinary());
-          metadataBuf = rsocket_rpc_frames.encodeMetadata('io.rsocket.rpc.metrics.om.MetricsSnapshotHandler', 'StreamMetrics', tracingMetadata, metadata || Buffer.alloc(0));
-          return {
-            data: dataBuf,
-            metadata: metadataBuf
-          };
-        })).map(function (payload) {
-          //TODO: resolve either 'https://github.com/rsocket/rsocket-js/issues/19' or 'https://github.com/google/protobuf/issues/1319'
-          var binary = payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);
-          return proto_metrics_pb.Skew.deserializeBinary(binary);
-        }).subscribe(subscriber);
-      })
+    return this.streamMetricsMetrics(
+      this.streamMetricsTrace(map)(new rsocket_flowable.Flowable(subscriber => {
+        var dataBuf;
+        var tracingMetadata = rsocket_rpc_tracing.mapToBuffer(map);
+        var metadataBuf ;
+          this._rs.requestChannel(messages.map(function (message) {
+            dataBuf = Buffer.from(message.serializeBinary());
+            metadataBuf = rsocket_rpc_frames.encodeMetadata('io.rsocket.rpc.metrics.om.MetricsSnapshotHandler', 'StreamMetrics', tracingMetadata, metadata || Buffer.alloc(0));
+            return {
+              data: dataBuf,
+              metadata: metadataBuf
+            };
+          })).map(function (payload) {
+            //TODO: resolve either 'https://github.com/rsocket/rsocket-js/issues/19' or 'https://github.com/google/protobuf/issues/1319'
+            var binary = !payload.data || payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);
+            return proto_metrics_pb.Skew.deserializeBinary(binary);
+          }).subscribe(subscriber);
+        })
+      )
     );
   };
   return MetricsSnapshotHandlerClient;
@@ -40,10 +44,11 @@ var MetricsSnapshotHandlerClient = function () {
 exports.MetricsSnapshotHandlerClient = MetricsSnapshotHandlerClient;
 
 var MetricsSnapshotHandlerServer = function () {
-  function MetricsSnapshotHandlerServer(service, tracer) {
+  function MetricsSnapshotHandlerServer(service, tracer, meterRegistry) {
     this._service = service;
     this._tracer = tracer;
-    this.streamMetricsTrace = rsocket_rpc_tracing.traceAsChild(tracer, "MetricsSnapshotHandler.streamMetrics", {"rsocket.service": "io.rsocket.rpc.metrics.om.MetricsSnapshotHandler"}, {"rsocket.rpc.role": "server"});
+    this.streamMetricsTrace = rsocket_rpc_tracing.traceAsChild(tracer, "MetricsSnapshotHandler", {"rsocket.rpc.service": "io.rsocket.rpc.metrics.om.MetricsSnapshotHandler"}, {"method": "streamMetrics"}, {"rsocket.rpc.role": "server"});
+    this.streamMetricsMetrics = rsocket_rpc_metrics.timed(meterRegistry, "MetricsSnapshotHandler", {"service": "io.rsocket.rpc.metrics.om.MetricsSnapshotHandler"}, {"method": "streamMetrics"}, {"role": "server"});
     this._channelSwitch = (payload, restOfMessages) => {
       if (payload.metadata == null) {
         return rsocket_flowable.Flowable.error(new Error('metadata is empty'));
@@ -53,16 +58,21 @@ var MetricsSnapshotHandlerServer = function () {
       let deserializedMessages;
       switch(method){
         case 'StreamMetrics':
-          deserializedMessages = restOfMessages.map(message => proto_metrics_pb.MetricsSnapshot.deserializeBinary(message));
-          return this.streamMetricsTrace(spanContext)(
-            this._service
-              .streamMetrics(deserializedMessages, payload.metadata)
-              .map(function (message) {
-                return {
-                  data: Buffer.from(message.serializeBinary()),
-                  metadata: Buffer.alloc(0)
-                }
-              })
+          deserializedMessages = restOfMessages.map(payload => {
+            var binary = !payload.data || payload.data.constructor === Buffer || payload.data.constructor === Uint8Array ? payload.data : new Uint8Array(payload.data);
+            return proto_metrics_pb.MetricsSnapshot.deserializeBinary(binary);
+          });
+          return this.streamMetricsMetrics(
+            this.streamMetricsTrace(spanContext)(
+              this._service
+                .streamMetrics(deserializedMessages, payload.metadata)
+                .map(function (message) {
+                  return {
+                    data: Buffer.from(message.serializeBinary()),
+                    metadata: Buffer.alloc(0)
+                  }
+                })
+              )
             );
         default:
           return rsocket_flowable.Flowable.error(new Error('unknown method'));
@@ -79,39 +89,15 @@ var MetricsSnapshotHandlerServer = function () {
     return rsocket_flowable.Flowable.error(new Error('requestStream() is not implemented'));
   };
   MetricsSnapshotHandlerServer.prototype.requestChannel = function requestChannel(payloads) {
-    let once = false;
-    return new rsocket_flowable.Flowable(subscriber => {
-      const payloadProxy = new rsocket_rpc_core.QueuingFlowableProcessor();
-      payloads.subscribe({
-        onNext: payload => {
-          if(!once){
-            once = true;
-            try{
-              let result = this._channelSwitch(payload, payloadProxy);
-              result.subscribe(subscriber);
-            } catch (error){
-              subscriber.onError(error);
-            }
-          }
-          payloadProxy.onNext(payload.data);
-        },
-        onError: error => {
-          payloadProxy.onError(error);
-        },
-        onComplete: () => {
-          payloadProxy.onComplete();
-        },
-        onSubscribe: subscription => {
-          payloadProxy.onSubscribe(subscription);
-        }
-        });
-      });
-    };
-    MetricsSnapshotHandlerServer.prototype.metadataPush = function metadataPush(payload) {
-      return rsocket_flowable.Single.error(new Error('metadataPush() is not implemented'));
-    };
-    return MetricsSnapshotHandlerServer;
-  }();
+    return new rsocket_flowable.Flowable(s => payloads.subscribe(s)).lift(s =>
+      new rsocket_rpc_core.SwitchTransformOperator(s, (payload, flowable) => this._channelSwitch(payload, flowable)),
+    );
+  };
+  MetricsSnapshotHandlerServer.prototype.metadataPush = function metadataPush(payload) {
+    return rsocket_flowable.Single.error(new Error('metadataPush() is not implemented'));
+  };
+  return MetricsSnapshotHandlerServer;
+}();
 
-  exports.MetricsSnapshotHandlerServer = MetricsSnapshotHandlerServer;
+exports.MetricsSnapshotHandlerServer = MetricsSnapshotHandlerServer;
 
