@@ -616,7 +616,7 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
   out->Indent();
   out->Print("new rsocket_rpc_core.SwitchTransformOperator(s, (payload, flowable) => this._channelSwitch(payload, flowable)),\n");
   out->Outdent();
-  ut->Print(");\n")
+  out->Print(");\n");
   out->Outdent();
   out->Print("};\n");
 
