@@ -21,7 +21,7 @@ import type {Responder, Payload} from 'rsocket-types';
 import {Flowable, Single} from 'rsocket-flowable';
 
 import {getService} from 'rsocket-rpc-frames';
-import SwitchTransformOperator from './SwithTranformOperator';
+import SwitchTransformOperator from './SwitchTransformOperator';
 
 export default class RequestHandlingRSocket
   implements Responder<Buffer, Buffer> {

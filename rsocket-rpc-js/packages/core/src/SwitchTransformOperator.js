@@ -90,6 +90,7 @@ export default class SwitchTransformOperator<T, R>
 
   onSubscribe(subscription: ISubscription) {
     this._subscription = subscription;
+    this._subscription.request(1);
   }
 
   request(n: number) {
