@@ -95,7 +95,7 @@ export default class RequestHandlingRSocket
   requestChannel(
     payloads: Flowable<Payload<Buffer, Buffer>>,
   ): Flowable<Payload<Buffer, Buffer>> {
-    return payloads.lift(
+    return new Flowable(s => payloads.subscribe(s)).lift(
       s =>
         new SwitchTransformOperator(s, (payload, flowable) => {
           if (payload.metadata === undefined || payload.metadata === null) {

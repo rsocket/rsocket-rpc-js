@@ -612,7 +612,7 @@ void PrintServer(const ServiceDescriptor* service, Printer* out) {
   // Request-Channel
   out->Print(vars, "$server_name$.prototype.requestChannel = function requestChannel(payloads) {\n");
   out->Indent();
-  out->Print("return payloads.lift(s =>\n");
+  out->Print("return new Flowable(s => payloads.subscribe(s)).lift(s =>\n");
   out->Indent();
   out->Print("new rsocket_rpc_core.SwitchTransformOperator(s, (payload, flowable) => this._channelSwitch(payload, flowable)),\n");
   out->Outdent();
