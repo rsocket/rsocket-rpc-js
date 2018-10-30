@@ -28,11 +28,12 @@ const MAX_REQUEST_N = 0x7fffffff; // uint31
 
 export default class SwitchTransformOperator<T, R>
   implements ISubscription, ISubscriber<T>, IPublisher<T> {
-  _once: boolean;
+  _done: boolean;
+  _error: Error;
   _canceled: boolean;
   _first: T | any;
-  _initial: ISubscriber<R>;
-  _actual: ISubscriber<T>;
+  _outer: ISubscriber<R>;
+  _inner: ISubscriber<T>;
   _subscription: ISubscription;
   _transformer: (first: T, stream: Flowable<T>) => IPublisher<R>;
 
@@ -41,63 +42,128 @@ export default class SwitchTransformOperator<T, R>
     transformer: (first: T, stream: Flowable<T>) => IPublisher<R>,
   ) {
     this._transformer = transformer;
-    this._initial = initial;
+    this._outer = initial;
   }
 
-  onComplete() {
-    this._actual.onComplete();
-  }
-
-  onError(error: Error) {
+  cancel() {
     if (this._canceled) {
       return;
     }
 
-    if (this._once) {
-      this._actual.onError(error);
-    } else {
-      this._initial.onSubscribe({
-        cancel: () => {},
-        request: () => {
-          this._initial.onError(error);
-        },
-      });
+    this._canceled = true;
+    this._first = undefined;
+    this._subscription.cancel();
+  }
+
+  subscribe(actual?: IPartialSubscriber<T>) {
+    if (actual && !this._inner) {
+      this._inner = ((actual: any): ISubscriber<T>);
+      this._inner.onSubscribe(this);
+    } else if (actual) {
+      const a = actual;
+      if (a.onSubscribe) {
+        a.onSubscribe({
+          cancel: () => {},
+          request: () => {
+            if (a.onError) {
+              a.onError(
+                new Error('SwitchTransform allows only one Subscriber'),
+              );
+            }
+          },
+        });
+      }
     }
+  }
+
+  onSubscribe(subscription: ISubscription) {
+    if (this._subscription) {
+      subscription.cancel();
+      return;
+    }
+
+    this._subscription = subscription;
+    this._subscription.request(1);
   }
 
   onNext(value: T) {
-    if (this._canceled) {
+    if (this._canceled || this._done) {
       return;
     }
 
-    if (!this._once) {
-      this._once = true;
-      this._first = value;
+    if (!this._inner) {
       try {
+        this._first = value;
         const result = this._transformer(
           value,
           new Flowable(s => this.subscribe(s)),
         );
-        result.subscribe(this._initial);
+        result.subscribe(this._outer);
       } catch (e) {
         this.onError(e);
       }
       return;
     }
 
-    this._actual.onNext(value);
+    this._inner.onNext(value);
   }
 
-  onSubscribe(subscription: ISubscription) {
-    this._subscription = subscription;
-    this._subscription.request(1);
+  onError(error: Error) {
+    if (this._canceled || this._done) {
+      return;
+    }
+
+    this._error = error;
+    this._done = true;
+
+    if (this._inner) {
+      if (!this._first) {
+        this._inner.onError(error);
+      }
+    } else {
+      this._outer.onSubscribe({
+        cancel: () => {},
+        request: () => {
+          this._outer.onError(error);
+        },
+      });
+    }
+  }
+
+  onComplete() {
+    if (this._done || this._canceled) {
+      return;
+    }
+
+    this._done = true;
+
+    if (this._inner) {
+      if (!this._first) {
+        this._inner.onComplete();
+      }
+    } else {
+      this._outer.onSubscribe({
+        cancel: () => {},
+        request: () => {
+          this._outer.onComplete();
+        },
+      });
+    }
   }
 
   request(n: number) {
     if (this._first) {
       const f = this._first;
       this._first = undefined;
-      this._actual.onNext(f);
+      this._inner.onNext(f);
+
+      if (this._done) {
+        if (this._error) {
+          this._inner.onError(this._error);
+        } else {
+          this._inner.onComplete();
+        }
+      }
 
       if (MAX_REQUEST_N <= n) {
         this._subscription.request(MAX_REQUEST_N);
@@ -106,22 +172,6 @@ export default class SwitchTransformOperator<T, R>
       }
     } else {
       this._subscription.request(n);
-    }
-  }
-
-  cancel() {
-    this._canceled = true;
-    this._first = undefined;
-  }
-
-  subscribe(actual?: IPartialSubscriber<T>) {
-    if (actual && !this._actual) {
-      this._actual = ((actual: any): ISubscriber<T>);
-      this._actual.onSubscribe(this);
-    } else if (actual) {
-      if (actual.onError) {
-        actual.onError(new Error('SwitchTransform allows only one Subscriber'));
-      }
     }
   }
 
