@@ -3,7 +3,7 @@ syntax = "proto3";
 package io.rsocket.rpc;
 
 import "google/protobuf/empty.proto";
-import "options.proto";
+import "rsocket/options.proto";
 
 service SimpleService {
   // Request / Response

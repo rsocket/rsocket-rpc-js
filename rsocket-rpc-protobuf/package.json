@@ -1,7 +1,7 @@
 {
   "name": "rsocket-rpc-protobuf",
   "repository": "https://github.com/netifi/rsocket-rpc",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "description": "RSocket RPC JavaScript Codegen Plugin for Protobuf Compiler",
   "contributors": [
     "Ryland Degnan <ryland@netifi.com>",
