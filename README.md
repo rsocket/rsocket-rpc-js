@@ -1,10 +1,10 @@
-# rsocket-rpc
-[![Build Status](https://travis-ci.org/netifi/rsocket-rpc.svg?branch=master)](https://travis-ci.org/netifi/rsocket-rpc)
+# rsocket-rpc-js
+[![Build Status](https://travis-ci.org/rsocket/rsocket-rpc-js.svg?branch=master)](https://travis-ci.org/rsocket/rsocket-rpc-js)
 
 The standard RPC implementation for [RSocket](http://rsocket.io).
 
 ## License
-Copyright 2017 [Netifi Inc](https://www.netifi.com).
+Copyright 2018 [Netifi Inc](https://www.netifi.com).
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
