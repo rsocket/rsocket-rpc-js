@@ -1,6 +1,8 @@
 matrix:
   include:
   - language: node_js
+    os: linux
+    dist: xenial
     node_js:
     - 10
     cache: yarn
@@ -23,7 +25,7 @@ matrix:
     - popd
   - language: cpp
     os: linux
-    dist: trusty
+    dist: xenial
     compiler: gcc
     before_install:
     - wget https://github.com/google/protobuf/releases/download/v3.6.1/protobuf-cpp-3.6.1.tar.gz
@@ -49,4 +51,21 @@ matrix:
     script:
     - pushd rsocket-rpc-protobuf
     - cmake . -Bbuild && make -Cbuild
+    - popd
+  - language: cpp
+    os: windows
+    before_install:
+    - wget https://github.com/google/protobuf/releases/download/v3.6.1/protobuf-cpp-3.6.1.tar.gz
+    - tar -xzvf protobuf-cpp-3.6.1.tar.gz
+    - pushd protobuf-3.6.1/cmake
+    - mkdir build && cd build
+    - cmake -DCMAKE_CXX_FLAGS="-std=c++11" -Dprotobuf_BUILD_TESTS=OFF ..
+    - cmake --build . --config Release
+    - cmake --build . --config Release --target install
+    - popd
+    script:
+    - pushd rsocket-rpc-protobuf
+    - mkdir build && cd build
+    - cmake -DProtobuf_LIBRARIES=/c/Program\ Files\ \(x86\)/protobuf/lib/ -DProtobuf_INCLUDE_DIR=/c/Program\ Files\ \(x86\)/protobuf/include/ -DProtobuf_LIBRARY=/c/Program\ Files\ \(x86\)/protobuf/lib/libprotobuf.lib -DProtobuf_PROTOC_LIBRARY=/c/Program\ Files\ \(x86\)/protobuf/lib/libprotoc.lib ..
+    - cmake --build . --config Release
     - popd

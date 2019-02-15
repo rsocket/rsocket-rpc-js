@@ -144,30 +144,6 @@ inline string FileNameInUpperCamel(
   return FileNameInUpperCamel(file, true);
 }
 
-enum MethodType {
-  METHODTYPE_NO_STREAMING,
-  METHODTYPE_CLIENT_STREAMING,
-  METHODTYPE_SERVER_STREAMING,
-  METHODTYPE_BIDI_STREAMING
-};
-
-inline MethodType GetMethodType(
-    const google::protobuf::MethodDescriptor* method) {
-  if (method->client_streaming()) {
-    if (method->server_streaming()) {
-      return METHODTYPE_BIDI_STREAMING;
-    } else {
-      return METHODTYPE_CLIENT_STREAMING;
-    }
-  } else {
-    if (method->server_streaming()) {
-      return METHODTYPE_SERVER_STREAMING;
-    } else {
-      return METHODTYPE_NO_STREAMING;
-    }
-  }
-}
-
 inline void Split(const string& s, char delim,
                   std::vector<string>* append_to) {
   std::istringstream iss(s);
