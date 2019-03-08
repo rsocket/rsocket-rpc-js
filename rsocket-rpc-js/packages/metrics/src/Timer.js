@@ -1,5 +1,13 @@
 /**
+ * @fileOverview Defines the "Timer" class.
+ *
  * @flow
+ *
+ * @requires BaseMeter
+ * @requires RawMeterTag
+ * @requires Histogram
+ * @requires stats
+ * @exports Timer
  */
 
 'use strict';
@@ -9,12 +17,19 @@ import RawMeterTag from './RawMeterTag';
 import {Histogram} from './Histogram';
 import {ExponentiallyDecayingSample} from './stats';
 
-/*
-*  Basically a timer tracks the rate of events and histograms the durations
-*/
+/**
+ * Basically a timer tracks the rate of events and histograms the durations.
+ * @extends BaseMeter
+ */
 export default class Timer extends BaseMeter {
+  /**
+   * @member {Histogram} histogram
+   */
   histogram: Histogram;
 
+  /**
+   * @constructs Timer
+   */
   constructor(name: string, description?: string, tags?: RawMeterTag[]) {
     super(name, description, tags);
     this.histogram = new Histogram(
@@ -25,6 +40,8 @@ export default class Timer extends BaseMeter {
     this.statistic = 'duration';
   }
 
+  /**
+   */
   update(duration: number): void {
     this.histogram.update(duration);
     this.mark();
@@ -56,6 +73,8 @@ export default class Timer extends BaseMeter {
     return this.histogram.values();
   }
 
+  /**
+   */
   toObject() {
     return {
       type: this.type,

@@ -1,5 +1,7 @@
 /**
- * Copyright (c) 2017-present, Netifi Inc.
+ * @fileOverview Defines the {@link RpcClient} class and {@link ClientConfig} object.
+ * @copyright Copyright (c) 2017-present, Netifi Inc.
+ * @license Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +16,19 @@
  * limitations under the License.
  *
  * @flow
+ * 
+ * @requires NPM:rsocket-core
+ * @requires NPM:rsocket-flowable
+ * @requires NPM:rsocket-types
+ * @exports ClientConfig
+ * @exports RpcClient
  */
 
 'use strict';
 
+/**
+ * @typedef {(string|Buffer|Uint8Array)} Encodable
+ */
 import type {
   ConnectionStatus,
   DuplexConnection,
@@ -36,8 +47,21 @@ import {CONNECTION_STREAM_ID, FLAGS, FRAME_TYPES} from 'rsocket-core';
 import {MAJOR_VERSION, MINOR_VERSION} from 'rsocket-core/build/RSocketVersion';
 import {createClientMachine} from 'rsocket-core/build/RSocketMachine';
 
+/**
+ * @typedef {Object} ClientConfig
+ * @property {PayloadSerializers} [serializers] A serializer transforms data between the application encoding used in payloads and the encodable type accepted by the transport client. You typically will not need to implement your own serializer and deserializer, but if you do, you should pass your implementations to the RPC Client when you construct it.
+ * @property {Setup} setup Configure the keepalive process and any metadata you would like to accompany the connection.
+ * @property {DuplexConnection} transport Indicate which variety of duplex transport you are using, for example WebSocket or TCP. There are RSocketWebsocketClient and RSocketTcpClient classes that implement the required DuplexConnection interface for this component.
+ * @property {Responder} [responder]
+ */
 export type ClientConfig<D, M> = {|
   serializers?: PayloadSerializers<D, M>,
+  /**
+   * @typedef {Object} Setup
+   * @property {number} keepAlive The number of milliseconds between keepalive messages you will send to the service
+   * @property {number} lifetime The number of milliseconds to wait after the last keepalive message from the service before you consider the connection timed out.
+   * @property {Encodable} [metadata] Data you would like to send to the service at connection-time (this can be any arbitrary data the service expects, for example, authentication credentials).
+   */
   setup: {|
     keepAlive: number,
     lifetime: number,
@@ -47,19 +71,37 @@ export type ClientConfig<D, M> = {|
   responder?: Responder<D, M>,
 |};
 
+/**
+ */
 export default class RpcClient<D, M> {
   _config: ClientConfig<D, M>;
   _connection: ?Single<ReactiveSocket<D, M>>;
 
+  /**
+   * @constructs RpcClient
+   *
+   * @param {ClientConfig<D,M>} config
+   */
   constructor(config: ClientConfig<D, M>) {
     this._config = config;
     this._connection = null;
   }
 
+  /**
+   * Close the RPC Client connection.
+   */
   close(): void {
     this._config.transport.close();
   }
 
+  /**
+   * Returns a <tt>Single</tt>, which, when you subscribe to it, initiates the
+   * connection and emits a <tt>ReactiveSocket</tt> object that defines the
+   * connection.
+   *
+   * @returns {Single<ReactiveSocket<D,M>>}
+   * @throws {Error} if the RpcClient is already connected
+   */
   connect(): Single<ReactiveSocket<D, M>> {
     invariant(
       !this._connection,

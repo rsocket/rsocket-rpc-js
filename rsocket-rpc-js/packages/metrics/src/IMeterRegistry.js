@@ -1,5 +1,7 @@
 /**
- * Copyright (c) 2017-present, Netifi Inc.
+ * @fileOverview Defines the "IMeterRegistry" interface.
+ * @copyright Copyright (c) 2017-present, Netifi Inc.
+ * @license Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +16,32 @@
  * limitations under the License.
  *
  * @flow
+ *
+ * @requires IMeter
+ * @exports IMeterRegistry
  */
 
 'use strict';
 
 import type {IMeter} from './IMeter';
 
+/**
+ * @interface
+ */
 export interface IMeterRegistry {
+  /**
+   * @function
+   * @param {IMeter} meter
+   */
   registerMeter(meter: IMeter): void;
+  /**
+   * @function
+   * @param {IMeter[]} meters
+   */
   registerMeters(meters: IMeter[]): void;
+  /**
+   * @function
+   * @returns {IMeter[]}
+   */
   meters(): IMeter[];
 }

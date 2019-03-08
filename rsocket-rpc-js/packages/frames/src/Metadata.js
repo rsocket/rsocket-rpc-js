@@ -1,5 +1,7 @@
 /**
- * Copyright (c) 2017-present, Netifi Inc.
+ * @fileOverview Provides methods for encoding and reading payload metadata.
+ * @copyright Copyright (c) 2017-present, Netifi Inc.
+ * @license Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +16,9 @@
  * limitations under the License.
  *
  * @flow
+ *
+ * @requires NPM:rsocket-types
+ * @requires NPM:rsocket-core
  */
 
 'use strict';
@@ -24,9 +29,6 @@ import type {Encodable} from 'rsocket-types';
 
 import {UTF8Encoder, BufferEncoder, createBuffer} from 'rsocket-core';
 
-/**
- * Version
- */
 export const VERSION = 1;
 
 export const VERSION_SIZE = 2;
@@ -34,6 +36,15 @@ export const SERVICE_LENGTH_SIZE = 2;
 export const METHOD_LENGTH_SIZE = 2;
 export const TRACING_LENGTH_SIZE = 2;
 
+/**
+ * Use this method to send well-formed call routing metadata with your payloads.
+ *
+ * @param {string} service - the service name
+ * @param {string} method - the method name
+ * @param {Encodable} tracing - tracing information
+ * @param {Encodable} metadata - arbitrary metadata
+ * @return {Buffer} the above fields encoded in a proper fashion
+ */
 export function encodeMetadata(
   service: string,
   method: string,
@@ -82,10 +93,22 @@ export function encodeMetadata(
   return buffer;
 }
 
+/**
+ * Get the version number from the metadata.
+ *
+ * @param {Buffer} buffer the metadata buffer that contains the version number
+ * @return {number} the version number
+ */
 export function getVersion(buffer: Buffer): number {
   return buffer.readUInt16BE(0);
 }
 
+/**
+ * Get the service name from the metadata.
+ *
+ * @param {Buffer} buffer the metadata buffer that contains the service name
+ * @return {string} the service name
+ */
 export function getService(buffer: Buffer): string {
   let offset = VERSION_SIZE;
 
@@ -95,6 +118,12 @@ export function getService(buffer: Buffer): string {
   return UTF8Encoder.decode(buffer, offset, offset + serviceLength);
 }
 
+/**
+ * Get the method name from the metadata.
+ *
+ * @param {Buffer} buffer the metadata buffer that contains the method name
+ * @return {string} the method name
+ */
 export function getMethod(buffer: Buffer): string {
   let offset = VERSION_SIZE;
 
@@ -107,6 +136,12 @@ export function getMethod(buffer: Buffer): string {
   return UTF8Encoder.decode(buffer, offset, offset + methodLength);
 }
 
+/**
+ * Get the tracing information from the metadata.
+ *
+ * @param {Buffer} buffer the metadata buffer that contains tracing information
+ * @return {Buffer} the tracing information
+ */
 export function getTracing(buffer: Buffer): Buffer {
   let offset = VERSION_SIZE;
 
@@ -122,6 +157,12 @@ export function getTracing(buffer: Buffer): Buffer {
   return BufferEncoder.decode(buffer, offset, offset + tracingLength);
 }
 
+/**
+ * Get the metadata field from the metadata.
+ *
+ * @param {Buffer} buffer the metadata buffer
+ * @return {Buffer} the metadata field
+ */
 export function getMetadata(buffer: Buffer): Buffer {
   let offset = VERSION_SIZE;
 

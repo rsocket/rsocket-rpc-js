@@ -1,3 +1,21 @@
+/**
+ * @fileOverview Tracing functionality.
+ * @requires NPM:rsocket-core
+ * @requires NPM:rsocket-types
+ * @requires NPM:rsocket-flowable
+ * @requires NPM:opentracing
+ * @requires NPM:rsocket-rpc-frames
+ * @requires SpanSubscriber
+ * @requires SpanSingle
+ * @exports deserializeTraceData
+ * @exports mapToBuffer
+ * @exports bufferToMap
+ * @exports trace
+ * @exports traceAsChild
+ * @exports traceSingle
+ * @exports traceSingleAsChild
+ */
+
 import {UTF8Encoder, BufferEncoder, createBuffer} from 'rsocket-core';
 import {ISubscriber} from 'rsocket-types';
 import {Flowable, Single} from 'rsocket-flowable';
@@ -8,6 +26,8 @@ import {SpanContext, Tracer, FORMAT_TEXT_MAP} from 'opentracing';
 
 import {getTracing} from 'rsocket-rpc-frames';
 
+/**
+ */
 export function deserializeTraceData(tracer, metadata) {
   if (!tracer) {
     return null;
@@ -22,6 +42,8 @@ export function deserializeTraceData(tracer, metadata) {
   return tracer.extract(FORMAT_TEXT_MAP, bufferToMap(tracingData));
 }
 
+/**
+ */
 export function mapToBuffer(map: Object): Buffer {
   if (!map || Object.keys(map).length <= 0) {
     return createBuffer(0);
@@ -79,6 +101,8 @@ export function mapToBuffer(map: Object): Buffer {
   return resultBuf;
 }
 
+/**
+ */
 export function bufferToMap(buffer: Buffer): Object {
   const result = {};
 
@@ -102,6 +126,8 @@ export function bufferToMap(buffer: Buffer): Object {
   return result;
 }
 
+/**
+ */
 export function trace<T>(
   tracer?: Tracer,
   name?: String,
@@ -127,6 +153,8 @@ export function trace<T>(
   }
 }
 
+/**
+ */
 export function traceAsChild<T>(
   tracer?: Tracer,
   name?: String,
@@ -152,6 +180,8 @@ export function traceAsChild<T>(
   }
 }
 
+/**
+ */
 export function traceSingle<T>(
   tracer?: Tracer,
   name?: String,
@@ -168,6 +198,8 @@ export function traceSingle<T>(
   }
 }
 
+/**
+ */
 export function traceSingleAsChild<T>(
   tracer?: Tracer,
   name?: String,

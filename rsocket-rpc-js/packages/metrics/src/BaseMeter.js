@@ -1,5 +1,13 @@
 /**
+ * @fileOverview Defines the "BaseMeter" class.
+ *
  * @flow
+ *
+ * @requires IMeter
+ * @requires metrics_pb
+ * @requires RawMeterTag
+ * @requires stats
+ * @exports BaseMeter
  */
 
 'use strict';
@@ -15,18 +23,24 @@ import {EWMA} from './stats';
 const MAX_COUNTER_VALUE = Math.pow(2, 32); // 4294967296
 
 export default class BaseMeter implements IMeter {
-  m1Rate: EWMA;
-  m5Rate: EWMA;
-  m15Rate: EWMA;
-  count: number;
-  tags: RawMeterTag[];
-  startTime: number;
-  type: string;
-  name: string;
-  description: ?string;
-  statistic: string;
-  units: string;
+  m1Rate: EWMA;         /** @member {EWMA} m1Rate one-minute per-second rate */
+  m5Rate: EWMA;         /** @member {EWMA} m5Rate five-minute per-second rate */
+  m15Rate: EWMA;        /** @member {EWMA} m15Rate fifteen-minute per-second rate */
+  count: number;        /** @member {number} count */
+  tags: RawMeterTag[];  /** @member {RawMeterTag[]} tags */
+  startTime: number;    /** @member {number} startTime */
+  type: string;         /** @member {string} type */
+  name: string;         /** @member {string} name */
+  description: ?string; /** @member {string} [description] */
+  statistic: string;    /** @member {string} statistic */
+  units: string;        /** @member {string} units */
 
+  /**
+   * @constructs BaseMeter
+   * @param {string} name -
+   * @param {string} [description] -
+   * @param {RawMeterTag[]} [tags] -
+   */
   constructor(name: string, description?: string, tags?: RawMeterTag[]) {
     this.m1Rate = EWMA.createM1EWMA();
     this.m5Rate = EWMA.createM5EWMA();
@@ -40,11 +54,21 @@ export default class BaseMeter implements IMeter {
     this.statistic = 'unknown';
   }
 
+  /**
+   *
+   * @param {function} converter -
+   * @return
+   */
   convert(converter: IMeter => Meter[]): Meter[] {
     return converter(this);
   }
 
-  // Mark the occurence of n events
+  /**
+   * Mark the occurence of n events
+   *
+   * @param {number} [n=1] - the number of events to mark the occurence of
+   * @return {number} the number of events marked
+   */
   mark(n: ?number): number {
     if (!n) {
       n = 1;
@@ -68,6 +92,11 @@ export default class BaseMeter implements IMeter {
     return n;
   }
 
+  /**
+   * Return an object containing the rate values.
+   *
+   * @return {Object} an object containing the one-, five-, and fifteen-minute per-second rates, and the over-all mean per-second rate.
+   */
   rates() {
     return {
       '1': this.oneMinuteRate(),
@@ -77,23 +106,41 @@ export default class BaseMeter implements IMeter {
     };
   }
 
-  // Rates are per second
+  /**
+   * Return the fifteen-minute per-second rate.
+   * @return {number} the rate
+   */
   fifteenMinuteRate() {
     return this.m15Rate.rate();
   }
 
+  /**
+   * Return the five-minute per-second rate.
+   * @return {number} the rate
+   */
   fiveMinuteRate() {
     return this.m5Rate.rate();
   }
 
+  /**
+   * Return the one-minute per-second rate.
+   * @return {number} the rate
+   */
   oneMinuteRate() {
     return this.m1Rate.rate();
   }
 
+  /**
+   * Return the per-second rate over the complete lifetime of the meter.
+   * @return {number} the rate
+   */
   meanRate() {
     return (this.count / (new Date().getTime() - this.startTime)) * 1000;
   }
 
+  /**
+   * Tick the one-, five-, and fifteen-minute rates.
+   */
   tick() {
     this.m1Rate.tick();
     this.m5Rate.tick();

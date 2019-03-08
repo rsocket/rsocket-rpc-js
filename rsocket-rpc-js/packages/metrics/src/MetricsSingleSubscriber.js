@@ -1,5 +1,7 @@
 /**
- * Copyright (c) 2017-present, Netifi Inc.
+ * @fileOverview Defines the MetricsSingleSubscriber class.
+ * @copyright Copyright (c) 2017-present, Netifi Inc.
+ * @license Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +16,10 @@
  * limitations under the License.
  *
  * @flow
+ * @requires Counter
+ * @requires Timer
+ * @requires NPM:rsocket-flowable
+ * @exports embedMetricsSingleSubscriber
  */
 
 'use strict';
@@ -23,6 +29,8 @@ import Timer from './Timer';
 import {Single} from 'rsocket-flowable';
 import type {IFutureSubscriber} from 'rsocket-flowable/build/Single';
 
+/**
+ */
 export default function embedMetricsSingleSubscriber<T>(
   single: Single<T>,
   next: Counter,
@@ -44,6 +52,8 @@ export default function embedMetricsSingleSubscriber<T>(
   });
 }
 
+/**
+ */
 class MetricsSingleSubscriber<T> implements IFutureSubscriber<T> {
   _source: IFutureSubscriber<T>;
   _next: Counter;
@@ -55,6 +65,9 @@ class MetricsSingleSubscriber<T> implements IFutureSubscriber<T> {
   _cancel: () => void;
   _start: number;
 
+  /**
+   * @constructs MetricsSingleSubscriber
+   */
   constructor(
     actual: IFutureSubscriber<T>,
     next: Counter,
@@ -71,6 +84,8 @@ class MetricsSingleSubscriber<T> implements IFutureSubscriber<T> {
     this._timer = timer;
   }
 
+  /**
+   */
   onSubscribe(cancel: () => void): void {
     this._cancel = cancel;
     this._start = new Date().getTime();
@@ -78,6 +93,8 @@ class MetricsSingleSubscriber<T> implements IFutureSubscriber<T> {
     this._source.onSubscribe(() => this.cancel());
   }
 
+  /**
+   */
   onError(t: Error): void {
     this._error.inc();
     this._timer.update(new Date().getTime() - this._start);
@@ -85,6 +102,8 @@ class MetricsSingleSubscriber<T> implements IFutureSubscriber<T> {
     this._source.onError(t);
   }
 
+  /**
+   */
   onComplete(t: T): void {
     this._next.inc();
     this._complete.inc();
@@ -92,6 +111,8 @@ class MetricsSingleSubscriber<T> implements IFutureSubscriber<T> {
     this._source.onComplete(t);
   }
 
+  /**
+   */
   cancel(): void {
     this._cancelled.inc();
     this._timer.update(new Date().getTime() - this._start);

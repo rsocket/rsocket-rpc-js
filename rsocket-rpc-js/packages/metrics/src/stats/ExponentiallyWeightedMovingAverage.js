@@ -1,19 +1,27 @@
 /**
+ * @fileOverview Exponentially weighted moving average.
  *
- *  Exponentially weighted moving average.
- *  Args:
- *  - alpha:
- *  - interval: time in milliseconds
- *
- *  @flow
+ * @flow
+ * @exports EWMA
  */
 
 'use strict';
 
+/**
+ * @const
+ */
 const M1_ALPHA = 1 - Math.exp(-5 / 60);
+/**
+ * @const
+ */
 const M5_ALPHA = 1 - Math.exp(-5 / 60 / 5);
+/**
+ * @const
+ */
 const M15_ALPHA = 1 - Math.exp(-5 / 60 / 15);
 
+/**
+ */
 export default class EWMA {
   alpha: number;
   interval: number;
@@ -22,6 +30,10 @@ export default class EWMA {
   uncounted: number;
   tickInterval: any;
 
+  /**
+   * @constructs EWMA
+   * @param {number} interval - time in milliseconds
+   */
   constructor(alpha: number, interval: number) {
     this.alpha = alpha;
     this.interval = interval || 5000;
@@ -42,16 +54,24 @@ export default class EWMA {
     }
   }
 
+  /**
+   */
   static createM1EWMA(): EWMA {
     return new EWMA(M1_ALPHA, 5000);
   }
+  /**
+   */
   static createM5EWMA(): EWMA {
     return new EWMA(M5_ALPHA, 5000);
   }
+  /**
+   */
   static createM15EWMA(): EWMA {
     return new EWMA(M15_ALPHA, 5000);
   }
 
+  /**
+   */
   update(n: number): void {
     this.uncounted += n || 1;
   }
@@ -78,6 +98,8 @@ export default class EWMA {
     return this.currentRate * 1000;
   }
 
+  /**
+   */
   stop(): void {
     clearInterval(this.tickInterval);
   }

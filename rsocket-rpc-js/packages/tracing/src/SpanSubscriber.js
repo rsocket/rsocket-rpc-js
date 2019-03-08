@@ -1,6 +1,15 @@
+/**
+ * @fileOverview Defines the "SpanSubscriber" class.
+ * @requires NPM:rsocket-types
+ * @requires NPM:opentracing
+ * @exports SpanSubscriber
+ */
+
 import {ISubscriber, ISubscription} from 'rsocket-types';
 import {Tracer, Span, SpanContext, FORMAT_TEXT_MAP} from 'opentracing';
 
+/**
+ */
 export class SpanSubscriber<T> implements ISubscriber<T>, ISubscription {
   _span: Span;
   _rootSpan: Span;
@@ -10,6 +19,9 @@ export class SpanSubscriber<T> implements ISubscriber<T>, ISubscription {
   _nextCount: number;
   _requestOnce: boolean;
 
+  /**
+   * @constructs SpanSubscriber
+   */
   constructor(
     subscriber: ISubscriber<T>,
     tracer: Tracer,
@@ -58,16 +70,22 @@ export class SpanSubscriber<T> implements ISubscriber<T>, ISubscription {
     );
   }
 
+  /**
+   */
   cleanup() {
     this._span.finish();
   }
 
+  /**
+   */
   onSubscribe(subscription?: Subscription) {
     this._subscription = subscription;
     this._span.log('onSubscribe', timeInMicros());
     this._subscriber.onSubscribe(this);
   }
 
+  /**
+   */
   request(n: number) {
     if (!this._requestOnce) {
       this._requestOnce = true;
@@ -78,6 +96,8 @@ export class SpanSubscriber<T> implements ISubscriber<T>, ISubscription {
     this._subscription && this._subscription.request(n);
   }
 
+  /**
+   */
   cancel() {
     try {
       this._span.log('cancel', timeInMicros());
@@ -87,10 +107,14 @@ export class SpanSubscriber<T> implements ISubscriber<T>, ISubscription {
     }
   }
 
+  /**
+   */
   onNext(value: T) {
     this._subscriber.onNext(value);
   }
 
+  /**
+   */
   onError(error: Error) {
     try {
       this._span.log('onError', timeInMicros());
@@ -100,6 +124,8 @@ export class SpanSubscriber<T> implements ISubscriber<T>, ISubscription {
     }
   }
 
+  /**
+   */
   onComplete() {
     try {
       this._span.log('onComplete', timeInMicros());
@@ -110,6 +136,11 @@ export class SpanSubscriber<T> implements ISubscriber<T>, ISubscription {
   }
 }
 
+/**
+ * Return the current time in microseconds
+ *
+ * @return {number} <tt>Date.now()</tt> converted to microseconds.
+ */
 function timeInMicros() {
   return Date.now() * 1000 /*microseconds*/;
 }

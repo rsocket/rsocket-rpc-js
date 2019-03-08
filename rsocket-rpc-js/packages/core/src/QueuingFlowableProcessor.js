@@ -1,3 +1,10 @@
+/**
+ * @fileOverview Defines the {@link QueuingFlowableProcessor} class.
+ *
+ * @requires NPM:rsocket-types
+ * @exports QueuingFlowableProcessor
+ */
+
 import type {
   IPublisher,
   ISubscriber,
@@ -5,8 +12,20 @@ import type {
   ISubscription,
 } from 'rsocket-types';
 
+/**
+ * If no <tt>capacity</tt> is passed to the
+ * {@link QueuingFlowableProcessor#constructor}, this value will be used as the
+ * capacity (the maximum number of items to request from the source Flowable).
+ * This effectively signals that you want an unlimited number of values from
+ * the source Flowable.
+ *
+ * @constant
+ * @type {number}
+ */
 const MAX_REQUEST_N = 0x7fffffff; // uint31
 
+/**
+ */
 export default class QueuingFlowableProcessor<T>
   implements IPublisher, ISubscriber, ISubscription {
   _once: boolean;
@@ -19,6 +38,11 @@ export default class QueuingFlowableProcessor<T>
   _done: boolean;
   _error: ?Error;
 
+  /**
+   * @constructs QueuingFlowableProcessor
+   * @property {number} [capacity] the maximum number of items to request from
+   *   the source Flowable (default = MAX_REQUEST_N)
+   */
   constructor(capacity?: number) {
     this._once = false;
     this._requested = 0;
@@ -32,6 +56,13 @@ export default class QueuingFlowableProcessor<T>
     this._transformers = [];
   }
 
+  /**
+   * Subscribe to this {@link QueuingFlowableProcessor}.
+   *
+   * @param {Subscriber<T>} s
+   * @throws {Error} if a Subscriber is already subscribed to this
+   *   QueuingFlowableProcessor
+   */
   subscribe(s: Subscriber<T>) {
     if (!this._once) {
       this._once = true;
@@ -42,6 +73,15 @@ export default class QueuingFlowableProcessor<T>
     }
   }
 
+  /**
+   * When the {@link QueuingFlowableProcessor} gets an <tt>onSubscribe</tt> call
+   * from the source Flowable, it requests that the Flowable begin sending it
+   * items: either <tt>capacity</tt> items, if the capacity was set during the
+   * call to {@link QueuingFlowableProcessor#constructor}, or
+   * {@link MAX_REQUEST_N} items (effectively unlimited).
+   *
+   * @param {ISubscription} s the subscription from the source Flowable
+   */
   onSubscribe(s: ISubscription) {
     if (this._done) {
       s.cancel();
@@ -50,6 +90,11 @@ export default class QueuingFlowableProcessor<T>
     }
   }
 
+  /**
+   * @param {T} t
+   * @throws {Error} if <tt>t</tt> is <tt>null</tt>. Flowables are not permitted
+   *   to emit null values.
+   */
   onNext(t: T) {
     if (t === null) {
       throw new Error('t is null');
@@ -60,6 +105,9 @@ export default class QueuingFlowableProcessor<T>
     this.drain();
   }
 
+  /**
+   * @param {Error} t
+   */
   onError(t: Error) {
     if (t === null) {
       throw new Error('t is null');
@@ -74,6 +122,14 @@ export default class QueuingFlowableProcessor<T>
     this.drain();
   }
 
+  /**
+   * Request a certain number of additional items from this
+   * {@link QueuingFlowableProcessor}. Note that requests are additive;
+   * <tt>request(2); request(3);</tt> is equivalent to <tt>request(5);</tt>
+   *
+   * @param {number} n the number of items to request
+   * @throws {Error} if <tt>n</tt> is zero or negative
+   */
   request(n: number) {
     if (n > 0) {
       this._requested += n;
@@ -83,6 +139,11 @@ export default class QueuingFlowableProcessor<T>
     }
   }
 
+  /**
+   * Call this to indicate that you want no more items from this
+   * {@link QueuingFlowableProcessor} and that it can stop work and release
+   * its resources.
+   */
   cancel() {
     this._cancelled = true;
     if (this._wip++ === 0) {
@@ -91,11 +152,24 @@ export default class QueuingFlowableProcessor<T>
     }
   }
 
+  /**
+   * Add a mapping function that accepts an item from the source Flowable and
+   * modifies it before it is to be emitted from the
+   * {@link QueuingFlowableProcessor}. Note that you can call this multiple
+   * times to add multiple mapping functions, each of which will operate on the
+   * outputs of its predecessor.
+   *
+   * @param {function} transformer a transformation function
+   */
   map(transformer) {
     this._transformers.push(transformer);
     return this;
   }
 
+  /**
+   * Drain the existing queue of items that are ready for emission by the
+   * {@link QueuingFlowableProcessor} by emitting them.
+   */
   drain() {
     if (this._actual == null) {
       return;

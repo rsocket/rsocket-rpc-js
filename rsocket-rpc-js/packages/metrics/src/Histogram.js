@@ -1,5 +1,9 @@
 /**
+ * @fileOverview Defines the Histogram class.
+ *
  * @flow
+ *
+ * @requires stats
  */
 
 'use strict';
@@ -26,19 +30,23 @@ export const DEFAULT_PERCENTILES = [
   0.999,
 ];
 
-/*
-* A histogram tracks the distribution of items, given a sample type 
-*/
+/**
+ * A histogram tracks the distribution of items, given a sample type 
+ */
 export class Histogram {
-  sample: ISample;
-  min: ?number;
-  max: ?number;
-  sum: ?number;
-  varianceM: ?number;
-  varianceS: ?number;
-  count: ?number;
-  type: string;
+  sample: ISample;    /** @member {ISample} sample */
+  min: ?number;       /** @member {number} [min=null] */
+  max: ?number;       /** @member {number} [max=null] */
+  sum: ?number;       /** @member {number} [sum=null] */
+  varianceM: ?number; /** @member {number} [varianceM=null] for the Welford algorithm for calculating running variance without floating-point doom */
+  varianceS: ?number; /** @member {number} [varianceS=null] for the Welford algorithm for calculating running variance without floating-point doom */
+  count: ?number;     /** @member {number} [count=0] */
+  type: string;       /** @member {string} type "histogram" */
 
+  /**
+   * @constructs Histogram
+   * @param {ISample} sample
+   */
   constructor(sample: ISample) {
     this.sample = sample || new ExponentiallyDecayingSample(1028, 0.015);
     this.min = null;
@@ -52,6 +60,13 @@ export class Histogram {
     this.type = 'histogram';
   }
 
+  /**
+   * Create an exponentially decaying histogram.
+   *
+   * @param {number} size (default = 1028)
+   * @param {number} alpha (default = 0.015)
+   * @return {Histogram}
+   */
   static createExponentialDecayHistogram(
     size: number,
     alpha: number,
@@ -60,10 +75,20 @@ export class Histogram {
       new ExponentiallyDecayingSample(size || 1028, alpha || 0.015),
     );
   }
+
+  /**
+   * Create a uniformly-sampled histogram.
+   *
+   * @param {number} size (default = 1028)
+   * @return {Histogram}
+   */
   static createUniformHistogram(size: number): Histogram {
     return new Histogram(new UniformSample(size || 1028));
   }
 
+  /**
+   * Return the histogram to its default values.
+   */
   clear = function(): void {
     this.sample.clear();
     this.min = null;
@@ -74,7 +99,13 @@ export class Histogram {
     this.count = 0;
   };
 
-  // timestamp param primarily used for testing
+  /**
+   * timestamp param primarily used for testing
+   *
+   * @function
+   * @param {number} val
+   * @param {number} [timestamp]
+   */
   update = function(val: number, timestamp?: number): void {
     this.count++;
     this.sample.update(val, timestamp);
@@ -92,6 +123,12 @@ export class Histogram {
     this.updateVariance(val);
   };
 
+  /**
+   * Set the value of the Welford algorithm variance.
+   *
+   * @function
+   * @param {number} val
+   */
   updateVariance = function(val: number): void {
     var oldVM = this.varianceM,
       oldVS = this.varianceS;
@@ -103,7 +140,13 @@ export class Histogram {
     }
   };
 
-  // Pass an array of percentiles, e.g. [0.5, 0.75, 0.9, 0.99]
+  /**
+   * Get the values for a set of percentiles.
+   *
+   * @function
+   * @param {number[]} [percentiles] An array of percentiles, expressed as decimals between zero and one. For example, [0.5, 0.75, 0.9, 0.99]. Default is {@link DEFAULT_PERCENTILES}.
+   * @return {number[]} the values for each percentile level
+   */
   percentiles = function(percentiles?: number[]): Object {
     if (!percentiles) {
       percentiles = DEFAULT_PERCENTILES;
@@ -137,22 +180,50 @@ export class Histogram {
     return scores;
   };
 
+  /**
+   * Return the average variance using the Welford algorithm.
+   *
+   * @function
+   * @return {number} the average variance, or <tt>null</tt> if this is undefined because the count is zero.
+   * @throws a divide by zero error if this.count==1
+   */
   variance = function(): ?number {
     return this.count < 1 ? null : this.varianceS / (this.count - 1);
   };
 
+  /**
+   * Return the sum of squares of differences from the current mean.
+   *
+   * @function
+   * @return {number} the sum of squares of differences from the current mean, or <tt>null</tt> if this is undefined because the count is zero.
+   */
   mean = function(): ?number {
     return this.count == 0 ? null : this.varianceM;
   };
 
+  /**
+   * Return the standard deviation, the square root of the average variance.
+   *
+   * @function
+   * @return {number} the standard deviation, or <tt>null</tt> if this is undefined because the count is zero.
+   */
   stdDev = function(): ?number {
     return this.count < 1 ? null : Math.sqrt(this.variance());
   };
 
+  /**
+   * Return the set of values in the sample.
+   *
+   * @function
+   * @return {any[]} an array of the values in the sample
+   */
   values = function(): any[] {
     return this.sample.getValues();
   };
 
+  /**
+   * @function
+   */
   toObject = function(): Object {
     var percentiles = this.percentiles();
     return {

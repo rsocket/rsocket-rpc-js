@@ -1,5 +1,7 @@
 /**
- * Copyright (c) 2017-present, Netifi Inc.
+ * @fileOverview Defines the "Metrics" class
+ * @copyright Copyright (c) 2017-present, Netifi Inc.
+ * @license Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +16,15 @@
  * limitations under the License.
  *
  * @flow
+ *
+ * @requires Counter
+ * @requires Timer
+ * @requires IMeterRegistry
+ * @requires RawMeterTag
+ * @requires MetricsSingleSubscriber
+ * @requires MetricsSubscriber
+ * @requires NPM:rsocket-flowable
+ * @exports Metrics
  */
 
 'use strict';
@@ -26,9 +37,16 @@ import embedMetricsSingleSubscriber from './MetricsSingleSubscriber';
 import MetricsSubscriber from './MetricsSubscriber';
 import {Flowable, Single} from 'rsocket-flowable';
 
+/**
+ */
 export default class Metrics {
+  /**
+   * @constructs Metrics
+   */
   constructor() {}
 
+  /**
+   */
   static timed<T>(
     registry?: IMeterRegistry,
     name: string,
@@ -90,6 +108,8 @@ export default class Metrics {
       );
   }
 
+  /**
+   */
   static timedSingle<T>(
     registry?: IMeterRegistry,
     name: string,

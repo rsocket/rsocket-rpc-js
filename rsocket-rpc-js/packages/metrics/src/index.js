@@ -1,5 +1,7 @@
 /**
- * Copyright (c) 2017-present, Netifi Inc.
+ * @fileOverview The set of exports for the "Metrics" package.
+ * @copyright Copyright (c) 2017-present, Netifi Inc.
+ * @license Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +16,20 @@
  * limitations under the License.
  *
  * @flow
+ *
+ * @requires metrics_pb
+ * @requires metrics_rsocket_pb
+ * @requires stats
+ * @requires BaseMeter
+ * @requires Histogram
+ * @requires Timer
+ * @requires Counter
+ * @requires IMeter
+ * @requires IMeterRegistry
+ * @requires SimpleMeterRegistry
+ * @requires MetricsExporter
+ * @requires Metrics
+ * @requires RawMeterTag
  */
 
 'use strict';

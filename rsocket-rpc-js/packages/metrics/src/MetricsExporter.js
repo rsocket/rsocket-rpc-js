@@ -1,5 +1,7 @@
 /**
- * Copyright (c) 2017-present, Netifi Inc.
+ * @fileOverview Defines the MetricsExporter class
+ * @copyright Copyright (c) 2017-present, Netifi Inc.
+ * @license Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +16,16 @@
  * limitations under the License.
  *
  * @flow
+ *
+ * @requires NPM:rsocket-types
+ * @requires NPM:rsocket-flowable
+ * @requires metrics_pb
+ * @requires metrics_rsocket_pb
+ * @requires RawMeterTag
+ * @requires Timer
+ * @requires IMeterRegistry
+ * @requires IMeter
+ * @exports MetricsExporter
  */
 
 'use strict';
@@ -36,15 +48,31 @@ import Timer from './Timer';
 import {IMeterRegistry} from './IMeterRegistry';
 import type {IMeter} from './IMeter';
 
+/**
+ */
 export default class MetricsExporter {
+  /** @member {handler} MetricsSnapshotHandlerClient */
   handler: MetricsSnapshotHandlerClient;
+  /** @member {IMeterRegistry} registry */
   registry: IMeterRegistry;
+  /** @member {number} exportPeriodSeconds */
   exportPeriodSeconds: number;
+  /** @member {number} batchSize */
   batchSize: number;
+  /** @member {any} intervalHandle */
   intervalHandle: any;
+  /** @member {ISubscriber<MetricsSnapshot>} [remoteCancel] */
   remoteSubscriber: ?ISubscriber<MetricsSnapshot>;
+  /** @member {function} remoteCancel */
   remoteCancel: () => void;
 
+  /**
+   * @constructs MetricsExporter
+   * @param {MetricsSnapshotHandlerClient} handler
+   * @param {IMeterRegistry} registry
+   * @param {number} exportPeriodSeconds
+   * @param {number} batchSize
+   */
   constructor(
     handler: MetricsSnapshotHandlerClient,
     registry: IMeterRegistry,
@@ -57,6 +85,12 @@ export default class MetricsExporter {
     this.batchSize = batchSize; // TODO: use this to window the snapshots
   }
 
+  /**
+   * Note: this is not re-entrant since we rely on the periodic event of the
+   * interval timer.
+   *
+   * @throws {Error} if a metrics snapshot stream is already subscribed
+   */
   start() {
     //Not re-entrant since we rely on the periodic event of the interval timer
     if (this.intervalHandle) {
@@ -79,6 +113,8 @@ export default class MetricsExporter {
       });
   }
 
+  /**
+   */
   stop() {
     if (this.remoteCancel) {
       this.remoteCancel();
@@ -96,11 +132,20 @@ export default class MetricsExporter {
   }
 }
 
+/**
+ * Stops and then restarts the given {@link MetricsExporter}.
+ *
+ * @param {MetricsExporter} exporter
+ */
 function restart(exporter: MetricsExporter) {
   exporter.stop();
   exporter.start();
 }
 
+/**
+ * @param {MetricsExporter} exporter
+ * @return {Flowable<MetricsSnapshot>} Subscribe to this Flowable to get periodic metrics updates.
+ */
 function getMetricsSnapshotStream(
   exporter: MetricsExporter,
 ): Flowable<MetricsSnapshot> {
@@ -150,6 +195,11 @@ function getMetricsSnapshotStream(
   });
 }
 
+/**
+ * @param {IMeter} meter
+ * @return {Meter[]}
+ * @throws {Error} if <tt>meter</tt> is of an unknown <tt>type</tt>.
+ */
 function convert(meter: IMeter): Meter[] {
   const meterType = meterTypeLookup(meter.type);
   switch (meterType) {
@@ -166,6 +216,13 @@ function convert(meter: IMeter): Meter[] {
   }
 }
 
+/**
+ * Return a {@link MeterType} enum corresponding to the name of a meter type.
+ *
+ * @param {string} meterType - one of "gauge", "timer", "counter", "longTaskTimer", "distribtionSummary", or "other"
+ * @return a {@link MeterType} enum corresponding to the <tt>meterType</tt> string
+ * @throws {Error} if a string not among the above values is submitted as the <tt>meterType</tt> parameter
+ */
 function meterTypeLookup(meterType: string): MeterType {
   switch (meterType) {
     case 'gauge':
@@ -185,6 +242,13 @@ function meterTypeLookup(meterType: string): MeterType {
   }
 }
 
+/**
+ * Return a {@link MeterStatistic} enum corresponding to the name of a meter statistic.
+ * 
+ * @param {string} statistic - one of "max", "count", "total", "value", "unknown", "duration", "totalTime", or "activeTasks"
+ * @return a {@link MeterStatistic} enum corresponding to the <tt>statistic</tt> string
+ * @throws {Error} if a string not among the above values is submitted as the <tt>statistic</tt> parameter
+ */
 function statisticTypeLookup(statistic: string): MeterStatistic {
   switch (statistic) {
     case 'max':
@@ -208,6 +272,11 @@ function statisticTypeLookup(statistic: string): MeterStatistic {
   }
 }
 
+/**
+ * @param {IMeter} imeter
+ * @return {Meter[]}
+ * @throws {Error} if <tt>imeter</tt> is not a {@link Timer}
+ */
 function convertTimer(imeter: IMeter): Meter[] {
   if (!(imeter instanceof Timer)) {
     throw new Error('Meter is not an instance of Timer');
@@ -277,6 +346,10 @@ function convertTimer(imeter: IMeter): Meter[] {
   return meters;
 }
 
+/**
+ * @param {IMeter} imeter
+ * @return {Meter[]}
+ */
 function basicConverter(imeter: IMeter): Meter[] {
   const meters = [];
   const name = imeter.name;
@@ -314,6 +387,10 @@ function basicConverter(imeter: IMeter): Meter[] {
   return meters;
 }
 
+/**
+ * @param {RawMeterTag[]} tags
+ * @return {MeterTag[]}
+ */
 function convertTags(tags: RawMeterTag[]): MeterTag[] {
   return (tags || []).map(tag => {
     const finalTag = new MeterTag();
@@ -323,11 +400,22 @@ function convertTags(tags: RawMeterTag[]): MeterTag[] {
   });
 }
 
-//Not safe for timestamps, just time measurements
+/**
+ * Convert milliseconds to nanoseconds.
+ * Note: this is not safe for timestamps, just time measurements.
+ *
+ * @param {number} milliseconds - a number of milliseconds to convert
+ * @return {number} the value of <tt>milliseconds</tt> converted to nanoseconds
+ */
 function toNanoseconds(milliseconds: number) {
   return milliseconds * 1000 * 1000;
 }
 
+/**
+ * Not currently functional.
+ *
+ * @param {Skew} skew
+ */
 function recordClockSkew(skew: Skew): void {
   // TODO: do something with this?
   return;

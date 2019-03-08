@@ -1,18 +1,33 @@
 /**
+ * @fileOverview Defines the "UniformSample" class.
+ *
  * @flow
+ *
+ * @requires Sample
+ * @exports UniformSample
  */
 
 'use strict';
 
 import Sample from './Sample';
 
-/*
- *  Take a uniform sample of size size for all values
+/**
+ * Take a uniform sample of size size for all values
+ * @extends Sample
  */
 export default class UniformSample<T> extends Sample<T> {
+  /**
+   * @member
+   */
   limit: number;
+  /**
+   * @member
+   */
   count: number;
 
+  /**
+   * @constructs UniformSample
+   */
   constructor(size: number) {
     super();
     this.limit = size;
@@ -20,6 +35,9 @@ export default class UniformSample<T> extends Sample<T> {
     this.init();
   }
 
+  /**
+   * Add <tt>val</tt> to the set of values that make up the sample.
+   */
   update(val: T, timestamp?: number): void {
     this.count++;
     if (this.size() < this.limit) {

@@ -1,5 +1,7 @@
 /**
- * Copyright (c) 2017-present, Netifi Inc.
+ * @fileOverview Defines the "MetricsSubscriber" class.
+ * @copyright Copyright (c) 2017-present, Netifi Inc.
+ * @license Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +16,10 @@
  * limitations under the License.
  *
  * @flow
+ * @requires NPM:rsocket-types
+ * @requires Counter
+ * @requires Timer
+ * @exports MetricsSubscriber
  */
 
 'use strict';
@@ -22,6 +28,8 @@ import {ISubscription, ISubscriber} from 'rsocket-types';
 import Counter from './Counter';
 import Timer from './Timer';
 
+/**
+ */
 export default class MetricsSubscriber<T>
   implements ISubscription, ISubscriber<T> {
   _source: ISubscriber<T>;
@@ -34,6 +42,9 @@ export default class MetricsSubscriber<T>
   _subscription: ISubscription;
   _start: number;
 
+  /**
+   * @constructs MetricsSubscriber
+   */
   constructor(
     actual: ISubscriber<T>,
     next: Counter,
@@ -50,6 +61,8 @@ export default class MetricsSubscriber<T>
     this._timer = timer;
   }
 
+  /**
+   */
   onSubscribe(s: ISubscription) {
     this._subscription = s;
     this._start = new Date().getTime();
@@ -57,11 +70,15 @@ export default class MetricsSubscriber<T>
     this._source.onSubscribe(this);
   }
 
+  /**
+   */
   onNext(t: T) {
     this._next.inc();
     this._source.onNext(t);
   }
 
+  /**
+   */
   onError(t: Error) {
     this._error.inc();
     this._timer.update(new Date().getTime() - this._start);
@@ -69,16 +86,22 @@ export default class MetricsSubscriber<T>
     this._source.onError(t);
   }
 
+  /**
+   */
   onComplete() {
     this._complete.inc();
     this._timer.update(new Date().getTime() - this._start);
     this._source.onComplete();
   }
 
+  /**
+   */
   request(n: number) {
     this._subscription && this._subscription.request(n);
   }
 
+  /**
+   */
   cancel() {
     this._cancelled.inc();
     this._timer.update(new Date().getTime() - this._start);
