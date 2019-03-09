@@ -36,7 +36,7 @@ export const DEFAULT_PERCENTILES = [
 ];
 
 /**
- * A histogram tracks the distribution of items, given a sample type 
+ * A histogram tracks the distribution of items, given a sample type
  * @param {ISample} sample -
  */
 export class Histogram {
@@ -55,7 +55,7 @@ export class Histogram {
   /** (optional; default=null) for the Welford algorithm for calculating running variance without floating-point doom
    * @member {number} varianceM */
   varianceM: ?number;
-  /** (optional; default=null) for the Welford algorithm for calculating running variance without floating-point doom 
+  /** (optional; default=null) for the Welford algorithm for calculating running variance without floating-point doom
    * @member {number} varianceS */
   varianceS: ?number;
   /** (optional; default=0)

@@ -33,12 +33,12 @@ export function createSpanSingle(
 }
 
 /**
- * @param {IFutureSubscriber<T>} subscriber - 
- * @param {Tracer} tracer - 
- * @param {string} name - 
+ * @param {IFutureSubscriber<T>} subscriber -
+ * @param {Tracer} tracer -
+ * @param {string} name -
  * @param {SpanContext|Span} [context] - (optional)
  * @param {Object} [metadata] - (optional)
- * @param {Object} ...tags - 
+ * @param {Object} ...tags -
  */
 class SpanSingleSubscriber implements IFutureSubscriber<T> {
   _span: Span;
@@ -74,7 +74,7 @@ class SpanSingleSubscriber implements IFutureSubscriber<T> {
       options.tags = finalTags;
     }
 
-    //Not supported at this time.
+    // Not supported at this time.
     // if (references) {
     //   options.references = references;
     // }
@@ -146,5 +146,5 @@ class SpanSingleSubscriber implements IFutureSubscriber<T> {
  * @return {number} <tt>Date.now()</tt> converted into microseconds
  */
 function timeInMicros() {
-  return Date.now() * 1000 /*microseconds*/;
+  return Date.now() * 1000 /* microseconds */;
 }

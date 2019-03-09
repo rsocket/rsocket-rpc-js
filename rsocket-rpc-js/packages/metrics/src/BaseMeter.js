@@ -35,7 +35,7 @@ const MAX_COUNTER_VALUE = Math.pow(2, 32); // 4294967296
  * @param {RawMeterTag[]} tags - (optional)
  */
 export default class BaseMeter implements IMeter {
-  /** one-minute per-second rate 
+  /** one-minute per-second rate
    * @member {EWMA} m1Rate */
   m1Rate: EWMA;
   /** five-minute per-second rate
@@ -95,12 +95,12 @@ export default class BaseMeter implements IMeter {
     }
     this.count += n;
 
-    //Check for wrap around
+    // Check for wrap around
     if (this.count > MAX_COUNTER_VALUE) {
       this.count -= MAX_COUNTER_VALUE + 1;
     }
 
-    //Check for negative count (e.g. from a decrement)
+    // Check for negative count (e.g. from a decrement)
     if (this.count < 0) {
       this.count = 0;
     }

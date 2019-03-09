@@ -22,7 +22,6 @@ import RawMeterTag from './RawMeterTag';
  * @extends BaseMeter
  */
 export default class Counter extends BaseMeter {
-
   constructor(
     name: string,
     description?: string,

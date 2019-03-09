@@ -56,7 +56,7 @@ export class SpanSubscriber<T> implements ISubscriber<T>, ISubscription {
       options.tags = finalTags;
     }
 
-    //Not currently supported
+    // Not currently supported
     // if (references) {
     //   options.references = references;
     // }
@@ -146,5 +146,5 @@ export class SpanSubscriber<T> implements ISubscriber<T>, ISubscription {
  * @return {number} <tt>Date.now()</tt> converted to microseconds.
  */
 function timeInMicros() {
-  return Date.now() * 1000 /*microseconds*/;
+  return Date.now() * 1000 /* microseconds */;
 }

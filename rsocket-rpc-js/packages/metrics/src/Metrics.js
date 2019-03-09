@@ -50,7 +50,7 @@ export default class Metrics {
     name: string,
     ...tags: Object[]
   ): (Flowable<T>) => Flowable<T> {
-    //Registry is optional - if not provided, return identity function
+    // Registry is optional - if not provided, return identity function
     if (!registry) {
       return any => any;
     }
@@ -113,7 +113,7 @@ export default class Metrics {
     name: string,
     ...tags: Object[]
   ): (Single<T>) => Single<T> {
-    //Registry is optional - if not provided, return identity function
+    // Registry is optional - if not provided, return identity function
     if (!registry) {
       return any => any;
     }

@@ -10,8 +10,8 @@
 'use strict';
 
 /**
- * @param {string} key - 
- * @param {string} value - 
+ * @param {string} key -
+ * @param {string} value -
  */
 export default class RawMeterTag {
   /**

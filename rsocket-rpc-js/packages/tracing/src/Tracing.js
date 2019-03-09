@@ -65,7 +65,7 @@ export function mapToBuffer(map: Object): Buffer {
       newEntries.push({keyLen, keyBuf, valLen, valBuf});
 
       return {
-        //4 for the sizes plus the actual key and actual value
+        // 4 for the sizes plus the actual key and actual value
         totalSize: aggregate.totalSize + 4 + keyLen + valLen,
         entries: newEntries,
       };
@@ -77,7 +77,7 @@ export function mapToBuffer(map: Object): Buffer {
   const resultBuf = createBuffer(aggregatedTags.totalSize);
   aggregatedTags.entries.forEach(entry => {
     resultBuf.writeUInt16BE(entry.keyLen, offset);
-    offset += 2; //2 bytes for key length
+    offset += 2; // 2 bytes for key length
 
     BufferEncoder.encode(
       entry.keyBuf,

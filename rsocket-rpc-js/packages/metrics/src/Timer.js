@@ -21,7 +21,7 @@ import {ExponentiallyDecayingSample} from './stats';
 /**
  * Basically a timer that tracks the rate of events and histograms the durations.
  * @extends BaseMeter
- * @param {string} name - 
+ * @param {string} name -
  * @param {string} [description] - (optional)
  * @param {RawMeterTag[]} [tags] - (optional)
  */

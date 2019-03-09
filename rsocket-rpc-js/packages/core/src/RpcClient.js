@@ -17,7 +17,7 @@
  * limitations under the License.
  *
  * @flow
- * 
+ *
  * @requires NPM:rsocket-core
  * @requires NPM:rsocket-flowable
  * @requires NPM:rsocket-types

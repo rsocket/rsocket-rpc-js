@@ -91,7 +91,7 @@ export default class MetricsExporter {
    * @throws {Error} if a metrics snapshot stream is already subscribed
    */
   start() {
-    //Not re-entrant since we rely on the periodic event of the interval timer
+    // Not re-entrant since we rely on the periodic event of the interval timer
     if (this.intervalHandle) {
       throw new Error('A metrics snapshot stream is already subscribed');
     }
@@ -243,7 +243,7 @@ function meterTypeLookup(meterType: string): MeterType {
 
 /**
  * Return a {@link MeterStatistic} enum corresponding to the name of a meter statistic.
- * 
+ *
  * @param {string} statistic - one of "max", "count", "total", "value", "unknown", "duration", "totalTime", or "activeTasks"
  * @return a {@link MeterStatistic} enum corresponding to the <tt>statistic</tt> string
  * @throws {Error} if a string not among the above values is submitted as the <tt>statistic</tt> parameter
@@ -286,7 +286,7 @@ function convertTimer(imeter: IMeter): Meter[] {
   const name = timer.name;
   const tags = convertTags(timer.tags);
 
-  //Add meters for percentiles of interest
+  // Add meters for percentiles of interest
   const valuesSnapshot = timer.percentiles();
   Object.keys(valuesSnapshot).forEach(percentile => {
     const value = toNanoseconds(valuesSnapshot[percentile]);
@@ -318,7 +318,7 @@ function convertTimer(imeter: IMeter): Meter[] {
     }
   });
 
-  //add a meter for total count and max time
+  // add a meter for total count and max time
   const histMeter = new Meter();
 
   const meterId = new MeterId();
@@ -354,7 +354,7 @@ function basicConverter(imeter: IMeter): Meter[] {
   const name = imeter.name;
   const tags = convertTags(imeter.tags);
 
-  //Add meters for different windowed EWMAs
+  // Add meters for different windowed EWMAs
   const valuesSnapshot = imeter.rates();
   Object.keys(valuesSnapshot).forEach(rate => {
     const meter = new Meter();
