@@ -1,5 +1,6 @@
 /**
- * @fileOverview The public API of the `core` package.
+ * @name rsocket-rpc-js/packages/core
+ * @fileoverview The public API of the `core` package.
  * @copyright Copyright (c) 2017-present, Netifi Inc.
  * @license Apache-2.0
  *

@@ -1,5 +1,6 @@
 /**
- * @fileOverview A simple counter object.
+ * @name RawMeterTag.js
+ * @fileoverview A simple counter object.
  *
  * @flow
  *
@@ -9,6 +10,8 @@
 'use strict';
 
 /**
+ * @param {string} key - 
+ * @param {string} value - 
  */
 export default class RawMeterTag {
   /**
@@ -20,9 +23,6 @@ export default class RawMeterTag {
    */
   value: string;
 
-  /**
-   * @constructs RawMeterTag
-   */
   constructor(key: string, value: string) {
     this.key = key;
     this.value = value;

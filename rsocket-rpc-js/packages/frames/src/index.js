@@ -1,5 +1,6 @@
 /**
- * @fileOverview The public API for the "frames" package.
+ * @name rsocket-rpc-js/packages/frames
+ * @fileoverview The public API for the "frames" package.
  * @copyright Copyright (c) 2017-present, Netifi Inc.
  * @license Apache-2.0
  *

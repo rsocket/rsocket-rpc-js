@@ -1,5 +1,6 @@
 /**
- * @fileoverview
+ * @name metrics_pb.js
+ * @fileoverview The generated proto.io.rsocket.rpc.metrics code.
  * @enhanceable
  * @suppress {messageConventions} JS Compiler reports an error if a variable or
  *     field starts with 'MSG_' and isn't a translatable message.

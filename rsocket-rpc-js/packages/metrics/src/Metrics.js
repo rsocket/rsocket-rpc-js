@@ -1,5 +1,6 @@
 /**
- * @fileOverview Defines the "Metrics" class
+ * @name Metrics.js
+ * @fileoverview Defines the "Metrics" class
  * @copyright Copyright (c) 2017-present, Netifi Inc.
  * @license Apache-2.0
  *
@@ -40,9 +41,6 @@ import {Flowable, Single} from 'rsocket-flowable';
 /**
  */
 export default class Metrics {
-  /**
-   * @constructs Metrics
-   */
   constructor() {}
 
   /**

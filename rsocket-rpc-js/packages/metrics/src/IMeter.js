@@ -1,5 +1,6 @@
 /**
- * @fileOverview Defines the IMeter interface.
+ * @name IMeter.js
+ * @fileoverview Defines the IMeter interface.
  * @copyright Copyright (c) 2017-present, Netifi Inc.
  * @license Apache-2.0
  *
@@ -31,23 +32,31 @@ import {Meter} from './proto/metrics_pb';
  * @interface IMeter
  */
 export interface IMeter {
-  name: string;         /** @member {string} name */
-  description: ?string; /** @member {string} [description] */
-  statistic: string;    /** @member {string} statistic */
-  type: string;         /** @member {string} type */
-  tags: RawMeterTag[];  /** @member {RawMeterTag[]} tags */
-  units?: string;       /** @member {string} [units] */
+  /** @member {string} name */
+  name: string;
+  /** (optional)
+   * @member {string} description */
+  description: ?string;
+  /** @member {string} statistic */
+  statistic: string;
+  /** @member {string} type */
+  type: string;
+  /** @member {RawMeterTag[]} tags */
+  tags: RawMeterTag[];
+  /** (optional)
+   * @member {string} units */
+  units?: string;
 
   /**
-   * @function
    * @name IMeter#rates
+   * @function
    * @returns {Object}
    */
   rates(): Object;
 
   /**
-   * @function
    * @name IMeter#convert
+   * @function
    * @param {function} converter
    * @returns {Meter[]}
    */

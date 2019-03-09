@@ -1,5 +1,6 @@
 /**
- * @fileOverview Defines the "SpanSubscriber" class.
+ * @name SpanSubscriber.js
+ * @fileoverview Defines the "SpanSubscriber" class.
  * @requires NPM:rsocket-types
  * @requires NPM:opentracing
  * @exports SpanSubscriber
@@ -9,6 +10,12 @@ import {ISubscriber, ISubscription} from 'rsocket-types';
 import {Tracer, Span, SpanContext, FORMAT_TEXT_MAP} from 'opentracing';
 
 /**
+ * @param {ISubscriber<T>} subscriber -
+ * @param {Tracer} tracer -
+ * @param {string} name -
+ * @param {SpanContext|Span} [context] - (optional)
+ * @param {Object} [metadata] - (optional)
+ * @param {Object} ...tags -
  */
 export class SpanSubscriber<T> implements ISubscriber<T>, ISubscription {
   _span: Span;
@@ -19,9 +26,6 @@ export class SpanSubscriber<T> implements ISubscriber<T>, ISubscription {
   _nextCount: number;
   _requestOnce: boolean;
 
-  /**
-   * @constructs SpanSubscriber
-   */
   constructor(
     subscriber: ISubscriber<T>,
     tracer: Tracer,

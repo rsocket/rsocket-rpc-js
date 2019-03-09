@@ -1,5 +1,6 @@
 /**
- * @fileOverview Defines the "MetricsSubscriber" class.
+ * @name MetricsSubscriber.js
+ * @fileoverview Defines the "MetricsSubscriber" class.
  * @copyright Copyright (c) 2017-present, Netifi Inc.
  * @license Apache-2.0
  *
@@ -29,6 +30,12 @@ import Counter from './Counter';
 import Timer from './Timer';
 
 /**
+ * @param {ISubscriber<T>} actual -
+ * @param {Counter} next -
+ * @param {Counter} complete -
+ * @param {Counter} error -
+ * @param {Counter} cancelled -
+ * @param {Timer} timer -
  */
 export default class MetricsSubscriber<T>
   implements ISubscription, ISubscriber<T> {
@@ -42,9 +49,6 @@ export default class MetricsSubscriber<T>
   _subscription: ISubscription;
   _start: number;
 
-  /**
-   * @constructs MetricsSubscriber
-   */
   constructor(
     actual: ISubscriber<T>,
     next: Counter,

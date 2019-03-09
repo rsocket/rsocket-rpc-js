@@ -1,5 +1,6 @@
 /**
- * @fileOverview The "ISample" interface.
+ * @name ISample.js
+ * @fileoverview The "ISample" interface.
  * @copyright Copyright (c) 2017-present, Netifi Inc.
  * @license Apache-2.0
  *
@@ -25,18 +26,27 @@
  */
 export interface ISample<T> {
   /**
+   * Initialize the sample.
    */
   init(): void;
   /**
+   * Add a value (and optionally its timestamp) to the sample.
+   * @param {T} val the value to sample
+   * @param {number} [timestamp] (optional) the timestamp at which this value was generated or sampled
    */
   update(val: T, timestamp?: number): void;
   /**
+   * Clear the items from the sample and reset its size to zero.
    */
   clear(): void;
   /**
+   * Get the number of items in the sample.
+   * @returns {number} the number of items inthe sample
    */
   size(): number;
   /**
+   * Get the items in the sample as an array.
+   * @returns {T[]} the items in the sample
    */
   getValues(): T[];
   /**

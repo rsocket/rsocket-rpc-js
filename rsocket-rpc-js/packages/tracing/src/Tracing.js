@@ -1,5 +1,6 @@
 /**
- * @fileOverview Tracing functionality.
+ * @name Tracing.js
+ * @fileoverview Tracing functionality.
  * @requires NPM:rsocket-core
  * @requires NPM:rsocket-types
  * @requires NPM:rsocket-flowable

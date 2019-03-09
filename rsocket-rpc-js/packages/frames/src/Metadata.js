@@ -1,5 +1,6 @@
 /**
- * @fileOverview Provides methods for encoding and reading payload metadata.
+ * @name Metadata.js
+ * @fileoverview Provides methods for encoding and reading payload metadata.
  * @copyright Copyright (c) 2017-present, Netifi Inc.
  * @license Apache-2.0
  *

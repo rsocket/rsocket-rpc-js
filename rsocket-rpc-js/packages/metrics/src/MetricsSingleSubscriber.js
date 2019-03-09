@@ -1,5 +1,6 @@
 /**
- * @fileOverview Defines the MetricsSingleSubscriber class.
+ * @name MetricsSingleSubscriber.js
+ * @fileoverview Defines the MetricsSingleSubscriber class.
  * @copyright Copyright (c) 2017-present, Netifi Inc.
  * @license Apache-2.0
  *
@@ -53,6 +54,12 @@ export default function embedMetricsSingleSubscriber<T>(
 }
 
 /**
+ * @param {IFutureSubscriber<T>} actual -
+ * @param {Counter} next -
+ * @param {Counter} complete -
+ * @param {Counter} error -
+ * @param {Counter} cancelled -
+ * @param {Timer} timer -
  */
 class MetricsSingleSubscriber<T> implements IFutureSubscriber<T> {
   _source: IFutureSubscriber<T>;
@@ -65,9 +72,6 @@ class MetricsSingleSubscriber<T> implements IFutureSubscriber<T> {
   _cancel: () => void;
   _start: number;
 
-  /**
-   * @constructs MetricsSingleSubscriber
-   */
   constructor(
     actual: IFutureSubscriber<T>,
     next: Counter,

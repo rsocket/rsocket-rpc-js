@@ -1,5 +1,6 @@
 /**
- * @fileOverview Exports the Tracing package.
+ * @name rsocket-rpc-js/packages/tracing
+ * @fileoverview Exports the Tracing package.
  * @copyright Copyright (c) 2017-present, Netifi Inc.
  * @license Apache-2.0
  *

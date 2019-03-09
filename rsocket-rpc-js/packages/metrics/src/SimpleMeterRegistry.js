@@ -1,5 +1,6 @@
 /**
- * @fileOverview Defines the "SimpleMeterRegistry" class.
+ * @name SimpleMeterRegistry.js
+ * @fileoverview Defines the "SimpleMeterRegistry" class.
  * @copyright Copyright (c) 2017-present, Netifi Inc.
  * @license Apache-2.0
  *
@@ -35,9 +36,6 @@ export default class SimpleMeterRegistry implements IMeterRegistry {
    */
   meterMap: Object;
 
-  /**
-   * @constructs SimpleMeterRegistry
-   */
   constructor() {
     this.meterMap = {};
   }

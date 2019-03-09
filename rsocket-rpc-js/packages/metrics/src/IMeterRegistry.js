@@ -1,5 +1,6 @@
 /**
- * @fileOverview Defines the "IMeterRegistry" interface.
+ * @name IMeterRegistry.js
+ * @fileoverview Defines the "IMeterRegistry" interface.
  * @copyright Copyright (c) 2017-present, Netifi Inc.
  * @license Apache-2.0
  *

@@ -1,5 +1,6 @@
 /**
- * @fileOverview Defines the MetricsExporter class
+ * @name MetricsExporter.js
+ * @fileoverview Defines the MetricsExporter class
  * @copyright Copyright (c) 2017-present, Netifi Inc.
  * @license Apache-2.0
  *
@@ -49,9 +50,13 @@ import {IMeterRegistry} from './IMeterRegistry';
 import type {IMeter} from './IMeter';
 
 /**
+ * @param {MetricsSnapshotHandlerClient} handler -
+ * @param {IMeterRegistry} registry -
+ * @param {number} exportPeriodSeconds -
+ * @param {number} batchSize -
  */
 export default class MetricsExporter {
-  /** @member {handler} MetricsSnapshotHandlerClient */
+  /** @member {MetricsSnapshotHandlerClient} handler */
   handler: MetricsSnapshotHandlerClient;
   /** @member {IMeterRegistry} registry */
   registry: IMeterRegistry;
@@ -61,18 +66,12 @@ export default class MetricsExporter {
   batchSize: number;
   /** @member {any} intervalHandle */
   intervalHandle: any;
-  /** @member {ISubscriber<MetricsSnapshot>} [remoteCancel] */
+  /** (optional)
+   * @member {ISubscriber<MetricsSnapshot>} remoteCancel */
   remoteSubscriber: ?ISubscriber<MetricsSnapshot>;
   /** @member {function} remoteCancel */
   remoteCancel: () => void;
 
-  /**
-   * @constructs MetricsExporter
-   * @param {MetricsSnapshotHandlerClient} handler
-   * @param {IMeterRegistry} registry
-   * @param {number} exportPeriodSeconds
-   * @param {number} batchSize
-   */
   constructor(
     handler: MetricsSnapshotHandlerClient,
     registry: IMeterRegistry,

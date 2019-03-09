@@ -1,5 +1,6 @@
 /**
- * @fileOverview Defines the "UniformSample" class.
+ * @name UniformSample.js
+ * @fileoverview Defines the "UniformSample" class.
  *
  * @flow
  *
@@ -12,22 +13,22 @@
 import Sample from './Sample';
 
 /**
- * Take a uniform sample of size size for all values
+ * Take a uniform sample of size size for all values.
  * @extends Sample
+ * @param {number} size - the maximum number of items in this sample
  */
 export default class UniformSample<T> extends Sample<T> {
   /**
-   * @member
+   * The maximum number of items in this sample.
+   * @member {number} limit
    */
   limit: number;
   /**
-   * @member
+   * The current number of items in this sample.
+   * @member {number} count
    */
   count: number;
 
-  /**
-   * @constructs UniformSample
-   */
   constructor(size: number) {
     super();
     this.limit = size;
@@ -36,7 +37,12 @@ export default class UniformSample<T> extends Sample<T> {
   }
 
   /**
-   * Add <tt>val</tt> to the set of values that make up the sample.
+   * Add <tt>val</tt> to the set of values that make up the sample. Note, if
+   * the sample size is already equal to the maximum sample size, the new value
+   * may replace a randomly-chosen existing sample value.
+   *
+   * @param {T} val - the value to add to those sampled
+   * @param {number} [timestamp] - (optional) the time when <tt>val</tt> was sampled (currently unused)
    */
   update(val: T, timestamp?: number): void {
     this.count++;

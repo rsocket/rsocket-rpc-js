@@ -1,5 +1,6 @@
 /**
- * @fileOverview Defines the SwitchTransformOperator class.
+ * @name SwitchTransformOperator.js
+ * @fileoverview Defines the SwitchTransformOperator class.
  * @copyright Copyright (c) 2017-present, Netifi Inc.
  * @license Apache-2.0
  *
@@ -38,6 +39,8 @@ import {Flowable} from 'rsocket-flowable';
 const MAX_REQUEST_N = 0x7fffffff; // uint31
 
 /**
+ * @param {ISubscriber} initial -
+ * @param {function} transformer -
  */
 export default class SwitchTransformOperator<T, R>
   implements ISubscription, ISubscriber<T>, IPublisher<T> {
@@ -50,11 +53,6 @@ export default class SwitchTransformOperator<T, R>
   _subscription: ISubscription;
   _transformer: (first: T, stream: Flowable<T>) => IPublisher<R>;
 
-  /**
-   * @constructs SwitchTransformOperator
-   * @param {ISubscriber} initial
-   * @param {function} transformer
-   */
   constructor(
     initial: ISubscriber<R>,
     transformer: (first: T, stream: Flowable<T>) => IPublisher<R>,
@@ -76,7 +74,7 @@ export default class SwitchTransformOperator<T, R>
   }
 
   /**
-   * @param {IPartialSubscriber} [actual]
+   * @param {IPartialSubscriber} [actual] (optional)
    */
   subscribe(actual?: IPartialSubscriber<T>) {
     if (actual && !this._inner) {
@@ -138,7 +136,7 @@ export default class SwitchTransformOperator<T, R>
   }
 
   /**
-   * @param {Error} errro
+   * @param {Error} error
    */
   onError(error: Error) {
     if (this._canceled || this._done) {

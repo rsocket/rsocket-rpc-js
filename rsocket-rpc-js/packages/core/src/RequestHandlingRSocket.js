@@ -1,5 +1,6 @@
 /**
- * @fileOverview Defines the {@link RequestHandlingRSocket} class.
+ * @name RequestHandlingRSocket.js
+ * @fileoverview Defines the {@link RequestHandlingRSocket} class.
  * @copyright Copyright (c) 2017-present, Netifi Inc.
  * @license Apache-2.0
  *
@@ -37,9 +38,6 @@ export default class RequestHandlingRSocket
   implements Responder<Buffer, Buffer> {
   _registeredServices: Map<string, Responder<Buffer, Buffer>>;
 
-  /**
-   * @constructs RequestHandlingRSocket
-   */
   constructor() {
     this._registeredServices = new Map();
   }
@@ -56,7 +54,7 @@ export default class RequestHandlingRSocket
   /**
    *
    * @param {Payload} payload the request payload
-   * @throws {Error} if there is no registered service
+   * @throws {Error} if there is no registered service associated with the service type reflected in the request payload metadata
    * @throws {Error} if the request payload metadata is null
    */
   fireAndForget(payload: Payload<Buffer, Buffer>): void {
@@ -77,7 +75,7 @@ export default class RequestHandlingRSocket
   /**
    *
    * @param {Payload} payload the request payload
-   * @returns {Single} a Single that emits the response payload
+   * @returns {Single} a Single that emits the response payload, or that signals an error if there is no registered service associated with the service type reflected in the request payload metadata or if the request payload metadata is null
    */
   requestResponse(
     payload: Payload<Buffer, Buffer>,
@@ -103,7 +101,7 @@ export default class RequestHandlingRSocket
   /**
    *
    * @param {Payload} payload the request payload
-   * @returns {Flowable} a Flowable that emits the response payloads
+   * @returns {Flowable} a Flowable that emits the response payloads, or that signals an error if there is no registered service associated with the service type reflected in the request payload metadata or if the request payload metadata is null
    */
   requestStream(
     payload: Payload<Buffer, Buffer>,
@@ -129,7 +127,7 @@ export default class RequestHandlingRSocket
   /**
    *
    * @param {Flowable} payloads the request payloads
-   * @returns {Flowable} a Flowable that emits the response payloads
+   * @returns {Flowable} a Flowable that emits the response payloads, or that signals an error if there is no registered service associated with the service type reflected in the request payload metadata or if the request payload metadata is null
    */
   requestChannel(
     payloads: Flowable<Payload<Buffer, Buffer>>,

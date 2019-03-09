@@ -1,5 +1,6 @@
 /**
- * @fileOverview The set of exports for the "Metrics" package.
+ * @name rsocket-rpc-js/packages/metrics
+ * @fileoverview The set of exports for the "Metrics" package.
  * @copyright Copyright (c) 2017-present, Netifi Inc.
  * @license Apache-2.0
  *

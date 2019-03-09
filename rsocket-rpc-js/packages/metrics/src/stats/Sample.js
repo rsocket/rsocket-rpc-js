@@ -1,5 +1,6 @@
 /**
- * @fileOverview Defines the "Sample" class.
+ * @name Sample.js
+ * @fileoverview Defines the "Sample" class.
  *
  * @flow
  *
@@ -25,9 +26,6 @@ export default class Sample<T> implements ISample<T> {
    */
   count: number;
 
-  /**
-   * @constructs Sample
-   */
   constructor() {
     this.values = [];
     this.count = 0;
@@ -40,7 +38,9 @@ export default class Sample<T> implements ISample<T> {
     this.clear();
   }
   /**
-   * Add a value to the sample.
+   * Add a value to the sample. Note: <tt>timestamp</tt> is currently unused.
+   * @param {T} val - the value to add
+   * @param {number} [timestamp] - (optional) the time when the value was sampled
    */
   update(val: T, timestamp?: number): void {
     this.values.push(val);
@@ -53,12 +53,14 @@ export default class Sample<T> implements ISample<T> {
     this.count = 0;
   }
   /**
+   * Get the number of items in the sample.
    * @return {number} the number of values in the sample.
    */
   size(): number {
     return this.values.length;
   }
   /**
+   * Get the items in the sample as an array.
    * @return {Array} the set of values in the sample.
    */
   getValues(): T[] {

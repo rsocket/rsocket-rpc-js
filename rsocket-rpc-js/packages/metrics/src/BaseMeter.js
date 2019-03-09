@@ -1,5 +1,6 @@
 /**
- * @fileOverview Defines the "BaseMeter" class.
+ * @name BaseMeter.js
+ * @fileoverview Defines the "BaseMeter" class.
  *
  * @flow
  *
@@ -17,30 +18,50 @@ import {Meter} from './proto/metrics_pb';
 import RawMeterTag from './RawMeterTag';
 import {EWMA} from './stats';
 
-/* JavaScript uses double-precision FP for all numeric types.
+/**
+ * MAX_COUNTER_VALUE. 4294967296.
+ *
+ * JavaScript uses double-precision FP for all numeric types.
  * Perhaps someday we'll have native 64-bit integers that can safely be
- * transported via JSON without additional code, but not today. */
+ * transported via JSON without additional code, but not today.
+ *
+ * @constant
+ */
 const MAX_COUNTER_VALUE = Math.pow(2, 32); // 4294967296
 
+/**
+ * @param {string} name -
+ * @param {string} description - (optional)
+ * @param {RawMeterTag[]} tags - (optional)
+ */
 export default class BaseMeter implements IMeter {
-  m1Rate: EWMA;         /** @member {EWMA} m1Rate one-minute per-second rate */
-  m5Rate: EWMA;         /** @member {EWMA} m5Rate five-minute per-second rate */
-  m15Rate: EWMA;        /** @member {EWMA} m15Rate fifteen-minute per-second rate */
-  count: number;        /** @member {number} count */
-  tags: RawMeterTag[];  /** @member {RawMeterTag[]} tags */
-  startTime: number;    /** @member {number} startTime */
-  type: string;         /** @member {string} type */
-  name: string;         /** @member {string} name */
-  description: ?string; /** @member {string} [description] */
-  statistic: string;    /** @member {string} statistic */
-  units: string;        /** @member {string} units */
+  /** one-minute per-second rate 
+   * @member {EWMA} m1Rate */
+  m1Rate: EWMA;
+  /** five-minute per-second rate
+   * @member {EWMA} m5Rate */
+  m5Rate: EWMA;
+  /** fifteen-minute per-second rate
+   * @member {EWMA} m15Rate */
+  m15Rate: EWMA;
+  /** @member {number} count */
+  count: number;
+  /** @member {RawMeterTag[]} tags */
+  tags: RawMeterTag[];
+  /** @member {number} startTime */
+  startTime: number;
+  /** @member {string} type */
+  type: string;
+  /** @member {string} name */
+  name: string;
+  /** (optional)
+   * @member {string} description */
+  description: ?string;
+  /** @member {string} statistic */
+  statistic: string;
+  /** @member {string} units */
+  units: string;
 
-  /**
-   * @constructs BaseMeter
-   * @param {string} name -
-   * @param {string} [description] -
-   * @param {RawMeterTag[]} [tags] -
-   */
   constructor(name: string, description?: string, tags?: RawMeterTag[]) {
     this.m1Rate = EWMA.createM1EWMA();
     this.m5Rate = EWMA.createM5EWMA();
@@ -55,7 +76,6 @@ export default class BaseMeter implements IMeter {
   }
 
   /**
-   *
    * @param {function} converter -
    * @return
    */
@@ -66,7 +86,7 @@ export default class BaseMeter implements IMeter {
   /**
    * Mark the occurence of n events
    *
-   * @param {number} [n=1] - the number of events to mark the occurence of
+   * @param {number} n - (optional; default=1) the number of events to mark the occurence of
    * @return {number} the number of events marked
    */
   mark(n: ?number): number {

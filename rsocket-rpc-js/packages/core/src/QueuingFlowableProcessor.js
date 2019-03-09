@@ -1,10 +1,14 @@
 /**
- * @fileOverview Defines the {@link QueuingFlowableProcessor} class.
+ * @name QueuingFlowableProcessor.js
+ * @fileoverview Defines the {@link QueuingFlowableProcessor} class.
  *
  * @requires NPM:rsocket-types
  * @exports QueuingFlowableProcessor
  */
 
+/**
+ * @interface
+ */
 import type {
   IPublisher,
   ISubscriber,
@@ -25,6 +29,7 @@ import type {
 const MAX_REQUEST_N = 0x7fffffff; // uint31
 
 /**
+ * @param {number} [capacity] - (optional) the maximum number of items to request from the source Flowable (default = {@link MAX_REQUEST_N})
  */
 export default class QueuingFlowableProcessor<T>
   implements IPublisher, ISubscriber, ISubscription {
@@ -38,11 +43,6 @@ export default class QueuingFlowableProcessor<T>
   _done: boolean;
   _error: ?Error;
 
-  /**
-   * @constructs QueuingFlowableProcessor
-   * @property {number} [capacity] the maximum number of items to request from
-   *   the source Flowable (default = MAX_REQUEST_N)
-   */
   constructor(capacity?: number) {
     this._once = false;
     this._requested = 0;

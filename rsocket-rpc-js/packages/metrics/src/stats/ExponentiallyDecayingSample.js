@@ -1,5 +1,6 @@
 /**
- * @fileOverview Defines the "ExponentiallyDecayingSample" class.
+ * @name ExponentiallyDecayingSample.js
+ * @fileoverview Defines the "ExponentiallyDecayingSample" class.
  *
  * @flow
  *
@@ -15,24 +16,43 @@ import BinaryHeap from './lib/binary_heap';
 import type PrioritizedItem from './lib/binary_heap';
 
 /**
- * Take an exponentially decaying sample of size size of all values
- * @const
+ * Take an exponentially decaying sample of size size of all values.
+ * This value represents one hour in milliseconds.
+ * @constant
  */
 const RESCALE_THRESHOLD = 60 * 60 * 1000; // 1 hour in milliseconds
 
 /**
+ * @param {number} size -
+ * @param {number} alpha -
  */
 export default class ExponentiallyDecayingSample<T> extends Sample<T> {
+  /**
+   * @member {number} count
+   */
   count: number;
+  /**
+   * (default = 0)
+   * @member {number} limit
+   */
   limit: number;
+  /**
+   * @member {number} alpha
+   */
   alpha: number;
+  /**
+   * @member {number} startTime
+   */
   startTime: number;
+  /**
+   * @member {number} nextScaleTime
+   */
   nextScaleTime: number;
+  /**
+   * @member {BinaryHeap<T>} values
+   */
   values: BinaryHeap<T>;
 
-  /**
-   * @constructs ExponentiallyDecayingSample
-   */
   constructor(size: number, alpha: number) {
     super();
     this.count = 0;
@@ -122,7 +142,7 @@ export default class ExponentiallyDecayingSample<T> extends Sample<T> {
   }
 
   /**
-   * @param {number} [now] - parameter primarily used for testing rescales
+   * @param {number} now - parameter primarily used for testing rescales
    */
   rescale(now: number): void {
     this.nextScaleTime = this.now() + RESCALE_THRESHOLD;

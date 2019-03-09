@@ -1,5 +1,6 @@
 /**
- * @fileOverview A simple counter object.
+ * @name Counter.js
+ * @fileoverview A simple counter object.
  *
  * @flow
  *
@@ -13,15 +14,15 @@
 import BaseMeter from './BaseMeter';
 import RawMeterTag from './RawMeterTag';
 
+/**
+ * @param {string} name
+ * @param {string} [description]
+ * @param {string} units
+ * @param {RawMeterTag[]} [tags]
+ * @extends BaseMeter
+ */
 export default class Counter extends BaseMeter {
 
-  /**
-   * @constructs Counter
-   * @param {string} name
-   * @param {string} [description]
-   * @param {string} units
-   * @param {RawMeterTag[]} [tags]
-   */
   constructor(
     name: string,
     description?: string,

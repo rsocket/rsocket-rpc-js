@@ -1,5 +1,6 @@
 /**
- * fileOverview Defines the "SpanSingleSubscriber" class.
+ * @name SpanSingle.js
+ * @fileoverview Defines the "SpanSingleSubscriber" class.
  * @requires NPM:rsocket-flowable
  * @requires NPM:opentracing
  * @exports createSpanSingle
@@ -32,6 +33,12 @@ export function createSpanSingle(
 }
 
 /**
+ * @param {IFutureSubscriber<T>} subscriber - 
+ * @param {Tracer} tracer - 
+ * @param {string} name - 
+ * @param {SpanContext|Span} [context] - (optional)
+ * @param {Object} [metadata] - (optional)
+ * @param {Object} ...tags - 
  */
 class SpanSingleSubscriber implements IFutureSubscriber<T> {
   _span: Span;
@@ -39,9 +46,6 @@ class SpanSingleSubscriber implements IFutureSubscriber<T> {
   _tracer: Tracer;
   _cancel: () => void;
 
-  /**
-   * @constructs SpanSingleSubscriber
-   */
   constructor(
     subscriber: IFutureSubscriber<T>,
     tracer: Tracer,

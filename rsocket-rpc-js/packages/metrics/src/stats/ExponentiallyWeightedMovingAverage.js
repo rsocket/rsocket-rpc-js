@@ -1,5 +1,6 @@
 /**
- * @fileOverview Exponentially weighted moving average.
+ * @name ExponentiallyWeightedMovingAverage.js
+ * @fileoverview Exponentially weighted moving average.
  *
  * @flow
  * @exports EWMA
@@ -8,19 +9,21 @@
 'use strict';
 
 /**
- * @const
+ * @constant
  */
 const M1_ALPHA = 1 - Math.exp(-5 / 60);
 /**
- * @const
+ * @constant
  */
 const M5_ALPHA = 1 - Math.exp(-5 / 60 / 5);
 /**
- * @const
+ * @constant
  */
 const M15_ALPHA = 1 - Math.exp(-5 / 60 / 15);
 
 /**
+ * @param {number} alpha -
+ * @param {number} interval - time in milliseconds
  */
 export default class EWMA {
   alpha: number;
@@ -30,10 +33,6 @@ export default class EWMA {
   uncounted: number;
   tickInterval: any;
 
-  /**
-   * @constructs EWMA
-   * @param {number} interval - time in milliseconds
-   */
   constructor(alpha: number, interval: number) {
     this.alpha = alpha;
     this.interval = interval || 5000;
@@ -77,7 +76,7 @@ export default class EWMA {
   }
 
   /*
-   * Update our rate measurements every interval
+   * Update our rate measurements every interval.
    */
   tick(): void {
     var instantRate = this.uncounted / this.interval;
@@ -92,7 +91,7 @@ export default class EWMA {
   }
 
   /*
-   * Return the rate per second
+   * Return the rate per second.
    */
   rate(): number {
     return this.currentRate * 1000;

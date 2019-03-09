@@ -1,5 +1,6 @@
 /**
- * @fileOverview Defines the "Timer" class.
+ * @name Timer.js
+ * @fileoverview Defines the "Timer" class.
  *
  * @flow
  *
@@ -18,8 +19,11 @@ import {Histogram} from './Histogram';
 import {ExponentiallyDecayingSample} from './stats';
 
 /**
- * Basically a timer tracks the rate of events and histograms the durations.
+ * Basically a timer that tracks the rate of events and histograms the durations.
  * @extends BaseMeter
+ * @param {string} name - 
+ * @param {string} [description] - (optional)
+ * @param {RawMeterTag[]} [tags] - (optional)
  */
 export default class Timer extends BaseMeter {
   /**
@@ -27,9 +31,6 @@ export default class Timer extends BaseMeter {
    */
   histogram: Histogram;
 
-  /**
-   * @constructs Timer
-   */
   constructor(name: string, description?: string, tags?: RawMeterTag[]) {
     super(name, description, tags);
     this.histogram = new Histogram(

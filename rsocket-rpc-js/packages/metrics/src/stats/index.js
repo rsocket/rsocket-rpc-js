@@ -1,5 +1,6 @@
 /**
- * @fileOverview Stats package
+ * @name rsocket-rpc-js/packages/metrics/.../stats
+ * @fileoverview Stats package
  *
  * @requires ExponentiallyWeightedMovingAverage
  * @requires ExponentiallyDecayingSample

@@ -1,5 +1,6 @@
 /**
- * @fileOverview Defines the Histogram class.
+ * @name Histogram.js
+ * @fileoverview Defines the Histogram class.
  *
  * @flow
  *
@@ -15,6 +16,10 @@ import {
   Sample,
 } from './stats';
 
+/**
+ * The default set of percentiles to use in the Histogram.
+ * @constant
+ */
 export const DEFAULT_PERCENTILES = [
   0.001,
   0.01,
@@ -32,21 +37,34 @@ export const DEFAULT_PERCENTILES = [
 
 /**
  * A histogram tracks the distribution of items, given a sample type 
+ * @param {ISample} sample -
  */
 export class Histogram {
-  sample: ISample;    /** @member {ISample} sample */
-  min: ?number;       /** @member {number} [min=null] */
-  max: ?number;       /** @member {number} [max=null] */
-  sum: ?number;       /** @member {number} [sum=null] */
-  varianceM: ?number; /** @member {number} [varianceM=null] for the Welford algorithm for calculating running variance without floating-point doom */
-  varianceS: ?number; /** @member {number} [varianceS=null] for the Welford algorithm for calculating running variance without floating-point doom */
-  count: ?number;     /** @member {number} [count=0] */
-  type: string;       /** @member {string} type "histogram" */
-
   /**
-   * @constructs Histogram
-   * @param {ISample} sample
-   */
+   * @member {ISample} sample */
+  sample: ISample;
+  /** (optional; default=null)
+   * @member {number} min */
+  min: ?number;
+  /** (optional; default=null)
+   * @member {number} max */
+  max: ?number;
+  /** (optional; default=null)
+   * @member {number} sum */
+  sum: ?number;
+  /** (optional; default=null) for the Welford algorithm for calculating running variance without floating-point doom
+   * @member {number} varianceM */
+  varianceM: ?number;
+  /** (optional; default=null) for the Welford algorithm for calculating running variance without floating-point doom 
+   * @member {number} varianceS */
+  varianceS: ?number;
+  /** (optional; default=0)
+   * @member {number} count */
+  count: ?number;
+  /** The string "histogram".
+   * @member {string} type */
+  type: string;
+
   constructor(sample: ISample) {
     this.sample = sample || new ExponentiallyDecayingSample(1028, 0.015);
     this.min = null;
