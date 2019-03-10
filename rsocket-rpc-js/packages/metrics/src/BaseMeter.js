@@ -19,9 +19,10 @@ import RawMeterTag from './RawMeterTag';
 import {EWMA} from './stats';
 
 /**
- * MAX_COUNTER_VALUE. 4294967296.
+ * @name MAX_COUNTER_VALUE
+ * @summary 4294967296
  *
- * JavaScript uses double-precision FP for all numeric types.
+ * @desc JavaScript uses double-precision FP for all numeric types.
  * Perhaps someday we'll have native 64-bit integers that can safely be
  * transported via JSON without additional code, but not today.
  *

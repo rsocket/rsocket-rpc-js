@@ -31,7 +31,8 @@ import type {
 import {Flowable} from 'rsocket-flowable';
 
 /**
- * The maximum number of items that may be requested.
+ * MAX_REQUEST_N (from SwitchTransformOperator.js). The maximum number of items
+ * that may be requested.
  *
  * @constant
  * @type {number}

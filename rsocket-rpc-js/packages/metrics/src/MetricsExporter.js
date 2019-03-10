@@ -50,10 +50,16 @@ import {IMeterRegistry} from './IMeterRegistry';
 import type {IMeter} from './IMeter';
 
 /**
+ * An RSocket native metrics source.
  * @param {MetricsSnapshotHandlerClient} handler -
  * @param {IMeterRegistry} registry -
- * @param {number} exportPeriodSeconds -
- * @param {number} batchSize -
+ * @param {number} exportPeriodSeconds - 
+ * @param {number} batchSize - metrics count
+ * @example
+ * const meters = new SimpleMeterRegistry();
+ * const snapshotClient = new MetricsSnapshotHandlerClient(rsocket);
+ * metricsExporter = new MetricsExporter(snapshotClient, meters, 60, 1024);
+ * metricsExporter.start();
  */
 export default class MetricsExporter {
   /** @member {MetricsSnapshotHandlerClient} handler */
@@ -85,6 +91,7 @@ export default class MetricsExporter {
   }
 
   /**
+   * Opens the channel and begins sending metrics.
    * Note: this is not re-entrant since we rely on the periodic event of the
    * interval timer.
    *
@@ -113,6 +120,7 @@ export default class MetricsExporter {
   }
 
   /**
+   * Stop sending metrics
    */
   stop() {
     if (this.remoteCancel) {

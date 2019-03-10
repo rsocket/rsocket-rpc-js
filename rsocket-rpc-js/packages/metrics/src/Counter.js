@@ -18,7 +18,7 @@ import RawMeterTag from './RawMeterTag';
  * @param {string} name
  * @param {string} [description]
  * @param {string} units
- * @param {RawMeterTag[]} [tags]
+ * @param {RawMeterTag[]} [tags] - (optional)
  * @extends BaseMeter
  */
 export default class Counter extends BaseMeter {

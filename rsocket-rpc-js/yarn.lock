@@ -1443,9 +1443,10 @@ eslint-plugin-babel@4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/eslint-plugin-babel/-/eslint-plugin-babel-4.1.2.tgz#79202a0e35757dd92780919b2336f1fa2fe53c1e"
 
-eslint-plugin-dependencies@2.4.0:
+eslint-plugin-dependencies@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-dependencies/-/eslint-plugin-dependencies-2.4.0.tgz#e0d3f32c097281a8afd6c6bef7bb025585e92d6f"
+  integrity sha512-IaW2phNpktrok2eDziZLYxmNaGysXjNj6NVji7LEv/qagHG2oshsmV+mUSxAGG5Jv9seuRBdX1YXEIaNlhkFJg==
   dependencies:
     commondir "^1.0.1"
     resolve "^1.1.6"
@@ -1460,9 +1461,10 @@ eslint-plugin-prefer-object-spread@1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/eslint-plugin-prefer-object-spread/-/eslint-plugin-prefer-object-spread-1.2.1.tgz#27fb91853690cceb3ae6101d9c8aecc6a67a402c"
 
-eslint-scope@~3.7.1:
+eslint-scope@3.7.1, eslint-scope@~3.7.1:
   version "3.7.1"
   resolved "https://registry.yarnpkg.com/eslint-scope/-/eslint-scope-3.7.1.tgz#3d63c3edfda02e06e01a452ad88caacc7cdcb6e8"
+  integrity sha1-PWPD7f2gLgbgGkUq2IyqzHzctug=
   dependencies:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
@@ -3518,6 +3520,14 @@ rsocket-flowable@^0.0.9:
   resolved "https://registry.yarnpkg.com/rsocket-flowable/-/rsocket-flowable-0.0.9.tgz#d6bc998734b0c03b31a82f4ea10d24019b7ef681"
   dependencies:
     fbjs "^0.8.12"
+
+rsocket-rpc-core@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/rsocket-rpc-core/-/rsocket-rpc-core-0.0.3.tgz#b0e5f8e488634221b7011f5810e91fa3e92feff4"
+  integrity sha512-rl7SD9ZZZTxpe7M3LyJdvJImQj3M6zLe7N2QzMTuiO+SlGqdMtFbTY2RPHtyyAz/IrnuUKlce0Fp9r/rSXKFCw==
+  dependencies:
+    rsocket-rpc-frames "^0.0.3"
+    rsocket-types "^0.0.9"
 
 rsocket-rpc-protobuf@^0.0.5:
   version "0.0.5"

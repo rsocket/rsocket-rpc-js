@@ -29,6 +29,7 @@ import type {IMeter} from './IMeter';
 import {IMeterRegistry} from './IMeterRegistry';
 
 /**
+ * The default implementation of {@link IMeterRegistry}.
  */
 export default class SimpleMeterRegistry implements IMeterRegistry {
   /**

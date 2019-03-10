@@ -7,7 +7,29 @@
  */
 
 /**
- * @interface
+ * An asynchronous, pull-based stream of values. Call the <tt>subscribe()</tt>
+ * method to generate a call to the subscriber's <tt>onSubscribe()</tt> method
+ * with a Subscription object that has two methods: <tt>cancel()</tt> and
+ * <tt>request(n)</tt>.
+ *
+ * @see {@link https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveStreamTypes.js}
+ * @interface IPublisher
+ */
+/**
+ * A version of the {@link ISubscriber} interface in which the methods are
+ * optional, so that you may elect to only implement a subset of them.
+ *
+ * @see {@link https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveStreamTypes.js}
+ * @interface IPartialSubscriber
+/**
+ * A handler for values provided by a Publisher.
+ * @see {@link https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveStreamTypes.js}
+ * @interface ISubscriber
+ */
+/**
+ * An underlying source of values for a Publisher.
+ * @see {@link https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveStreamTypes.js}
+ * @interface ISubscription
  */
 import type {
   IPublisher,
@@ -17,11 +39,11 @@ import type {
 } from 'rsocket-types';
 
 /**
- * If no <tt>capacity</tt> is passed to the
- * {@link QueuingFlowableProcessor#constructor}, this value will be used as the
- * capacity (the maximum number of items to request from the source Flowable).
- * This effectively signals that you want an unlimited number of values from
- * the source Flowable.
+ * MAX_REQUEST_N (from QueuingFlowableProcessor.js). If no <tt>capacity</tt> is
+ * passed to the {@link QueuingFlowableProcessor#constructor}, this value will
+ * be used as the capacity (the maximum number of items to request from the
+ * source Flowable). This effectively signals that you want an unlimited number
+ * of values from the source Flowable.
  *
  * @constant
  * @type {number}

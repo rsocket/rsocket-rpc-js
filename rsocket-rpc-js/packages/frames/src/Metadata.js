@@ -28,6 +28,11 @@
 
 import type {Encodable} from 'rsocket-types';
 
+/**
+ * @typedef {type} Encoder
+ * @typedef {Encoder<string>} UTF8Encoder
+ * @typedef {Encoder<buffer>} BufferEncoder
+ */
 import {UTF8Encoder, BufferEncoder, createBuffer} from 'rsocket-core';
 
 export const VERSION = 1;

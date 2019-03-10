@@ -28,7 +28,45 @@
 'use strict';
 
 /**
+ * @external
+ * @see {@link https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveSocketTypes.js}
  * @typedef {(string|Buffer|Uint8Array)} Encodable
+ */
+/**
+ * @example <caption>The methods of the Responder interface</caption>
+ * fireAndForget(payload: Payload<D, M>): void
+ * requestResponse(payload: Payload<D, M>): Single<Payload<D, M>>
+ * requestStream(payload: Payload<D, M>): Flowable<Payload<D, M>>
+ * requestChannel(payloads: Flowable<Payload<D, M>>): Flowable<Payload<D, M>>
+ * metadataPush(payload: Payload<D, M>): Single<void>
+ * @external
+ * @see {@link https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveSocketTypes.js}
+ * @typedef {interface} Responder
+ */
+/**
+ * A contract that provides different interaction models according to the
+ * {@link https://github.com/ReactiveSocket/reactivesocket/blob/master/Protocol.md ReactiveSocket protocol}.
+ * This interface extends the {@link Responder} interface by adding the
+ * <tt>close()</tt> and <tt>connectionStatus()</tt> methods.
+ * @extends Responder
+ * @external
+ * @see {@link https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveSocketTypes.js}
+ * @typedef {interface} ReactiveSocket
+ */
+/**
+ * Represents a network connection with input/output used by a
+ * {@link ReactiveSocket} to send/receive data.
+ * @external
+ * @see {@link https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveSocketTypes.js}
+ * @typedef {interface} DuplexConnection
+ */
+/**
+ * A single unit of data exchanged between the peers of a
+ * {@link ReactiveSocket}. A object of this type consists of two members:
+ * <tt>data</tt> and <tt>metadata</tt>.
+ * @external
+ * @see {@link https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveSocketTypes.js}
+ * @typedef {type} Payload
  */
 import type {
   ConnectionStatus,
@@ -52,8 +90,8 @@ import {createClientMachine} from 'rsocket-core/build/RSocketMachine';
  * @typedef {Object} ClientConfig
  * @property {PayloadSerializers} [serializers] (optional) A serializer transforms data between the application encoding used in payloads and the encodable type accepted by the transport client. You typically will not need to implement your own serializer and deserializer, but if you do, you should pass your implementations to the RPC Client when you construct it.
  * @property {Setup} setup Configure the keepalive process and any metadata you would like to accompany the connection.
- * @property {DuplexConnection} transport Indicate which variety of duplex transport you are using, for example WebSocket or TCP. There are RSocketWebsocketClient and RSocketTcpClient classes that implement the required DuplexConnection interface for this component.
- * @property {Responder} [responder] (optional)
+ * @property {DuplexConnection} transport Indicate which variety of duplex transport you are using, for example WebSocket or TCP. There are <tt>RSocketWebsocketClient</tt> and <tt>RSocketTcpClient</tt> classes that implement the required <tt>DuplexConnection</tt> interface for this component.
+ * @property {Responder} [responder] (optional) An object that implements the five methods of the <tt>Responder</tt> interface, corresponding to the various RSocket interaction models. If the client doesn't intend to receive traffic, there is no need to add a responder. (<tt>Responder</tt> is a type alias for the RSocket API.)
  */
 export type ClientConfig<D, M> = {|
   serializers?: PayloadSerializers<D, M>,
@@ -73,6 +111,12 @@ export type ClientConfig<D, M> = {|
 |};
 
 /**
+ * The primary class/entry point for the core package is the {@link RpcClient}.
+ * The client encapsulates the RSocket methods of <tt>fireAndForget</tt>,
+ * <tt>requestResponse</tt>, <tt>requestStream</tt>, and <tt>requestChannel</tt>
+ * and merges them with a bidirectional connection, allowing seamless use of
+ * RSocket for RPC.
+ *
  * @param {ClientConfig<D,M>} config -
  */
 export default class RpcClient<D, M> {
@@ -95,6 +139,20 @@ export default class RpcClient<D, M> {
    * Returns a <tt>Single</tt>, which, when you subscribe to it, initiates the
    * connection and emits a <tt>ReactiveSocket</tt> object that defines the
    * connection.
+   * @example <caption>Here is an example instantiation of an RpcClient</caption>
+   * const local = 'ws://localhost:8088/';
+   * const keepAlive = 60000; // 60s in ms 
+   * const lifetime = 360000; // 360s in ms
+   * const transport = new RSocketWebsocketClient({url:local}, BufferEncoders);
+   * const client = new RpcClient({setup:{keepAlive, lifetime}, transport});
+   * client.connect().subscribe({
+   *   onComplete: rsocket => {
+   *     console.info("Success! We have a handle to an RSocket connection");
+   *   },
+   *   onError: error => {
+   *     console.error("Failed to connect to local RSocket server.", error);
+   *   }
+   * });
    *
    * @returns {Single<ReactiveSocket<D,M>>}
    * @throws {Error} if the RpcClient is already connected

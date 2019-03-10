@@ -27,6 +27,8 @@
 import type {IMeter} from './IMeter';
 
 /**
+ * This represents any container class that can store handles to Meters and
+ * deliver them as a collection.
  * @interface
  */
 export interface IMeterRegistry {

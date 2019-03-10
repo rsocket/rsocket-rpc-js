@@ -28,6 +28,7 @@ import {SpanContext, Tracer, FORMAT_TEXT_MAP} from 'opentracing';
 import {getTracing} from 'rsocket-rpc-frames';
 
 /**
+ * @returns {SpanContext}
  */
 export function deserializeTraceData(tracer, metadata) {
   if (!tracer) {
@@ -128,6 +129,22 @@ export function bufferToMap(buffer: Buffer): Object {
 }
 
 /**
+ * Allows propagation of a {@link https://opentracing-javascript.surge.sh/classes/spancontext.html SpanContext}
+ * map through a Flowable.
+ *
+ * @example <caption>wraps default tags "tag1" and "tag2" and picks up "additionalTag1" and "additionalTag2"</caption>
+ * const traceCapture = trace(myTracer, "myOperation", {tag1: "value"}, {tag2: "another value"});
+ *
+ * ... more code ...
+ *
+ * const subscriberTransformer = traceCapture({additionalTag1: 1, additionalTag2: "two"});
+ *
+ * subscriberTransformer(rsocket.requestStream(serviceRequest))
+ * .subscribe({ ... });
+ *
+ * @param {Tracer} tracer - an {@link https://opentracing.io/ OpenTracing} {@link https://opentracing-javascript.surge.sh/classes/tracer.html Tracer}
+ * @param {String} name - an operation name
+ * @param {Object} ...tags - You can pass a collection of tags in the form of a map/Object and have it woven through a Flowable=>Flowable function.
  */
 export function trace<T>(
   tracer?: Tracer,
@@ -155,6 +172,16 @@ export function trace<T>(
 }
 
 /**
+ * Similar to {@link trace}, except meant to be used on the server side where a
+ * {@link https://opentracing-javascript.surge.sh/classes/spancontext.html SpanContext}
+ * has been passed from a client.
+ * @example
+ * const traceCapture = traceAsChild(myTracer, "myServerOperation", {serverTag1: "value"}, {serverTag2: "another value"});
+ * const subscriberTransformer = traceCapture(deserializeTraceData(myTracer, requestMetadata));
+ * return subscriberTransformer(serviceImpl.requestStream(serviceRequest));
+ * @param {Tracer} tracer - an {@link https://opentracing.io/ OpenTracing} {@link https://opentracing-javascript.surge.sh/classes/tracer.html Tracer}
+ * @param {String} name - an operation name
+ * @param {Object} ...tags - You can pass a collection of tags in the form of a map/Object and have it woven through a Flowable=>Flowable function.
  */
 export function traceAsChild<T>(
   tracer?: Tracer,
@@ -182,6 +209,22 @@ export function traceAsChild<T>(
 }
 
 /**
+ * Allows propagation of a {@link https://opentracing-javascript.surge.sh/classes/spancontext.html SpanContext}
+ * map through a Flowable.
+ *
+ * @example <caption>wraps default tags "tag1" and "tag2" and picks up "additionalTag1" and "additionalTag2"</caption>
+ * const traceCapture = trace(myTracer, "myOperation", {tag1: "value"}, {tag2: "another value"});
+ *
+ * ... more code ...
+ *
+ * const subscriberTransformer = traceCapture({additionalTag1: 1, additionalTag2: "two"});
+ *
+ * subscriberTransformer(rsocket.requestStream(serviceRequest))
+ * .subscribe({ ... });
+ *
+ * @param {Tracer} tracer - an {@link https://opentracing.io/ OpenTracing} {@link https://opentracing-javascript.surge.sh/classes/tracer.html Tracer}
+ * @param {String} name - an operation name
+ * @param {Object} ...tags - You can pass a collection of tags in the form of a map/Object and have it woven through a Single=>Single function.
  */
 export function traceSingle<T>(
   tracer?: Tracer,
@@ -200,6 +243,16 @@ export function traceSingle<T>(
 }
 
 /**
+ * Similar to {@link traceSingle}, except meant to be used on the server side
+ * where a {@link https://opentracing-javascript.surge.sh/classes/spancontext.html SpanContext}
+ * has been passed from a client.
+ * @example
+ * const traceCapture = traceAsChild(myTracer, "myServerOperation", {serverTag1: "value"}, {serverTag2: "another value"});
+ * const subscriberTransformer = traceCapture(deserializeTraceData(myTracer, requestMetadata));
+ * return subscriberTransformer(serviceImpl.requestStream(serviceRequest));
+ * @param {Tracer} tracer - an {@link https://opentracing.io/ OpenTracing} {@link https://opentracing-javascript.surge.sh/classes/tracer.html Tracer}
+ * @param {String} name - an operation name
+ * @param {Object} ...tags - You can pass a collection of tags in the form of a map/Object and have it woven through a Single=>Single function.
  */
 export function traceSingleAsChild<T>(
   tracer?: Tracer,
