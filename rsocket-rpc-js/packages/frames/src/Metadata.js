@@ -41,7 +41,7 @@ import type {Encodable} from 'rsocket-types';
  */
 /**
  * @external
- * @typedef {Encoder<buffer>} BufferEncoder
+ * @typedef {Encoder<Buffer>} BufferEncoder
  */
 import {UTF8Encoder, BufferEncoder, createBuffer} from 'rsocket-core';
 

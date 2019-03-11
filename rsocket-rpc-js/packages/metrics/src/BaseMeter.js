@@ -33,22 +33,14 @@ const MAX_COUNTER_VALUE = Math.pow(2, 32); // 4294967296
 /**
  */
 export default class BaseMeter implements IMeter {
-  /** @type {EWMA}
-   * one-minute per-second rate */
   m1Rate: EWMA;
-  /** @type {EWMA}
-   * five-minute per-second rate */
   m5Rate: EWMA;
-  /** @type {EWMA}
-   * fifteen-minute per-second rate */
   m15Rate: EWMA;
   count: number;
-  /** @type {RawMeterTag[]} */
   tags: RawMeterTag[];
   startTime: number;
   type: string;
   name: string;
-  /** @type {string} */
   description: ?string;
   statistic: string;
   units: string;
@@ -59,15 +51,25 @@ export default class BaseMeter implements IMeter {
    * @param {?RawMeterTag[]} tags -
    */
   constructor(name: string, description?: string, tags?: RawMeterTag[]) {
+    /** @type {EWMA} */
     this.m1Rate = EWMA.createM1EWMA();
+    /** @type {EWMA} */
     this.m5Rate = EWMA.createM5EWMA();
+    /** @type {EWMA} */
     this.m15Rate = EWMA.createM15EWMA();
+    /** @type {number} */
     this.count = 0;
+    /** @type {?RawMeterTag[]} */
     this.tags = tags || [];
+    /** @type {number} */
     this.startTime = new Date().getTime();
+    /** @type {string} */
     this.type = 'meter';
+    /** @type {string} */
     this.name = name;
+    /** @type {?string} */
     this.description = description;
+    /** @type {string} */
     this.statistic = 'unknown';
   }
 
