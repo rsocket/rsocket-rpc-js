@@ -101,6 +101,15 @@ import type {
 /**
  * @external
  * @see https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-core/src/RSocketSerialization.js
+ * @typedef {Object} Serializer
+ * @desc A Serializer transforms data between the application encoding used in
+ * Payloads and the Encodable type accepted by the transport client.
+ * @property {function} deserialize a function that takes an {@link Encodable} and returns the expected data or metadata object
+ * @property {function} serialize a funciton that takes a data or metadata object and returns a corresponding {@link Encodable}
+ */
+/**
+ * @external
+ * @see https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-core/src/RSocketSerialization.js
  * @typedef {Object} PayloadSerializers
  * @property {Serializer} data
  * @property {Serializer} metadata
@@ -138,6 +147,12 @@ import {MAJOR_VERSION, MINOR_VERSION} from 'rsocket-core/build/RSocketVersion';
 import {createClientMachine} from 'rsocket-core/build/RSocketMachine';
 
 /**
+ * @typedef {Object} Setup
+ * @property {number} keepAlive The number of milliseconds between keepalive messages you will send to the service
+ * @property {number} lifetime The number of milliseconds to wait after the last keepalive message from the service before you consider the connection timed out.
+ * @property {?Encodable} [metadata] Data you would like to send to the service at connection-time (this can be any arbitrary data the service expects, for example, authentication credentials).
+ */
+/**
  * @typedef {Object} ClientConfig
  * @property {PayloadSerializers} [serializers] A serializer transforms data between the application encoding used in payloads and the encodable type accepted by the transport client. You typically will not need to implement your own serializer and deserializer, but if you do, you should pass your implementations to the RPC Client when you construct it.
  * @property {Setup} setup Configure the keepalive process and any metadata you would like to accompany the connection.
@@ -146,12 +161,6 @@ import {createClientMachine} from 'rsocket-core/build/RSocketMachine';
  */
 export type ClientConfig<D, M> = {|
   serializers?: PayloadSerializers<D, M>,
-  /**
-   * @typedef {Object} Setup
-   * @property {number} keepAlive The number of milliseconds between keepalive messages you will send to the service
-   * @property {number} lifetime The number of milliseconds to wait after the last keepalive message from the service before you consider the connection timed out.
-   * @property {Encodable} [metadata] Data you would like to send to the service at connection-time (this can be any arbitrary data the service expects, for example, authentication credentials).
-   */
   setup: {|
     keepAlive: number,
     lifetime: number,

@@ -29,8 +29,18 @@
 import type {Encodable} from 'rsocket-types';
 
 /**
- * @typedef {type} Encoder
+ * @external
+ * @typedef {Object} Encoder
+ * @property {function} byteLength given an {@link Encodable} returns its length in bytes as a number
+ * @property {function} encode
+ * @property {function} decode
+ */
+/**
+ * @external
  * @typedef {Encoder<string>} UTF8Encoder
+ */
+/**
+ * @external
  * @typedef {Encoder<buffer>} BufferEncoder
  */
 import {UTF8Encoder, BufferEncoder, createBuffer} from 'rsocket-core';
@@ -42,6 +52,11 @@ export const SERVICE_LENGTH_SIZE = 2;
 export const METHOD_LENGTH_SIZE = 2;
 export const TRACING_LENGTH_SIZE = 2;
 
+/**
+ * @external
+ * @typedef {Object} Buffer
+ * @see https://nodejs.org/api/buffer.html
+ */
 /**
  * Use this method to send well-formed call routing metadata with your payloads.
  *
