@@ -15,19 +15,13 @@ import {ISample} from './ISample';
 /**
  */
 export default class Sample<T> implements ISample<T> {
-  /**
-   * The set of items in the sample.
-   * @member
-   */
   values: T[];
-  /**
-   * The number of items in the sample.
-   * @member
-   */
   count: number;
 
   constructor() {
+    /** @type {T[]} */
     this.values = [];
+    /** @type {number} */
     this.count = 0;
   }
 
@@ -38,9 +32,9 @@ export default class Sample<T> implements ISample<T> {
     this.clear();
   }
   /**
-   * Add a value to the sample. Note: <tt>timestamp</tt> is currently unused.
+   * Add a value to the sample. Note: {@link timestamp} is currently unused.
    * @param {T} val - the value to add
-   * @param {number} [timestamp] - (optional) the time when the value was sampled
+   * @param {?number} [timestamp] - the time when the value was sampled
    */
   update(val: T, timestamp?: number): void {
     this.values.push(val);

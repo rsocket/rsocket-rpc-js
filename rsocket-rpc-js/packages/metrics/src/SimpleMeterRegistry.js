@@ -32,16 +32,15 @@ import {IMeterRegistry} from './IMeterRegistry';
  * The default implementation of {@link IMeterRegistry}.
  */
 export default class SimpleMeterRegistry implements IMeterRegistry {
-  /**
-   * @member {Object} meterMap
-   */
   meterMap: Object;
 
   constructor() {
+    /** @type {Object} */
     this.meterMap = {};
   }
 
   /**
+   * @param {IMeter} meter
    */
   registerMeter(meter: IMeter): void {
     const id = {
@@ -58,12 +57,14 @@ export default class SimpleMeterRegistry implements IMeterRegistry {
   }
 
   /**
+   * @param {IMeter[]} meters
    */
   registerMeters(meters: IMeter[]): void {
     (meters || []).forEach(meter => this.registerMeter(meter));
   }
 
   /**
+   * @return {IMeter[]}
    */
   meters(): IMeter[] {
     return Array.prototype.concat.apply(

@@ -2,6 +2,9 @@ var ExponentiallyWeightedMovingAverage = require('../stats/ExponentiallyWeighted
   .default;
 var exponentially_weighted_moving_average = new ExponentiallyWeightedMovingAverage.createM1EWMA();
 
+/**
+ * @test {ExponentiallyWeightedMovingAverage}
+ */
 var test = function(callback) {
   console.log('\nTesting ExponentiallyWeightedMovingAverage\n');
   console.log('Sending updates every 100 milliseconds for 30 seconds.');

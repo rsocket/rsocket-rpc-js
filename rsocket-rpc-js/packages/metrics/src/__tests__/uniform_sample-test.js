@@ -4,6 +4,9 @@ var expect = require('chai').expect,
   it = require('mocha').it,
   UniformSample = require('../stats/UniformSample').default;
 
+/**
+ * @test {UniformSample}
+ */
 describe('UniformSample', function() {
   it('average of sampled values should fall within acceptable range of actual mean.', function() {
     debug('Creating a new UniformSample with a limit of 600.');

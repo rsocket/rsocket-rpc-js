@@ -29,34 +29,23 @@ import RawMeterTag from './RawMeterTag';
 import {Meter} from './proto/metrics_pb';
 
 /**
- * @interface IMeter
  */
 export interface IMeter {
-  /** @member {string} name */
   name: string;
-  /** (optional)
-   * @member {string} description */
   description: ?string;
-  /** @member {string} statistic */
   statistic: string;
-  /** @member {string} type */
   type: string;
-  /** @member {RawMeterTag[]} tags */
   tags: RawMeterTag[];
-  /** (optional)
-   * @member {string} units */
   units?: string;
 
   /**
-   * @name IMeter#rates
-   * @function
+   * @abstract
    * @returns {Object}
    */
   rates(): Object;
 
   /**
-   * @name IMeter#convert
-   * @function
+   * @abstract
    * @param {function} converter
    * @returns {Meter[]}
    */

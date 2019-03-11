@@ -23,46 +23,33 @@ import type PrioritizedItem from './lib/binary_heap';
 const RESCALE_THRESHOLD = 60 * 60 * 1000; // 1 hour in milliseconds
 
 /**
- * @param {number} size -
- * @param {number} alpha -
  */
 export default class ExponentiallyDecayingSample<T> extends Sample<T> {
-  /**
-   * @member {number} count
-   */
   count: number;
-  /**
-   * (default = 0)
-   * @member {number} limit
-   */
   limit: number;
-  /**
-   * @member {number} alpha
-   */
   alpha: number;
-  /**
-   * @member {number} startTime
-   */
   startTime: number;
-  /**
-   * @member {number} nextScaleTime
-   */
   nextScaleTime: number;
-  /**
-   * @member {BinaryHeap<T>} values
-   */
   values: BinaryHeap<T>;
 
+  /**
+   * @param {number} size -
+   * @param {number} alpha -
+   */
   constructor(size: number, alpha: number) {
     super();
+    /** @type {number} */
     this.count = 0;
+    /** @type {number} */
     this.limit = size;
+    /** @type {number} */
     this.alpha = alpha;
     this.clear();
   }
 
   /**
    * This is a relatively expensive operation.
+   * @return {T[]}
    */
   getValues(): T[] {
     var values = ([]: T[]),
@@ -75,40 +62,49 @@ export default class ExponentiallyDecayingSample<T> extends Sample<T> {
   }
 
   /**
+   * @return {number}
    */
   size(): number {
     return this.values.size();
   }
 
   /**
+   * @return {BinaryHeap<T>}
    */
   newHeap(): BinaryHeap<T> {
     return new BinaryHeap(obj => obj.priority);
   }
 
   /**
+   * @return {number}
    */
   now(): number {
     return new Date().getTime();
   }
 
   /**
+   * @return {number}
    */
   tick(): number {
     return this.now() / 1000;
   }
 
   /**
+   * @return {void}
    */
   clear(): void {
+    /** @type {BinaryHeap<T>} values */
     this.values = this.newHeap();
     this.count = 0;
+    /** @type {number} */
     this.startTime = this.tick();
+    /** @type {number} */
     this.nextScaleTime = this.now() + RESCALE_THRESHOLD;
   }
 
   /**
-   * @param {number} [timestamp] (in milliseconds)
+   * @param {T} val - 
+   * @param {?number} timestamp - (in milliseconds)
    */
   update(val: T, timestamp?: number): void {
     // Convert timestamp to seconds
@@ -136,6 +132,8 @@ export default class ExponentiallyDecayingSample<T> extends Sample<T> {
   }
 
   /**
+   * @param {number} time
+   * @return {number}
    */
   weight(time: number): number {
     return Math.exp(this.alpha * time);
@@ -143,6 +141,7 @@ export default class ExponentiallyDecayingSample<T> extends Sample<T> {
 
   /**
    * @param {number} now - parameter primarily used for testing rescales
+   * @return {void}
    */
   rescale(now: number): void {
     this.nextScaleTime = this.now() + RESCALE_THRESHOLD;

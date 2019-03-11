@@ -7,28 +7,28 @@
  */
 
 /**
- * An asynchronous, pull-based stream of values. Call the <tt>subscribe()</tt>
- * method to generate a call to the subscriber's <tt>onSubscribe()</tt> method
- * with a Subscription object that has two methods: <tt>cancel()</tt> and
- * <tt>request(n)</tt>.
+ * An asynchronous, pull-based stream of values. Call the
+ * {link IPublisher#subscribe} method to generate a call to the subscriber's
+ * {@link onSubscribe} method with a {@link Subscription} object that has two
+ * methods: {@link Subscription#cancel} and {@link Subscription#request}.
  *
- * @see {@link https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveStreamTypes.js}
+ * @see https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveStreamTypes.js
  * @interface IPublisher
  */
 /**
  * A version of the {@link ISubscriber} interface in which the methods are
  * optional, so that you may elect to only implement a subset of them.
  *
- * @see {@link https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveStreamTypes.js}
+ * @see https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveStreamTypes.js
  * @interface IPartialSubscriber
 /**
  * A handler for values provided by a Publisher.
- * @see {@link https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveStreamTypes.js}
+ * @see https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveStreamTypes.js
  * @interface ISubscriber
  */
 /**
  * An underlying source of values for a Publisher.
- * @see {@link https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveStreamTypes.js}
+ * @see https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveStreamTypes.js
  * @interface ISubscription
  */
 import type {
@@ -39,7 +39,7 @@ import type {
 } from 'rsocket-types';
 
 /**
- * MAX_REQUEST_N (from QueuingFlowableProcessor.js). If no <tt>capacity</tt> is
+ * MAX_REQUEST_N (from QueuingFlowableProcessor.js). If no {@link capacity} is
  * passed to the {@link QueuingFlowableProcessor#constructor}, this value will
  * be used as the capacity (the maximum number of items to request from the
  * source Flowable). This effectively signals that you want an unlimited number
@@ -51,7 +51,6 @@ import type {
 const MAX_REQUEST_N = 0x7fffffff; // uint31
 
 /**
- * @param {number} [capacity] - (optional) the maximum number of items to request from the source Flowable (default = {@link MAX_REQUEST_N})
  */
 export default class QueuingFlowableProcessor<T>
   implements IPublisher, ISubscriber, ISubscription {
@@ -65,6 +64,9 @@ export default class QueuingFlowableProcessor<T>
   _done: boolean;
   _error: ?Error;
 
+  /**
+   * @param {?number} [capacity] - the maximum number of items to request from the source Flowable (default = {@link MAX_REQUEST_N})
+   */
   constructor(capacity?: number) {
     this._once = false;
     this._requested = 0;
@@ -96,13 +98,13 @@ export default class QueuingFlowableProcessor<T>
   }
 
   /**
-   * When the {@link QueuingFlowableProcessor} gets an <tt>onSubscribe</tt> call
-   * from the source Flowable, it requests that the Flowable begin sending it
-   * items: either <tt>capacity</tt> items, if the capacity was set during the
-   * call to {@link QueuingFlowableProcessor#constructor}, or
+   * When the {@link QueuingFlowableProcessor} gets an {@link onSubscribe} call
+   * from the source {@link Flowable}, it requests that the {@link Flowable}
+   * begin sending it items: either {@link capacity} items, if the capacity was
+   * set during the call to {@link QueuingFlowableProcessor#constructor}, or
    * {@link MAX_REQUEST_N} items (effectively unlimited).
    *
-   * @param {ISubscription} s the subscription from the source Flowable
+   * @param {ISubscription} s - the subscription from the source {@link Flowable}
    */
   onSubscribe(s: ISubscription) {
     if (this._done) {
@@ -114,8 +116,7 @@ export default class QueuingFlowableProcessor<T>
 
   /**
    * @param {T} t
-   * @throws {Error} if <tt>t</tt> is <tt>null</tt>. Flowables are not permitted
-   *   to emit null values.
+   * @throws {Error} if {@link t} is null. Flowables are not permitted to emit null values.
    */
   onNext(t: T) {
     if (t === null) {
@@ -146,11 +147,13 @@ export default class QueuingFlowableProcessor<T>
 
   /**
    * Request a certain number of additional items from this
-   * {@link QueuingFlowableProcessor}. Note that requests are additive;
-   * <tt>request(2); request(3);</tt> is equivalent to <tt>request(5);</tt>
+   * {@link QueuingFlowableProcessor}.
+   * @example <caption>Note that requests are additive:</caption>
+   * request(2);
+   * request(3); // this is equivalent to request(5);
    *
    * @param {number} n the number of items to request
-   * @throws {Error} if <tt>n</tt> is zero or negative
+   * @throws {Error} if {@link n} is zero or negative
    */
   request(n: number) {
     if (n > 0) {
@@ -182,6 +185,7 @@ export default class QueuingFlowableProcessor<T>
    * outputs of its predecessor.
    *
    * @param {function} transformer a transformation function
+   * @return {QueuingFlowableProcessorQueuingFlowableProcessor} this same processor, modified with the transformation function
    */
   map(transformer) {
     this._transformers.push(transformer);

@@ -30,12 +30,6 @@ import Counter from './Counter';
 import Timer from './Timer';
 
 /**
- * @param {ISubscriber<T>} actual -
- * @param {Counter} next -
- * @param {Counter} complete -
- * @param {Counter} error -
- * @param {Counter} cancelled -
- * @param {Timer} timer -
  */
 export default class MetricsSubscriber<T>
   implements ISubscription, ISubscriber<T> {
@@ -49,6 +43,14 @@ export default class MetricsSubscriber<T>
   _subscription: ISubscription;
   _start: number;
 
+  /**
+   * @param {ISubscriber<T>} actual -
+   * @param {Counter} next -
+   * @param {Counter} complete -
+   * @param {Counter} error -
+   * @param {Counter} cancelled -
+   * @param {Timer} timer -
+   */
   constructor(
     actual: ISubscriber<T>,
     next: Counter,
@@ -57,18 +59,27 @@ export default class MetricsSubscriber<T>
     cancelled: Counter,
     timer: Timer,
   ) {
+    /** @type {ISubscriber<T>} */
     this._source = actual;
+    /** @type {Counter} */
     this._next = next;
+    /** @type {Counter} */
     this._complete = complete;
+    /** @type {Counter} */
     this._error = error;
+    /** @type {Counter} */
     this._cancelled = cancelled;
+    /** @type {Timer} */
     this._timer = timer;
   }
 
   /**
+   * @param {ISubscription} s -
    */
   onSubscribe(s: ISubscription) {
+    /** @type {ISubscription} */
     this._subscription = s;
+    /** @type {number} */
     this._start = new Date().getTime();
 
     this._source.onSubscribe(this);
@@ -82,6 +93,7 @@ export default class MetricsSubscriber<T>
   }
 
   /**
+   * @param {Error} t -
    */
   onError(t: Error) {
     this._error.inc();
@@ -99,6 +111,7 @@ export default class MetricsSubscriber<T>
   }
 
   /**
+   * @param {number} n -
    */
   request(n: number) {
     this._subscription && this._subscription.request(n);

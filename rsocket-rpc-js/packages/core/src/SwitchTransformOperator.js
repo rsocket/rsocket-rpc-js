@@ -40,8 +40,6 @@ import {Flowable} from 'rsocket-flowable';
 const MAX_REQUEST_N = 0x7fffffff; // uint31
 
 /**
- * @param {ISubscriber} initial -
- * @param {function} transformer -
  */
 export default class SwitchTransformOperator<T, R>
   implements ISubscription, ISubscriber<T>, IPublisher<T> {
@@ -54,6 +52,10 @@ export default class SwitchTransformOperator<T, R>
   _subscription: ISubscription;
   _transformer: (first: T, stream: Flowable<T>) => IPublisher<R>;
 
+  /**
+   * @param {ISubscriber} initial -
+   * @param {function} transformer -
+   */
   constructor(
     initial: ISubscriber<R>,
     transformer: (first: T, stream: Flowable<T>) => IPublisher<R>,
@@ -75,7 +77,7 @@ export default class SwitchTransformOperator<T, R>
   }
 
   /**
-   * @param {IPartialSubscriber} [actual] (optional)
+   * @param {?IPartialSubscriber} actual -
    */
   subscribe(actual?: IPartialSubscriber<T>) {
     if (actual && !this._inner) {

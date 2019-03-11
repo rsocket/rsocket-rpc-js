@@ -31,6 +31,13 @@ import {Single} from 'rsocket-flowable';
 import type {IFutureSubscriber} from 'rsocket-flowable/build/Single';
 
 /**
+ * @param {Single<T>} single -
+ * @param {Counter} next -
+ * @param {Counter} complete -
+ * @param {Counter} error -
+ * @param {Counter} cancelled -
+ * @param {Timer} timer -
+ * @return {Single}
  */
 export default function embedMetricsSingleSubscriber<T>(
   single: Single<T>,
@@ -54,12 +61,6 @@ export default function embedMetricsSingleSubscriber<T>(
 }
 
 /**
- * @param {IFutureSubscriber<T>} actual -
- * @param {Counter} next -
- * @param {Counter} complete -
- * @param {Counter} error -
- * @param {Counter} cancelled -
- * @param {Timer} timer -
  */
 class MetricsSingleSubscriber<T> implements IFutureSubscriber<T> {
   _source: IFutureSubscriber<T>;
@@ -72,6 +73,14 @@ class MetricsSingleSubscriber<T> implements IFutureSubscriber<T> {
   _cancel: () => void;
   _start: number;
 
+  /**
+   * @param {IFutureSubscriber<T>} actual -
+   * @param {Counter} next -
+   * @param {Counter} complete -
+   * @param {Counter} error -
+   * @param {Counter} cancelled -
+   * @param {Timer} timer -
+   */
   constructor(
     actual: IFutureSubscriber<T>,
     next: Counter,
@@ -89,6 +98,8 @@ class MetricsSingleSubscriber<T> implements IFutureSubscriber<T> {
   }
 
   /**
+   * @param {function} cancel
+   * @return {void}
    */
   onSubscribe(cancel: () => void): void {
     this._cancel = cancel;
@@ -98,6 +109,8 @@ class MetricsSingleSubscriber<T> implements IFutureSubscriber<T> {
   }
 
   /**
+   * @param {Error} t
+   * @return {void}
    */
   onError(t: Error): void {
     this._error.inc();
@@ -107,6 +120,8 @@ class MetricsSingleSubscriber<T> implements IFutureSubscriber<T> {
   }
 
   /**
+   * @param {T} t
+   * @return {void}
    */
   onComplete(t: T): void {
     this._next.inc();
@@ -116,6 +131,7 @@ class MetricsSingleSubscriber<T> implements IFutureSubscriber<T> {
   }
 
   /**
+   * @return {void}
    */
   cancel(): void {
     this._cancelled.inc();

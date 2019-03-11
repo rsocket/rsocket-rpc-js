@@ -51,48 +51,47 @@ import type {IMeter} from './IMeter';
 
 /**
  * An RSocket native metrics source.
- * @param {MetricsSnapshotHandlerClient} handler -
- * @param {IMeterRegistry} registry -
- * @param {number} exportPeriodSeconds - 
- * @param {number} batchSize - metrics count
  * @example
  * const meters = new SimpleMeterRegistry();
  * const snapshotClient = new MetricsSnapshotHandlerClient(rsocket);
  * metricsExporter = new MetricsExporter(snapshotClient, meters, 60, 1024);
  * metricsExporter.start();
+ * @todo use {@link MetricsExporter#batchSize} to window the snapshots
  */
 export default class MetricsExporter {
-  /** @member {MetricsSnapshotHandlerClient} handler */
   handler: MetricsSnapshotHandlerClient;
-  /** @member {IMeterRegistry} registry */
   registry: IMeterRegistry;
-  /** @member {number} exportPeriodSeconds */
   exportPeriodSeconds: number;
-  /** @member {number} batchSize */
   batchSize: number;
-  /** @member {any} intervalHandle */
   intervalHandle: any;
-  /** (optional)
-   * @member {ISubscriber<MetricsSnapshot>} remoteCancel */
   remoteSubscriber: ?ISubscriber<MetricsSnapshot>;
-  /** @member {function} remoteCancel */
   remoteCancel: () => void;
 
+  /**
+   * @param {MetricsSnapshotHandlerClient} handler -
+   * @param {IMeterRegistry} registry -
+   * @param {number} exportPeriodSeconds - 
+   * @param {number} batchSize - metrics count
+  */
   constructor(
     handler: MetricsSnapshotHandlerClient,
     registry: IMeterRegistry,
     exportPeriodSeconds: number,
     batchSize: number,
   ) {
+    /** @type {MetricsSnapshotHandlerClient} */
     this.handler = handler;
+    /** @type {IMeterRegistry} */
     this.registry = registry;
+    /** @type {number} */
     this.exportPeriodSeconds = exportPeriodSeconds;
+    /** @type {number} */
     this.batchSize = batchSize; // TODO: use this to window the snapshots
   }
 
   /**
-   * Opens the channel and begins sending metrics.
-   * Note: this is not re-entrant since we rely on the periodic event of the
+   * Open the channel and begin to send metrics.
+   * This is not re-entrant since we rely on the periodic event of the
    * interval timer.
    *
    * @throws {Error} if a metrics snapshot stream is already subscribed
@@ -113,6 +112,7 @@ export default class MetricsExporter {
           restart(this);
         },
         onSubscribe: subscription => {
+          /** @type {function} */
           this.remoteCancel = subscription.cancel;
           subscription.request(2147483647); // FaceBook thing - their Flowable only allows this
         },
@@ -129,11 +129,13 @@ export default class MetricsExporter {
 
     if (this.remoteSubscriber) {
       this.remoteSubscriber.onComplete();
+      /** @type {ISubscriber<MetricsSnapshot>} */
       this.remoteSubscriber = null;
     }
 
     if (this.intervalHandle) {
       clearInterval(this.intervalHandle);
+      /** @type {any} */
       this.intervalHandle = null;
     }
   }
@@ -205,7 +207,7 @@ function getMetricsSnapshotStream(
 /**
  * @param {IMeter} meter
  * @return {Meter[]}
- * @throws {Error} if <tt>meter</tt> is of an unknown <tt>type</tt>.
+ * @throws {Error} if {@link meter} is of an unknown {@link IMeter.type}.
  */
 function convert(meter: IMeter): Meter[] {
   const meterType = meterTypeLookup(meter.type);
@@ -227,8 +229,8 @@ function convert(meter: IMeter): Meter[] {
  * Return a {@link MeterType} enum corresponding to the name of a meter type.
  *
  * @param {string} meterType - one of "gauge", "timer", "counter", "longTaskTimer", "distribtionSummary", or "other"
- * @return a {@link MeterType} enum corresponding to the <tt>meterType</tt> string
- * @throws {Error} if a string not among the above values is submitted as the <tt>meterType</tt> parameter
+ * @return a {@link MeterType} enum corresponding to the {@link meterType} string
+ * @throws {Error} if a string not among the above values is submitted as the {@link meterType} parameter
  */
 function meterTypeLookup(meterType: string): MeterType {
   switch (meterType) {
@@ -253,8 +255,8 @@ function meterTypeLookup(meterType: string): MeterType {
  * Return a {@link MeterStatistic} enum corresponding to the name of a meter statistic.
  *
  * @param {string} statistic - one of "max", "count", "total", "value", "unknown", "duration", "totalTime", or "activeTasks"
- * @return a {@link MeterStatistic} enum corresponding to the <tt>statistic</tt> string
- * @throws {Error} if a string not among the above values is submitted as the <tt>statistic</tt> parameter
+ * @return a {@link MeterStatistic} enum corresponding to the {@link statistic} string
+ * @throws {Error} if a string not among the above values is submitted as the {@link statistic} parameter
  */
 function statisticTypeLookup(statistic: string): MeterStatistic {
   switch (statistic) {
@@ -282,7 +284,7 @@ function statisticTypeLookup(statistic: string): MeterStatistic {
 /**
  * @param {IMeter} imeter
  * @return {Meter[]}
- * @throws {Error} if <tt>imeter</tt> is not a {@link Timer}
+ * @throws {Error} if {@link imeter} is not a {@link Timer}
  */
 function convertTimer(imeter: IMeter): Meter[] {
   if (!(imeter instanceof Timer)) {
@@ -412,7 +414,7 @@ function convertTags(tags: RawMeterTag[]): MeterTag[] {
  * Note: this is not safe for timestamps, just time measurements.
  *
  * @param {number} milliseconds - a number of milliseconds to convert
- * @return {number} the value of <tt>milliseconds</tt> converted to nanoseconds
+ * @return {number} the value of {@link milliseconds} converted to nanoseconds
  */
 function toNanoseconds(milliseconds: number) {
   return milliseconds * 1000 * 1000;
@@ -421,6 +423,7 @@ function toNanoseconds(milliseconds: number) {
 /**
  * Not currently functional.
  *
+ * @todo Do something with this?
  * @param {Skew} skew
  */
 function recordClockSkew(skew: Skew): void {

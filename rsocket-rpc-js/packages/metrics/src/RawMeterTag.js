@@ -10,21 +10,19 @@
 'use strict';
 
 /**
- * @param {string} key -
- * @param {string} value -
  */
 export default class RawMeterTag {
-  /**
-   * @member {string} key
-   */
   key: string;
-  /**
-   * @member {string} value
-   */
   value: string;
 
+  /**
+   * @param {string} key -
+   * @param {string} value -
+   */
   constructor(key: string, value: string) {
+    /** @type {string} */
     this.key = key;
+    /** @type {string} */
     this.value = value;
   }
 }

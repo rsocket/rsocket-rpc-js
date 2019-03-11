@@ -3,6 +3,9 @@ var expect = require('chai').expect,
   it = require('mocha').it,
   Histogram = require('../Histogram').Histogram;
 
+/**
+ * @test {Histogram}
+ */
 describe('Histogram', function() {
   it('should properly record percentiles from uniform distribution.', function() {
     var unifHist = Histogram.createUniformHistogram(5000);

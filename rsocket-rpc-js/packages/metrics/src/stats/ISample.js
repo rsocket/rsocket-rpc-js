@@ -32,7 +32,7 @@ export interface ISample<T> {
   /**
    * Add a value (and optionally its timestamp) to the sample.
    * @param {T} val the value to sample
-   * @param {number} [timestamp] (optional) the timestamp at which this value was generated or sampled
+   * @param {?number} [timestamp] the timestamp at which this value was generated or sampled
    */
   update(val: T, timestamp?: number): void;
   /**

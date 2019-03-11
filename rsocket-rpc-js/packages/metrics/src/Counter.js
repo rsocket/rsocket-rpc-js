@@ -15,13 +15,15 @@ import BaseMeter from './BaseMeter';
 import RawMeterTag from './RawMeterTag';
 
 /**
- * @param {string} name
- * @param {string} [description]
- * @param {string} units
- * @param {RawMeterTag[]} [tags] - (optional)
- * @extends BaseMeter
+ * @extends {BaseMeter}
  */
 export default class Counter extends BaseMeter {
+  /**
+   * @param {string} name
+   * @param {?string} [description]
+   * @param {string} units
+   * @param {?RawMeterTag[]} [tags] -
+   */
   constructor(
     name: string,
     description?: string,
@@ -31,13 +33,14 @@ export default class Counter extends BaseMeter {
     super(name, description, tags);
     this.type = 'counter';
     this.statistic = 'count';
+    /** @type {string} **/
     this.units = units;
   }
 
   /**
    * Increment the count by a certain number of items.
    *
-   * @param {number} [val] the number of items to increment
+   * @param {?number} [val] the number of items to increment
    */
   inc(val: ?number): void {
     this.mark(val);
@@ -46,7 +49,7 @@ export default class Counter extends BaseMeter {
   /**
    * Decrement the count by a certain number of items.
    *
-   * @param {number} [val=1] the number of items to decrement
+   * @param {?number} [val=1] the number of items to decrement
    */
   dec(val: ?number): void {
     if (!val) {

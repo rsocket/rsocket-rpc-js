@@ -15,7 +15,7 @@ import {
 /**
  * @param {number} min - the fewest number of bytes in the array
  * @param {number} max - the array must be smaller than this number in size
- * @return {number[]} an array of between <tt>min</tt> and <tt>max−1</tt>
+ * @return {number[]} an array of between {@link min} and {@link max}−1
  * numbers, each of which is in the range [0,256)
  */
 function randomBytes(min, max) {
@@ -32,6 +32,9 @@ function randomByte() {
   return Math.floor(Math.random() * 256);
 }
 
+/**
+ * @test
+ */
 describe('METADATA', () => {
   it('serializes/deserializes metadata NO TRACING', () => {
     const service = 'service';

@@ -44,6 +44,9 @@ export default class Metrics {
   constructor() {}
 
   /**
+   * @param {?IMeterRegistry} [registry] -
+   * @param {string} name -
+   * @param {Object[]} tags -
    * @returns {function} a wrapping function through which you weave your RSocket calls
    * @example
    * const metricsWrapper = timed(myMeterRegistry, "my.function.name", {tag1: "tag"}, {anotherTag: "again"});
@@ -112,6 +115,9 @@ export default class Metrics {
   }
 
   /**
+   * @param {?IMeterRegistry} [registry] -
+   * @param {string} name -
+   * @param {Object[]} tags -
    * @returns {function} a wrapping function through which you weave your RSocket calls
    * @example
    * const metricsWrapper = timedSingle(myMeterRegistry, "my.function.name", {tag1: "tag"}, {anotherTag: "again"});

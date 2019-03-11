@@ -18,7 +18,6 @@ import {
 
 /**
  * The default set of percentiles to use in the Histogram.
- * @constant
  */
 export const DEFAULT_PERCENTILES = [
   0.001,
@@ -36,53 +35,47 @@ export const DEFAULT_PERCENTILES = [
 ];
 
 /**
- * A histogram tracks the distribution of items, given a sample type
- * @param {ISample} sample -
+ * A histogram tracks the distribution of items, given a sample type.
  */
 export class Histogram {
-  /**
-   * @member {ISample} sample */
   sample: ISample;
-  /** (optional; default=null)
-   * @member {number} min */
   min: ?number;
-  /** (optional; default=null)
-   * @member {number} max */
   max: ?number;
-  /** (optional; default=null)
-   * @member {number} sum */
   sum: ?number;
-  /** (optional; default=null) for the Welford algorithm for calculating running variance without floating-point doom
-   * @member {number} varianceM */
   varianceM: ?number;
-  /** (optional; default=null) for the Welford algorithm for calculating running variance without floating-point doom
-   * @member {number} varianceS */
   varianceS: ?number;
-  /** (optional; default=0)
-   * @member {number} count */
   count: ?number;
-  /** The string "histogram".
-   * @member {string} type */
   type: string;
 
+  /**
+   * @param {ISample} sample -
+   */
   constructor(sample: ISample) {
+    /** @type {ISample} */
     this.sample = sample || new ExponentiallyDecayingSample(1028, 0.015);
+    /** @type {?number} */
     this.min = null;
+    /** @type {?number} */
     this.max = null;
+    /** @type {?number} */
     this.sum = null;
     // These are for the Welford algorithm for calculating running variance
     // without floating-point doom.
+    /** @type {?number} */
     this.varianceM = null;
+    /** @type {?number} */
     this.varianceS = null;
+    /** @type {?number} */
     this.count = 0;
+    /** @type {string} */
     this.type = 'histogram';
   }
 
   /**
    * Create an exponentially decaying histogram.
    *
-   * @param {number} size (default = 1028)
-   * @param {number} alpha (default = 0.015)
+   * @param {number} [size=1028]
+   * @param {number} [alpha=0.015]
    * @return {Histogram}
    */
   static createExponentialDecayHistogram(
@@ -97,7 +90,7 @@ export class Histogram {
   /**
    * Create a uniformly-sampled histogram.
    *
-   * @param {number} size (default = 1028)
+   * @param {number} [size=1028]
    * @return {Histogram}
    */
   static createUniformHistogram(size: number): Histogram {
@@ -107,7 +100,7 @@ export class Histogram {
   /**
    * Return the histogram to its default values.
    */
-  clear = function(): void {
+  clear/* = function*/(): void {
     this.sample.clear();
     this.min = null;
     this.max = null;
@@ -122,9 +115,9 @@ export class Histogram {
    *
    * @function
    * @param {number} val
-   * @param {number} [timestamp]
+   * @param {?number} [timestamp]
    */
-  update = function(val: number, timestamp?: number): void {
+  update/* = function*/(val: number, timestamp?: number): void {
     this.count++;
     this.sample.update(val, timestamp);
     if (this.max === null) {
@@ -147,7 +140,7 @@ export class Histogram {
    * @function
    * @param {number} val
    */
-  updateVariance = function(val: number): void {
+  updateVariance/* = function*/(val: number): void {
     var oldVM = this.varianceM,
       oldVS = this.varianceS;
     if (this.count == 1) {
@@ -162,10 +155,10 @@ export class Histogram {
    * Get the values for a set of percentiles.
    *
    * @function
-   * @param {number[]} [percentiles] An array of percentiles, expressed as decimals between zero and one. For example, [0.5, 0.75, 0.9, 0.99]. Default is {@link DEFAULT_PERCENTILES}.
+   * @param {?number[]} [percentiles] An array of percentiles, expressed as decimals between zero and one. For example, [0.5, 0.75, 0.9, 0.99]. Default is {@link DEFAULT_PERCENTILES}.
    * @return {number[]} the values for each percentile level
    */
-  percentiles = function(percentiles?: number[]): Object {
+  percentiles/* = function*/(percentiles?: number[]): Object {
     if (!percentiles) {
       percentiles = DEFAULT_PERCENTILES;
     }
@@ -202,10 +195,10 @@ export class Histogram {
    * Return the average variance using the Welford algorithm.
    *
    * @function
-   * @return {number} the average variance, or <tt>null</tt> if this is undefined because the count is zero.
-   * @throws a divide by zero error if this.count==1
+   * @return {?number} the average variance, or null if this is undefined because the count is zero.
+   * @throws {Error} a divide by zero error if this.count==1
    */
-  variance = function(): ?number {
+  variance/* = function*/(): ?number {
     return this.count < 1 ? null : this.varianceS / (this.count - 1);
   };
 
@@ -213,9 +206,9 @@ export class Histogram {
    * Return the sum of squares of differences from the current mean.
    *
    * @function
-   * @return {number} the sum of squares of differences from the current mean, or <tt>null</tt> if this is undefined because the count is zero.
+   * @return {?number} the sum of squares of differences from the current mean, or null if this is undefined because the count is zero.
    */
-  mean = function(): ?number {
+  mean/* = function*/(): ?number {
     return this.count == 0 ? null : this.varianceM;
   };
 
@@ -223,9 +216,9 @@ export class Histogram {
    * Return the standard deviation, the square root of the average variance.
    *
    * @function
-   * @return {number} the standard deviation, or <tt>null</tt> if this is undefined because the count is zero.
+   * @return {?number} the standard deviation, or null if this is undefined because the count is zero.
    */
-  stdDev = function(): ?number {
+  stdDev/* = function*/(): ?number {
     return this.count < 1 ? null : Math.sqrt(this.variance());
   };
 
@@ -235,14 +228,28 @@ export class Histogram {
    * @function
    * @return {any[]} an array of the values in the sample
    */
-  values = function(): any[] {
+  values/* = function*/(): any[] {
     return this.sample.getValues();
   };
 
   /**
    * @function
+   * @return {Object}
+   * @property {string} type "histogram"
+   * @property {number} min
+   * @property {number} max
+   * @property {number} sum
+   * @property {number} variance
+   * @property {number} mean
+   * @property {number} stdDev
+   * @property {number} count
+   * @property {number} median
+   * @property {number} p75
+   * @property {number} p95
+   * @property {number} p99
+   * @property {number} p999
    */
-  toObject = function(): Object {
+  toObject/* = function*/(): Object {
     var percentiles = this.percentiles();
     return {
       type: 'histogram',

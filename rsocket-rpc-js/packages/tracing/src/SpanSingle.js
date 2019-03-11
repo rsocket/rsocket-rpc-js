@@ -9,6 +9,12 @@ import {Single, IFutureSubscriber} from 'rsocket-flowable/build/Single';
 import {Tracer, Span, SpanContext, FORMAT_TEXT_MAP} from 'opentracing';
 
 /**
+ * @param {Single<T>} single -
+ * @param {Tracer} tracer -
+ * @param {string} name -
+ * @param {?(SpanContext|Span)} context -
+ * @param {?Object} metadata -
+ * @param {Object} tags -
  * @return {Single}
  */
 export function createSpanSingle(
@@ -33,12 +39,6 @@ export function createSpanSingle(
 }
 
 /**
- * @param {IFutureSubscriber<T>} subscriber -
- * @param {Tracer} tracer -
- * @param {string} name -
- * @param {SpanContext|Span} [context] - (optional)
- * @param {Object} [metadata] - (optional)
- * @param {Object} ...tags -
  */
 class SpanSingleSubscriber implements IFutureSubscriber<T> {
   _span: Span;
@@ -46,6 +46,14 @@ class SpanSingleSubscriber implements IFutureSubscriber<T> {
   _tracer: Tracer;
   _cancel: () => void;
 
+  /**
+   * @param {IFutureSubscriber<T>} subscriber -
+   * @param {Tracer} tracer -
+   * @param {string} name -
+   * @param {SpanContext|Span} [context] - 
+   * @param {Object} [metadata] - 
+   * @param {Object} tags -
+   */
   constructor(
     subscriber: IFutureSubscriber<T>,
     tracer: Tracer,
@@ -143,7 +151,7 @@ class SpanSingleSubscriber implements IFutureSubscriber<T> {
 /**
  * Return the current time in microseconds.
  *
- * @return {number} <tt>Date.now()</tt> converted into microseconds
+ * @return {number} The return value of {@link Date#now} converted into microseconds
  */
 function timeInMicros() {
   return Date.now() * 1000 /* microseconds */;

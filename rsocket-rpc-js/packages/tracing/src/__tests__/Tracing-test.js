@@ -26,6 +26,9 @@ function generateString(min, max) {
 const chars = 'abcdefghijklmnopqrstuvwxyABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 const generateChar = () => chars[Math.floor(Math.random() * chars.length)];
 
+/**
+ * @test {Tracing}
+ */
 describe('TRACING HELPERS', () => {
   it('serializes and deserializes an arbitrary map', () => {
     for (var i = 0; i < 1000; i++) {

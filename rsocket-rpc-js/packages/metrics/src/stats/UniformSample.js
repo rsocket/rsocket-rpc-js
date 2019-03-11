@@ -13,36 +13,32 @@
 import Sample from './Sample';
 
 /**
- * Take a uniform sample of size size for all values.
- * @extends Sample
- * @param {number} size - the maximum number of items in this sample
+ * Take a uniform sample of size "size" for all values.
+ * @extends {Sample}
  */
 export default class UniformSample<T> extends Sample<T> {
-  /**
-   * The maximum number of items in this sample.
-   * @member {number} limit
-   */
   limit: number;
-  /**
-   * The current number of items in this sample.
-   * @member {number} count
-   */
   count: number;
 
+  /**
+   * @param {number} size - the maximum number of items in this sample
+   */
   constructor(size: number) {
     super();
+    /** @type {number} */
     this.limit = size;
+    /** @type {number} */
     this.count = 0;
     this.init();
   }
 
   /**
-   * Add <tt>val</tt> to the set of values that make up the sample. Note, if
+   * Add {@link val} to the set of values that make up the sample. Note, if
    * the sample size is already equal to the maximum sample size, the new value
    * may replace a randomly-chosen existing sample value.
    *
    * @param {T} val - the value to add to those sampled
-   * @param {number} [timestamp] - (optional) the time when <tt>val</tt> was sampled (currently unused)
+   * @param {?number} timestamp - the time when {@link val} was sampled (currently unused)
    */
   update(val: T, timestamp?: number): void {
     this.count++;

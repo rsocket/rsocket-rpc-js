@@ -44,8 +44,8 @@ export default class RequestHandlingRSocket
 
   /**
    *
-   * @param {string} service
-   * @param {Responder} handler
+   * @param {string} service -
+   * @param {Responder<Buffer,Buffer>} handler -
    */
   addService(service: string, handler: Responder<Buffer, Buffer>) {
     this._registeredServices.set(service, handler);
@@ -53,7 +53,7 @@ export default class RequestHandlingRSocket
 
   /**
    *
-   * @param {Payload} payload the request payload
+   * @param {Payload<Buffer, Buffer>} payload the - request payload
    * @throws {Error} if there is no registered service associated with the service type reflected in the request payload metadata
    * @throws {Error} if the request payload metadata is null
    */
@@ -74,8 +74,11 @@ export default class RequestHandlingRSocket
 
   /**
    *
-   * @param {Payload} payload the request payload
-   * @returns {Single} a Single that emits the response payload, or that signals an error if there is no registered service associated with the service type reflected in the request payload metadata or if the request payload metadata is null
+   * @param {Payload<Buffer,Buffer>} payload - the request payload
+   * @returns {Single<Payload<Buffer,Buffer>>} a {@link Single} that emits the
+   *   response payload, or that signals an error if there is no registered
+   *   service associated with the service type reflected in the request payload
+   *   metadata or if the request payload metadata is null
    */
   requestResponse(
     payload: Payload<Buffer, Buffer>,
@@ -100,8 +103,11 @@ export default class RequestHandlingRSocket
 
   /**
    *
-   * @param {Payload} payload the request payload
-   * @returns {Flowable} a Flowable that emits the response payloads, or that signals an error if there is no registered service associated with the service type reflected in the request payload metadata or if the request payload metadata is null
+   * @param {Payload<Buffer,Buffer>} payload the request payload
+   * @returns {Flowable<Buffer,Buffer>} a Flowable that emits the response
+   *   payloads, or that signals an error if there is no registered service
+   *   associated with the service type reflected in the request payload
+   *   metadata or if the request payload metadata is null
    */
   requestStream(
     payload: Payload<Buffer, Buffer>,
@@ -126,8 +132,11 @@ export default class RequestHandlingRSocket
 
   /**
    *
-   * @param {Flowable} payloads the request payloads
-   * @returns {Flowable} a Flowable that emits the response payloads, or that signals an error if there is no registered service associated with the service type reflected in the request payload metadata or if the request payload metadata is null
+   * @param {Flowable<Payload<Buffer,Buffer>>} payloads - the request payloads
+   * @returns {Flowable<Payload<Buffer,Buffer>>} a {@link Flowable} that emits
+   *   the response payloads, or that signals an error if there is no registered
+   *   service associated with the service type reflected in the request payload
+   *   metadata or if the request payload metadata is null
    */
   requestChannel(
     payloads: Flowable<Payload<Buffer, Buffer>>,
@@ -153,10 +162,9 @@ export default class RequestHandlingRSocket
   }
 
   /**
-   * This function is not implemented in this class.
-   *
-   * @param {Payload}
-   * @returns {Single} a Single that signals an error and terminates
+   * @abstract
+   * @param {Payload<Buffer, Buffer>} payload -
+   * @returns {Single<void>} a Single that signals an error and terminates
    */
   metadataPush(payload: Payload<Buffer, Buffer>): Single<void> {
     return Single.error(new Error('metadataPush() is not implemented'));
