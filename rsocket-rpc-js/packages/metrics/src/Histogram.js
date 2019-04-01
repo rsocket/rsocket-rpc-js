@@ -100,7 +100,7 @@ export class Histogram {
   /**
    * Return the histogram to its default values.
    */
-  clear /* = function*/(): void {
+  clear(): void {
     this.sample.clear();
     this.min = null;
     this.max = null;
@@ -117,7 +117,7 @@ export class Histogram {
    * @param {number} val
    * @param {?number} [timestamp]
    */
-  update /* = function*/(val: number, timestamp?: number): void {
+  update(val: number, timestamp?: number): void {
     this.count++;
     this.sample.update(val, timestamp);
     if (this.max === null) {
@@ -140,7 +140,7 @@ export class Histogram {
    * @function
    * @param {number} val
    */
-  updateVariance /* = function*/(val: number): void {
+  updateVariance(val: number): void {
     var oldVM = this.varianceM,
       oldVS = this.varianceS;
     if (this.count == 1) {
@@ -158,7 +158,7 @@ export class Histogram {
    * @param {?number[]} [percentiles] An array of percentiles, expressed as decimals between zero and one. For example, [0.5, 0.75, 0.9, 0.99]. Default is {@link DEFAULT_PERCENTILES}.
    * @return {number[]} the values for each percentile level
    */
-  percentiles /* = function*/(percentiles?: number[]): Object {
+  percentiles(percentiles?: number[]): Object {
     if (!percentiles) {
       percentiles = DEFAULT_PERCENTILES;
     }
@@ -198,7 +198,7 @@ export class Histogram {
    * @return {?number} the average variance, or null if this is undefined because the count is zero.
    * @throws {Error} a divide by zero error if this.count==1
    */
-  variance /* = function*/(): ?number {
+  variance(): ?number {
     return this.count < 1 ? null : this.varianceS / (this.count - 1);
   }
 
@@ -208,7 +208,7 @@ export class Histogram {
    * @function
    * @return {?number} the sum of squares of differences from the current mean, or null if this is undefined because the count is zero.
    */
-  mean /* = function*/(): ?number {
+  mean(): ?number {
     return this.count == 0 ? null : this.varianceM;
   }
 
@@ -218,7 +218,7 @@ export class Histogram {
    * @function
    * @return {?number} the standard deviation, or null if this is undefined because the count is zero.
    */
-  stdDev /* = function*/(): ?number {
+  stdDev(): ?number {
     return this.count < 1 ? null : Math.sqrt(this.variance());
   }
 
@@ -228,7 +228,7 @@ export class Histogram {
    * @function
    * @return {any[]} an array of the values in the sample
    */
-  values /* = function*/(): any[] {
+  values(): any[] {
     return this.sample.getValues();
   }
 
@@ -249,7 +249,7 @@ export class Histogram {
    * @property {number} p99
    * @property {number} p999
    */
-  toObject /* = function*/(): Object {
+  toObject(): Object {
     var percentiles = this.percentiles();
     return {
       type: 'histogram',
