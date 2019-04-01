@@ -24,8 +24,8 @@ export class SpanSubscriber<T> implements ISubscriber<T>, ISubscription {
    * @param {ISubscriber<T>} subscriber -
    * @param {Tracer} tracer -
    * @param {string} name -
-   * @param {?(SpanContext|Span)} [context] - 
-   * @param {?Object} [metadata] - 
+   * @param {?(SpanContext|Span)} [context] -
+   * @param {?Object} [metadata] -
    * @param {Object} ...tags -
    */
   constructor(

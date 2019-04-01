@@ -70,9 +70,9 @@ export default class MetricsExporter {
   /**
    * @param {MetricsSnapshotHandlerClient} handler -
    * @param {IMeterRegistry} registry -
-   * @param {number} exportPeriodSeconds - 
+   * @param {number} exportPeriodSeconds -
    * @param {number} batchSize - metrics count
-  */
+   */
   constructor(
     handler: MetricsSnapshotHandlerClient,
     registry: IMeterRegistry,
