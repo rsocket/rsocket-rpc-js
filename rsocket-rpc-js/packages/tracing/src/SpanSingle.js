@@ -50,8 +50,8 @@ class SpanSingleSubscriber implements IFutureSubscriber<T> {
    * @param {IFutureSubscriber<T>} subscriber -
    * @param {Tracer} tracer -
    * @param {string} name -
-   * @param {SpanContext|Span} [context] - 
-   * @param {Object} [metadata] - 
+   * @param {SpanContext|Span} [context] -
+   * @param {Object} [metadata] -
    * @param {Object} tags -
    */
   constructor(

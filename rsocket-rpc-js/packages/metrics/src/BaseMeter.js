@@ -47,7 +47,7 @@ export default class BaseMeter implements IMeter {
 
   /**
    * @param {string} name -
-   * @param {?string} description - 
+   * @param {?string} description -
    * @param {?RawMeterTag[]} tags -
    */
   constructor(name: string, description?: string, tags?: RawMeterTag[]) {
@@ -170,7 +170,7 @@ export default class BaseMeter implements IMeter {
   }
 
   /** @return {Object}
-   * @property {string} type 
+   * @property {string} type
    * @property {number} count
    * @property {RawMeterTag[]} tags
    * @property {string} name */

@@ -110,7 +110,7 @@ export function mapToBuffer(map: Object): Buffer {
 }
 
 /**
- * @param {!Buffer} buffer - 
+ * @param {!Buffer} buffer -
  * @returns {Object}
  */
 export function bufferToMap(buffer: Buffer): Object {

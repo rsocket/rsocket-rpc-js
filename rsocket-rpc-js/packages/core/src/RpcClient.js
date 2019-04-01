@@ -201,7 +201,7 @@ export default class RpcClient<D, M> {
    * connection.
    * @example <caption>Here is an example instantiation of an RpcClient:</caption>
    * const local = 'ws://localhost:8088/';
-   * const keepAlive = 60000; // 60s in ms 
+   * const keepAlive = 60000; // 60s in ms
    * const lifetime = 360000; // 360s in ms
    * const transport = new RSocketWebsocketClient({url:local}, BufferEncoders);
    * const client = new RpcClient({setup:{keepAlive, lifetime}, transport});

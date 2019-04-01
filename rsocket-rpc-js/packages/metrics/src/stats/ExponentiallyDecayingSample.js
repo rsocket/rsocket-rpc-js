@@ -103,7 +103,7 @@ export default class ExponentiallyDecayingSample<T> extends Sample<T> {
   }
 
   /**
-   * @param {T} val - 
+   * @param {T} val -
    * @param {?number} timestamp - (in milliseconds)
    */
   update(val: T, timestamp?: number): void {
