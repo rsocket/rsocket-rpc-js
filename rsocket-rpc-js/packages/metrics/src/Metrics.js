@@ -1,5 +1,8 @@
 /**
- * Copyright (c) 2017-present, Netifi Inc.
+ * @name Metrics.js
+ * @fileoverview Defines the "Metrics" class
+ * @copyright Copyright (c) 2017-present, Netifi Inc.
+ * @license Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +17,15 @@
  * limitations under the License.
  *
  * @flow
+ *
+ * @requires Counter
+ * @requires Timer
+ * @requires IMeterRegistry
+ * @requires RawMeterTag
+ * @requires MetricsSingleSubscriber
+ * @requires MetricsSubscriber
+ * @requires NPM:rsocket-flowable
+ * @exports Metrics
  */
 
 'use strict';
@@ -26,15 +38,27 @@ import embedMetricsSingleSubscriber from './MetricsSingleSubscriber';
 import MetricsSubscriber from './MetricsSubscriber';
 import {Flowable, Single} from 'rsocket-flowable';
 
+/**
+ */
 export default class Metrics {
   constructor() {}
 
+  /**
+   * @param {?IMeterRegistry} [registry] -
+   * @param {string} name -
+   * @param {Object[]} tags -
+   * @returns {function} a wrapping function through which you weave your RSocket calls
+   * @example
+   * const metricsWrapper = timed(myMeterRegistry, "my.function.name", {tag1: "tag"}, {anotherTag: "again"});
+   * const responseStream = rsocket.requestStream(requestPayload);
+   * metricsWrapper(responseStream).subscribe(...);
+   */
   static timed<T>(
     registry?: IMeterRegistry,
     name: string,
     ...tags: Object[]
   ): (Flowable<T>) => Flowable<T> {
-    //Registry is optional - if not provided, return identity function
+    // Registry is optional - if not provided, return identity function
     if (!registry) {
       return any => any;
     }
@@ -90,12 +114,22 @@ export default class Metrics {
       );
   }
 
+  /**
+   * @param {?IMeterRegistry} [registry] -
+   * @param {string} name -
+   * @param {Object[]} tags -
+   * @returns {function} a wrapping function through which you weave your RSocket calls
+   * @example
+   * const metricsWrapper = timedSingle(myMeterRegistry, "my.function.name", {tag1: "tag"}, {anotherTag: "again"});
+   * const responseStream = rsocket.requestStream(requestPayload);
+   * metricsWrapper(responseStream).subscribe(...);
+   */
   static timedSingle<T>(
     registry?: IMeterRegistry,
     name: string,
     ...tags: Object[]
   ): (Single<T>) => Single<T> {
-    //Registry is optional - if not provided, return identity function
+    // Registry is optional - if not provided, return identity function
     if (!registry) {
       return any => any;
     }

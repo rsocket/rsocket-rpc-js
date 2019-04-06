@@ -1,6 +1,22 @@
+/**
+ * @name SpanSingle.js
+ * @fileoverview Defines the "SpanSingleSubscriber" class.
+ * @requires NPM:rsocket-flowable
+ * @requires NPM:opentracing
+ * @exports createSpanSingle
+ */
 import {Single, IFutureSubscriber} from 'rsocket-flowable/build/Single';
 import {Tracer, Span, SpanContext, FORMAT_TEXT_MAP} from 'opentracing';
 
+/**
+ * @param {Single<T>} single -
+ * @param {Tracer} tracer -
+ * @param {string} name -
+ * @param {?(SpanContext|Span)} context -
+ * @param {?Object} metadata -
+ * @param {Object} tags -
+ * @return {Single}
+ */
 export function createSpanSingle(
   single: Single<T>,
   tracer: Tracer,
@@ -22,12 +38,22 @@ export function createSpanSingle(
   });
 }
 
+/**
+ */
 class SpanSingleSubscriber implements IFutureSubscriber<T> {
   _span: Span;
   _subscriber: IFutureSubscriber<T>;
   _tracer: Tracer;
   _cancel: () => void;
 
+  /**
+   * @param {IFutureSubscriber<T>} subscriber -
+   * @param {Tracer} tracer -
+   * @param {string} name -
+   * @param {SpanContext|Span} [context] -
+   * @param {Object} [metadata] -
+   * @param {Object} tags -
+   */
   constructor(
     subscriber: IFutureSubscriber<T>,
     tracer: Tracer,
@@ -56,7 +82,7 @@ class SpanSingleSubscriber implements IFutureSubscriber<T> {
       options.tags = finalTags;
     }
 
-    //Not supported at this time.
+    // Not supported at this time.
     // if (references) {
     //   options.references = references;
     // }
@@ -72,10 +98,14 @@ class SpanSingleSubscriber implements IFutureSubscriber<T> {
     );
   }
 
+  /**
+   */
   cleanup() {
     this._span.finish();
   }
 
+  /**
+   */
   onSubscribe(cancel?: () => void) {
     this._cancel = cancel;
     this._span.log('onSubscribe', timeInMicros());
@@ -84,6 +114,8 @@ class SpanSingleSubscriber implements IFutureSubscriber<T> {
     });
   }
 
+  /**
+   */
   cancel() {
     try {
       this._span.log('cancel', timeInMicros());
@@ -93,6 +125,8 @@ class SpanSingleSubscriber implements IFutureSubscriber<T> {
     }
   }
 
+  /**
+   */
   onError(error: Error) {
     try {
       this._span.log('onError', timeInMicros());
@@ -102,6 +136,8 @@ class SpanSingleSubscriber implements IFutureSubscriber<T> {
     }
   }
 
+  /**
+   */
   onComplete(value: T) {
     try {
       this._span.log('onComplete', timeInMicros());
@@ -112,6 +148,11 @@ class SpanSingleSubscriber implements IFutureSubscriber<T> {
   }
 }
 
+/**
+ * Return the current time in microseconds.
+ *
+ * @return {number} The return value of {@link Date#now} converted into microseconds
+ */
 function timeInMicros() {
-  return Date.now() * 1000 /*microseconds*/;
+  return Date.now() * 1000 /* microseconds */;
 }

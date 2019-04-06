@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">packages/core/src/RpcClient.js</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#core-src">core/src</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/core/src/RequestHandlingRSocket.js~RequestHandlingRSocket.html">RequestHandlingRSocket</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/core/src/RpcClient.js~RpcClient.html">RpcClient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/core/src/SwitchTransformOperator.js~SwitchTransformOperator.html">SwitchTransformOperator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ClientConfig">ClientConfig</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-DuplexConnection">DuplexConnection</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Encodable">Encodable</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Flowable">Flowable</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Payload">Payload</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-PayloadSerializers">PayloadSerializers</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ReactiveSocket">ReactiveSocket</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Responder">Responder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Serializer">Serializer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Setup">Setup</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Single">Single</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveStreamTypes.js">ISubscription</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#frames-src">frames/src</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-encodeMetadata">encodeMetadata</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getMetadata">getMetadata</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getMethod">getMethod</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getService">getService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getTracing">getTracing</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getVersion">getVersion</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-METHOD_LENGTH_SIZE">METHOD_LENGTH_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-SERVICE_LENGTH_SIZE">SERVICE_LENGTH_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TRACING_LENGTH_SIZE">TRACING_LENGTH_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-VERSION">VERSION</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-VERSION_SIZE">VERSION_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Buffer">Buffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-BufferEncoder">BufferEncoder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Encoder">Encoder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-UTF8Encoder">UTF8Encoder</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#metrics-src">metrics/src</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/BaseMeter.js~BaseMeter.html">BaseMeter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Counter.js~Counter.html">Counter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Histogram.js~Histogram.html">Histogram</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Metrics.js~Metrics.html">Metrics</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/MetricsExporter.js~MetricsExporter.html">MetricsExporter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/MetricsSubscriber.js~MetricsSubscriber.html">MetricsSubscriber</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/RawMeterTag.js~RawMeterTag.html">RawMeterTag</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/SimpleMeterRegistry.js~SimpleMeterRegistry.html">SimpleMeterRegistry</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Timer.js~Timer.html">Timer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embedMetricsSingleSubscriber">embedMetricsSingleSubscriber</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEFAULT_PERCENTILES">DEFAULT_PERCENTILES</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#metrics-src-stats">metrics/src/stats</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/ExponentiallyDecayingSample.js~ExponentiallyDecayingSample.html">ExponentiallyDecayingSample</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/ExponentiallyWeightedMovingAverage.js~EWMA.html">EWMA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/Sample.js~Sample.html">Sample</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/UniformSample.js~UniformSample.html">UniformSample</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#tracing-src">tracing/src</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/tracing/src/SpanSubscriber.js~SpanSubscriber.html">SpanSubscriber</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createSpanSingle">createSpanSingle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bufferToMap">bufferToMap</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-deserializeTraceData">deserializeTraceData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mapToBuffer">mapToBuffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-trace">trace</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traceAsChild">traceAsChild</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traceSingle">traceSingle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traceSingleAsChild">traceSingleAsChild</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">packages/core/src/RpcClient.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * @name RpcClient.js
+ * @fileoverview Defines the {@link RpcClient} class and {@link ClientConfig} object.
+ * @copyright Copyright (c) 2017-present, Netifi Inc.
+ * @license Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * @flow
+ *
+ * @requires NPM:rsocket-core
+ * @requires NPM:rsocket-flowable
+ * @requires NPM:rsocket-types
+ * @exports ClientConfig
+ * @exports RpcClient
+ */
+
+&apos;use strict&apos;;
+
+/**
+ * @external
+ * @see https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveSocketTypes.js
+ * @typedef {(string|Buffer|Uint8Array)} Encodable
+ */
+/**
+ * @example &lt;caption&gt;The methods of the Responder interface:&lt;/caption&gt;
+ * fireAndForget(payload: Payload&lt;D, M&gt;): void
+ * requestResponse(payload: Payload&lt;D, M&gt;): Single&lt;Payload&lt;D, M&gt;&gt;
+ * requestStream(payload: Payload&lt;D, M&gt;): Flowable&lt;Payload&lt;D, M&gt;&gt;
+ * requestChannel(payloads: Flowable&lt;Payload&lt;D, M&gt;&gt;): Flowable&lt;Payload&lt;D, M&gt;&gt;
+ * metadataPush(payload: Payload&lt;D, M&gt;): Single&lt;void&gt;
+ * @external
+ * @see https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveSocketTypes.js
+ * @typedef {interface} Responder
+ * @property {function} fireAndForget
+ * @property {function} requestResponse
+ * @property {function} requestStream
+ * @property {function} requestChannel
+ * @property {function} metadataPush
+ */
+/**
+ * A contract that provides different interaction models according to the
+ * ReactiveSocket protocol. This interface extends the {@link Responder}
+ * interface by adding the {@link ReactiveSocket#close} and
+ * {@link ReactiveSocket#connectionStatus} methods.
+ * @extends {Responder}
+ * @external
+ * @see https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveSocketTypes.js
+ * @see https://github.com/ReactiveSocket/reactivesocket/blob/master/Protocol.md
+ * @typedef {interface} ReactiveSocket
+ * @property {function} fireAndForget
+ * @property {function} requestResponse
+ * @property {function} requestStream
+ * @property {function} requestChannel
+ * @property {function} metadataPush
+ * @property {function} close
+ * @property {function} connectionStatus
+ */
+/**
+ * Represents a network connection with input/output used by a
+ * {@link ReactiveSocket} to send/receive data.
+ * @external
+ * @see https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveSocketTypes.js
+ * @typedef {interface} DuplexConnection
+ * @property {function} sendOne
+ * @property {function} send
+ * @property {function} receive
+ * @property {function} close
+ * @property {function} connect
+ * @property {function} connectionStatus
+ */
+/**
+ * A single unit of data exchanged between the peers of a
+ * {@link ReactiveSocket}. A object of this type consists of two members:
+ * {@link Payload#data} and {@link Payload#metadata}.
+ * @external
+ * @see https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveSocketTypes.js
+ * @typedef {Object} Payload
+ * @property {Serializer} data
+ * @property {Serializer} metadata
+ */
+import type {
+  ConnectionStatus,
+  DuplexConnection,
+  Encodable,
+  Payload,
+  ReactiveSocket,
+  SetupFrame,
+  Responder,
+} from &apos;rsocket-types&apos;;
+/**
+ * @external
+ * @see https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-core/src/RSocketSerialization.js
+ * @typedef {Object} Serializer
+ * @desc A Serializer transforms data between the application encoding used in
+ * Payloads and the Encodable type accepted by the transport client.
+ * @property {function} deserialize a function that takes an {@link Encodable} and returns the expected data or metadata object
+ * @property {function} serialize a funciton that takes a data or metadata object and returns a corresponding {@link Encodable}
+ */
+/**
+ * @external
+ * @see https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-core/src/RSocketSerialization.js
+ * @typedef {Object} PayloadSerializers
+ * @property {Serializer} data
+ * @property {Serializer} metadata
+ */
+import type {PayloadSerializers} from &apos;rsocket-core/build/RSocketSerialization&apos;;
+
+/**
+ * @external
+ * @see https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-flowable/src/Flowable.js
+ * @typedef {Object} Flowable
+ * @property {function} just
+ * @property {function} error
+ * @property {function} never
+ * @property {function} subscribe
+ * @property {function} lift
+ * @property {function} map
+ * @property {function} take
+ */
+/**
+ * @external
+ * @see https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-flowable/src/Single.js
+ * @typedef {Object} Single
+ * @property {function} of
+ * @property {function} error
+ * @property {function} subscribe
+ * @property {function} flatMap
+ * @property {function} map
+ * @property {function} then
+ */
+import {Flowable, Single, every} from &apos;rsocket-flowable&apos;;
+import invariant from &apos;fbjs/lib/invariant&apos;;
+
+import {CONNECTION_STREAM_ID, FLAGS, FRAME_TYPES} from &apos;rsocket-core&apos;;
+import {MAJOR_VERSION, MINOR_VERSION} from &apos;rsocket-core/build/RSocketVersion&apos;;
+import {createClientMachine} from &apos;rsocket-core/build/RSocketMachine&apos;;
+
+/**
+ * @typedef {Object} Setup
+ * @property {number} keepAlive The number of milliseconds between keepalive messages you will send to the service
+ * @property {number} lifetime The number of milliseconds to wait after the last keepalive message from the service before you consider the connection timed out.
+ * @property {?Encodable} [metadata] Data you would like to send to the service at connection-time (this can be any arbitrary data the service expects, for example, authentication credentials).
+ */
+/**
+ * @typedef {Object} ClientConfig
+ * @property {PayloadSerializers} [serializers] A serializer transforms data between the application encoding used in payloads and the encodable type accepted by the transport client. You typically will not need to implement your own serializer and deserializer, but if you do, you should pass your implementations to the RPC Client when you construct it.
+ * @property {Setup} setup Configure the keepalive process and any metadata you would like to accompany the connection.
+ * @property {DuplexConnection} transport Indicate which variety of duplex transport you are using, for example WebSocket or TCP. There are {@link RSocketWebsocketClient} and {@link RSocketTcpClient} classes that implement the required {@link DuplexConnection} interface for this component.
+ * @property {Responder} [responder] An object that implements the five methods of the {@link Responder} interface, corresponding to the various RSocket interaction models. If the client doesn&apos;t intend to receive traffic, there is no need to add a responder. ({@link Responder} is a type alias for the RSocket API.)
+ */
+export type ClientConfig&lt;D, M&gt; = {|
+  serializers?: PayloadSerializers&lt;D, M&gt;,
+  setup: {|
+    keepAlive: number,
+    lifetime: number,
+    metadata?: Encodable,
+  |},
+  transport: DuplexConnection,
+  responder?: Responder&lt;D, M&gt;,
+|};
+
+/**
+ * The primary class/entry point for the core package is the {@link RpcClient}.
+ * The client encapsulates the RSocket methods of fireAndForget,
+ * requestResponse, requestStream, and requestChannel and merges them with a
+ * bidirectional connection, allowing seamless use of RSocket for RPC.
+ */
+export default class RpcClient&lt;D, M&gt; {
+  _config: ClientConfig&lt;D, M&gt;;
+  _connection: ?Single&lt;ReactiveSocket&lt;D, M&gt;&gt;;
+
+  /**
+   * @param {ClientConfig&lt;D,M&gt;} config -
+   */
+  constructor(config: ClientConfig&lt;D, M&gt;) {
+    this._config = config;
+    this._connection = null;
+  }
+
+  /**
+   * Close the RPC Client connection.
+   */
+  close(): void {
+    this._config.transport.close();
+  }
+
+  /**
+   * Returns a {@link Single}, which, when you subscribe to it, initiates the
+   * connection and emits a {@link ReactiveSocket} object that defines the
+   * connection.
+   * @example &lt;caption&gt;Here is an example instantiation of an RpcClient:&lt;/caption&gt;
+   * const local = &apos;ws://localhost:8088/&apos;;
+   * const keepAlive = 60000; // 60s in ms 
+   * const lifetime = 360000; // 360s in ms
+   * const transport = new RSocketWebsocketClient({url:local}, BufferEncoders);
+   * const client = new RpcClient({setup:{keepAlive, lifetime}, transport});
+   * client.connect().subscribe({
+   *   onComplete: rsocket =&gt; {
+   *     console.info(&quot;Success! We have a handle to an RSocket connection&quot;);
+   *   },
+   *   onError: error =&gt; {
+   *     console.error(&quot;Failed to connect to local RSocket server.&quot;, error);
+   *   }
+   * });
+   *
+   * @returns {Single&lt;ReactiveSocket&lt;D,M&gt;&gt;}
+   * @throws {Error} if the RpcClient is already connected
+   */
+  connect(): Single&lt;ReactiveSocket&lt;D, M&gt;&gt; {
+    invariant(
+      !this._connection,
+      &apos;RpcClient: Unexpected call to connect(), already connected.&apos;,
+    );
+    this._connection = new Single(subscriber =&gt; {
+      const transport = this._config.transport;
+      let subscription;
+      transport.connectionStatus().subscribe({
+        onNext: status =&gt; {
+          if (status.kind === &apos;CONNECTED&apos;) {
+            subscription &amp;&amp; subscription.cancel();
+            subscriber.onComplete(new RpcSocket(this._config, transport));
+          } else if (status.kind === &apos;ERROR&apos;) {
+            subscription &amp;&amp; subscription.cancel();
+            subscriber.onError(status.error);
+          } else if (status.kind === &apos;CLOSED&apos;) {
+            subscription &amp;&amp; subscription.cancel();
+            subscriber.onError(new Error(&apos;RpcClient: Connection closed.&apos;));
+          }
+        },
+        onSubscribe: _subscription =&gt; {
+          subscriber.onSubscribe(() =&gt; _subscription.cancel());
+          subscription = _subscription;
+          subscription.request(Number.MAX_SAFE_INTEGER);
+        },
+      });
+      transport.connect();
+    });
+    return this._connection;
+  }
+}
+
+/**
+ * @private
+ */
+class RpcSocket&lt;D, M&gt; implements ReactiveSocket&lt;D, M&gt; {
+  _machine: ReactiveSocket&lt;D, M&gt;;
+
+  constructor(config: ClientConfig&lt;D, M&gt;, connection: DuplexConnection) {
+    this._machine = createClientMachine(
+      connection,
+      subscriber =&gt; connection.receive().subscribe(subscriber),
+      config.serializers,
+      config.responder,
+    );
+
+    // Send SETUP
+    connection.sendOne(this._buildSetupFrame(config));
+
+    // Send KEEPALIVE frames
+    const {keepAlive} = config.setup;
+    const keepAliveFrames = every(keepAlive).map(() =&gt; ({
+      data: null,
+      flags: FLAGS.RESPOND,
+      lastReceivedPosition: 0,
+      streamId: CONNECTION_STREAM_ID,
+      type: FRAME_TYPES.KEEPALIVE,
+    }));
+    connection.send(keepAliveFrames);
+  }
+
+  fireAndForget(payload: Payload&lt;D, M&gt;): void {
+    this._machine.fireAndForget(payload);
+  }
+
+  requestResponse(payload: Payload&lt;D, M&gt;): Single&lt;Payload&lt;D, M&gt;&gt; {
+    return this._machine.requestResponse(payload);
+  }
+
+  requestStream(payload: Payload&lt;D, M&gt;): Flowable&lt;Payload&lt;D, M&gt;&gt; {
+    return this._machine.requestStream(payload);
+  }
+
+  requestChannel(payloads: Flowable&lt;Payload&lt;D, M&gt;&gt;): Flowable&lt;Payload&lt;D, M&gt;&gt; {
+    return this._machine.requestChannel(payloads);
+  }
+
+  metadataPush(payload: Payload&lt;D, M&gt;): Single&lt;void&gt; {
+    return this._machine.metadataPush(payload);
+  }
+
+  close(): void {
+    this._machine.close();
+  }
+
+  connectionStatus(): Flowable&lt;ConnectionStatus&gt; {
+    return this._machine.connectionStatus();
+  }
+
+  _buildSetupFrame(config: ClientConfig&lt;D, M&gt;): SetupFrame {
+    const {keepAlive, lifetime, metadata} = config.setup;
+
+    return {
+      flags: FLAGS.METADATA,
+      keepAlive,
+      lifetime,
+      majorVersion: MAJOR_VERSION,
+      minorVersion: MINOR_VERSION,
+      metadataMimeType: &apos;application/binary&apos;,
+      metadata,
+      dataMimeType: &apos;application/binary&apos;,
+      data: undefined,
+      resumeToken: null,
+      streamId: CONNECTION_STREAM_ID,
+      type: FRAME_TYPES.SETUP,
+    };
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

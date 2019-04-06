@@ -1,0 +1,12 @@
+{
+  "source": "./packages",
+  "includes": [".js$"],
+  "excludes": ["pb.js$",
+               "/dist/.*js$"],
+  "destination": "./docs",
+  "plugins": [
+    {"name": "esdoc-standard-plugin"},
+    {"name": "esdoc-flow-plugin"},
+    {"name": "esdoc-ecmascript-proposal-plugin", "option": {"all": true}}
+  ]
+}

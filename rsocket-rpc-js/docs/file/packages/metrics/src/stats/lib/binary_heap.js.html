@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../../../">
+  <title data-ice="title">packages/metrics/src/stats/lib/binary_heap.js</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#core-src">core/src</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/core/src/RequestHandlingRSocket.js~RequestHandlingRSocket.html">RequestHandlingRSocket</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/core/src/RpcClient.js~RpcClient.html">RpcClient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/core/src/SwitchTransformOperator.js~SwitchTransformOperator.html">SwitchTransformOperator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ClientConfig">ClientConfig</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-DuplexConnection">DuplexConnection</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Encodable">Encodable</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Flowable">Flowable</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Payload">Payload</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-PayloadSerializers">PayloadSerializers</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ReactiveSocket">ReactiveSocket</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Responder">Responder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Serializer">Serializer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Setup">Setup</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Single">Single</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveStreamTypes.js">ISubscription</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#frames-src">frames/src</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-encodeMetadata">encodeMetadata</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getMetadata">getMetadata</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getMethod">getMethod</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getService">getService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getTracing">getTracing</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getVersion">getVersion</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-METHOD_LENGTH_SIZE">METHOD_LENGTH_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-SERVICE_LENGTH_SIZE">SERVICE_LENGTH_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TRACING_LENGTH_SIZE">TRACING_LENGTH_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-VERSION">VERSION</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-VERSION_SIZE">VERSION_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Buffer">Buffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-BufferEncoder">BufferEncoder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Encoder">Encoder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-UTF8Encoder">UTF8Encoder</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#metrics-src">metrics/src</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/BaseMeter.js~BaseMeter.html">BaseMeter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Counter.js~Counter.html">Counter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Histogram.js~Histogram.html">Histogram</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Metrics.js~Metrics.html">Metrics</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/MetricsExporter.js~MetricsExporter.html">MetricsExporter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/MetricsSubscriber.js~MetricsSubscriber.html">MetricsSubscriber</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/RawMeterTag.js~RawMeterTag.html">RawMeterTag</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/SimpleMeterRegistry.js~SimpleMeterRegistry.html">SimpleMeterRegistry</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Timer.js~Timer.html">Timer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embedMetricsSingleSubscriber">embedMetricsSingleSubscriber</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEFAULT_PERCENTILES">DEFAULT_PERCENTILES</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#metrics-src-stats">metrics/src/stats</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/ExponentiallyDecayingSample.js~ExponentiallyDecayingSample.html">ExponentiallyDecayingSample</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/ExponentiallyWeightedMovingAverage.js~EWMA.html">EWMA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/Sample.js~Sample.html">Sample</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/UniformSample.js~UniformSample.html">UniformSample</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#tracing-src">tracing/src</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/tracing/src/SpanSubscriber.js~SpanSubscriber.html">SpanSubscriber</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createSpanSingle">createSpanSingle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bufferToMap">bufferToMap</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-deserializeTraceData">deserializeTraceData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mapToBuffer">mapToBuffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-trace">trace</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traceAsChild">traceAsChild</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traceSingle">traceSingle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traceSingleAsChild">traceSingleAsChild</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">packages/metrics/src/stats/lib/binary_heap.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">// From http://eloquentjavascript.net/appendix2.html,
+// licensed under CCv3.0: http://creativecommons.org/licenses/by/3.0/
+
+var utils = require(&apos;./utils&apos;);
+
+/* This acts as a ordered binary heap for any serializeable JS object or collection of such objects */
+var BinaryHeap = (module.exports = function BinaryHeap(scoreFunction) {
+  this.content = [];
+  this.scoreFunction = scoreFunction;
+});
+
+BinaryHeap.prototype = {
+  clone: function() {
+    var heap = new BinaryHeap(this.scoreFunction);
+    // A little hacky, but effective.
+    heap.content = JSON.parse(JSON.stringify(this.content));
+    return heap;
+  },
+
+  push: function(element) {
+    // Add the new element to the end of the array.
+    this.content.push(element);
+    // Allow it to bubble up.
+    this.bubbleUp(this.content.length - 1);
+  },
+
+  peek: function() {
+    return this.content[0];
+  },
+
+  pop: function() {
+    // Store the first element so we can return it later.
+    var result = this.content[0];
+    // Get the element at the end of the array.
+    var end = this.content.pop();
+    // If there are any elements left, put the end element at the
+    // start, and let it sink down.
+    if (this.content.length &gt; 0) {
+      this.content[0] = end;
+      this.sinkDown(0);
+    }
+    return result;
+  },
+
+  remove: function(node) {
+    var len = this.content.length;
+    // To remove a value, we must search through the array to find
+    // it.
+    for (var i = 0; i &lt; len; i++) {
+      if (this.content[i] == node) {
+        // When it is found, the process seen in &apos;pop&apos; is repeated
+        // to fill up the hole.
+        var end = this.content.pop();
+        if (i != len - 1) {
+          this.content[i] = end;
+          if (this.scoreFunction(end) &lt; this.scoreFunction(node))
+            this.bubbleUp(i);
+          else this.sinkDown(i);
+        }
+        return true;
+      }
+    }
+    throw new Error(&apos;Node not found.&apos;);
+  },
+
+  size: function() {
+    return this.content.length;
+  },
+
+  bubbleUp: function(n) {
+    // Fetch the element that has to be moved.
+    var element = this.content[n];
+    // When at 0, an element can not go up any further.
+    while (n &gt; 0) {
+      // Compute the parent element&apos;s index, and fetch it.
+      var parentN = Math.floor((n + 1) / 2) - 1,
+        parent = this.content[parentN];
+      // Swap the elements if the parent is greater.
+      if (this.scoreFunction(element) &lt; this.scoreFunction(parent)) {
+        this.content[parentN] = element;
+        this.content[n] = parent;
+        // Update &apos;n&apos; to continue at the new position.
+        n = parentN;
+      }
+      // Found a parent that is less, no need to move it further.
+      else {
+        break;
+      }
+    }
+  },
+
+  sinkDown: function(n) {
+    // Look up the target element and its score.
+    var length = this.content.length,
+      element = this.content[n],
+      elemScore = this.scoreFunction(element);
+
+    while (true) {
+      // Compute the indices of the child elements.
+      var child2N = (n + 1) * 2,
+        child1N = child2N - 1;
+      // This is used to store the new position of the element,
+      // if any.
+      var swap = null;
+      // If the first child exists (is inside the array)...
+      if (child1N &lt; length) {
+        // Look it up and compute its score.
+        var child1 = this.content[child1N],
+          child1Score = this.scoreFunction(child1);
+        // If the score is less than our element&apos;s, we need to swap.
+        if (child1Score &lt; elemScore) swap = child1N;
+      }
+      // Do the same checks for the other child.
+      if (child2N &lt; length) {
+        var child2 = this.content[child2N],
+          child2Score = this.scoreFunction(child2);
+        if (child2Score &lt; (swap == null ? elemScore : child1Score))
+          swap = child2N;
+      }
+
+      // If the element needs to be moved, swap it, and continue.
+      if (swap != null) {
+        this.content[n] = this.content[swap];
+        this.content[swap] = element;
+        n = swap;
+      }
+      // Otherwise, we are done.
+      else {
+        break;
+      }
+    }
+  },
+};
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

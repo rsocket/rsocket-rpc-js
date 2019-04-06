@@ -1,3 +1,22 @@
+/**
+ * @name Tracing.js
+ * @fileoverview Tracing functionality.
+ * @requires NPM:rsocket-core
+ * @requires NPM:rsocket-types
+ * @requires NPM:rsocket-flowable
+ * @requires NPM:opentracing
+ * @requires NPM:rsocket-rpc-frames
+ * @requires SpanSubscriber
+ * @requires SpanSingle
+ * @exports deserializeTraceData
+ * @exports mapToBuffer
+ * @exports bufferToMap
+ * @exports trace
+ * @exports traceAsChild
+ * @exports traceSingle
+ * @exports traceSingleAsChild
+ */
+
 import {UTF8Encoder, BufferEncoder, createBuffer} from 'rsocket-core';
 import {ISubscriber} from 'rsocket-types';
 import {Flowable, Single} from 'rsocket-flowable';
@@ -8,6 +27,13 @@ import {SpanContext, Tracer, FORMAT_TEXT_MAP} from 'opentracing';
 
 import {getTracing} from 'rsocket-rpc-frames';
 
+/**
+ * @param {?Tracer} tracer - an OpenTracing {@link Tracer}
+ * @param {Buffer} metadata -
+ * @returns {?SpanContext} or null if the tracer is null or there is no tracing data
+ * @see https://opentracing.io/
+ * @see https://opentracing-javascript.surge.sh/classes/tracer.html
+ */
 export function deserializeTraceData(tracer, metadata) {
   if (!tracer) {
     return null;
@@ -22,6 +48,10 @@ export function deserializeTraceData(tracer, metadata) {
   return tracer.extract(FORMAT_TEXT_MAP, bufferToMap(tracingData));
 }
 
+/**
+ * @param {?Object} map -
+ * @returns {Buffer}
+ */
 export function mapToBuffer(map: Object): Buffer {
   if (!map || Object.keys(map).length <= 0) {
     return createBuffer(0);
@@ -42,7 +72,7 @@ export function mapToBuffer(map: Object): Buffer {
       newEntries.push({keyLen, keyBuf, valLen, valBuf});
 
       return {
-        //4 for the sizes plus the actual key and actual value
+        // 4 for the sizes plus the actual key and actual value
         totalSize: aggregate.totalSize + 4 + keyLen + valLen,
         entries: newEntries,
       };
@@ -54,7 +84,7 @@ export function mapToBuffer(map: Object): Buffer {
   const resultBuf = createBuffer(aggregatedTags.totalSize);
   aggregatedTags.entries.forEach(entry => {
     resultBuf.writeUInt16BE(entry.keyLen, offset);
-    offset += 2; //2 bytes for key length
+    offset += 2; // 2 bytes for key length
 
     BufferEncoder.encode(
       entry.keyBuf,
@@ -79,6 +109,10 @@ export function mapToBuffer(map: Object): Buffer {
   return resultBuf;
 }
 
+/**
+ * @param {!Buffer} buffer -
+ * @returns {Object}
+ */
 export function bufferToMap(buffer: Buffer): Object {
   const result = {};
 
@@ -102,6 +136,27 @@ export function bufferToMap(buffer: Buffer): Object {
   return result;
 }
 
+/**
+ * Allows propagation of a {@link SpanContext} map through a {@link Flowable}.
+ *
+ * @example <caption>Wraps default tags "tag1" and "tag2" and picks up "additionalTag1" and "additionalTag2":</caption>
+ * const traceCapture = trace(myTracer, "myOperation", {tag1: "value"}, {tag2: "another value"});
+ *
+ * ... more code ...
+ *
+ * const subscriberTransformer = traceCapture({additionalTag1: 1, additionalTag2: "two"});
+ *
+ * subscriberTransformer(rsocket.requestStream(serviceRequest))
+ * .subscribe({ ... });
+ *
+ * @param {?Tracer} tracer - an OpenTracing {@link Tracer}
+ * @param {?String} name - an operation name
+ * @param {Object} tags - You can pass a collection of tags in the form of a map/Object and have it woven through a Flowable=>Flowable function.
+ * @returns {function}
+ * @see https://opentracing-javascript.surge.sh/classes/spancontext.html
+ * @see https://opentracing.io/
+ * @see https://opentracing-javascript.surge.sh/classes/tracer.html
+ */
 export function trace<T>(
   tracer?: Tracer,
   name?: String,
@@ -127,6 +182,21 @@ export function trace<T>(
   }
 }
 
+/**
+ * Similar to {@link trace}, except meant to be used on the server side where a
+ * {@link SpanContext} has been passed from a client.
+ * @example
+ * const traceCapture = traceAsChild(myTracer, "myServerOperation", {serverTag1: "value"}, {serverTag2: "another value"});
+ * const subscriberTransformer = traceCapture(deserializeTraceData(myTracer, requestMetadata));
+ * return subscriberTransformer(serviceImpl.requestStream(serviceRequest));
+ * @param {?Tracer} tracer - an OpenTracing {@link Tracer}
+ * @param {?String} name - an operation name
+ * @param {Object} tags - You can pass a collection of tags in the form of a map/Object and have it woven through a Flowable=>Flowable function.
+ * @returns {function}
+ * @see https://opentracing-javascript.surge.sh/classes/spancontext.html
+ * @see https://opentracing.io/
+ * @see https://opentracing-javascript.surge.sh/classes/tracer.html
+ */
 export function traceAsChild<T>(
   tracer?: Tracer,
   name?: String,
@@ -152,6 +222,27 @@ export function traceAsChild<T>(
   }
 }
 
+/**
+ * Allows propagation of a {@link SpanContext} map through a Flowable.
+ *
+ * @example <caption>Wraps default tags "tag1" and "tag2" and picks up "additionalTag1" and "additionalTag2":</caption>
+ * const traceCapture = trace(myTracer, "myOperation", {tag1: "value"}, {tag2: "another value"});
+ *
+ * ... more code ...
+ *
+ * const subscriberTransformer = traceCapture({additionalTag1: 1, additionalTag2: "two"});
+ *
+ * subscriberTransformer(rsocket.requestStream(serviceRequest))
+ * .subscribe({ ... });
+ *
+ * @param {?Tracer} tracer - an OpenTracing {@link Tracer}
+ * @param {?String} name - an operation name
+ * @param {Object} tags - You can pass a collection of tags in the form of a map/Object and have it woven through a Single=>Single function.
+ * @returns {function}
+ * @see https://opentracing-javascript.surge.sh/classes/spancontext.html
+ * @see https://opentracing.io/
+ * @see https://opentracing-javascript.surge.sh/classes/tracer.html
+ */
 export function traceSingle<T>(
   tracer?: Tracer,
   name?: String,
@@ -168,6 +259,21 @@ export function traceSingle<T>(
   }
 }
 
+/**
+ * Similar to {@link traceSingle}, except meant to be used on the server side
+ * where a {@link SpanContext} has been passed from a client.
+ * @example
+ * const traceCapture = traceAsChild(myTracer, "myServerOperation", {serverTag1: "value"}, {serverTag2: "another value"});
+ * const subscriberTransformer = traceCapture(deserializeTraceData(myTracer, requestMetadata));
+ * return subscriberTransformer(serviceImpl.requestStream(serviceRequest));
+ * @param {?Tracer} tracer - an OpenTracing {@link Tracer}
+ * @param {?String} name - an operation name
+ * @param {Object} tags - You can pass a collection of tags in the form of a map/Object and have it woven through a Single=>Single function.
+ * @returns {function}
+ * @see https://opentracing-javascript.surge.sh/classes/spancontext.html
+ * @see https://opentracing.io/
+ * @see https://opentracing-javascript.surge.sh/classes/tracer.html
+ */
 export function traceSingleAsChild<T>(
   tracer?: Tracer,
   name?: String,

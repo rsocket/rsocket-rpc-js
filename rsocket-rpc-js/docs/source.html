@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href>
+  <title data-ice="title">Source</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#core-src">core/src</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/core/src/RequestHandlingRSocket.js~RequestHandlingRSocket.html">RequestHandlingRSocket</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/core/src/RpcClient.js~RpcClient.html">RpcClient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/core/src/SwitchTransformOperator.js~SwitchTransformOperator.html">SwitchTransformOperator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ClientConfig">ClientConfig</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-DuplexConnection">DuplexConnection</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Encodable">Encodable</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Flowable">Flowable</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Payload">Payload</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-PayloadSerializers">PayloadSerializers</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ReactiveSocket">ReactiveSocket</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Responder">Responder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Serializer">Serializer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Setup">Setup</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Single">Single</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveStreamTypes.js">ISubscription</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#frames-src">frames/src</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-encodeMetadata">encodeMetadata</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getMetadata">getMetadata</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getMethod">getMethod</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getService">getService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getTracing">getTracing</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getVersion">getVersion</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-METHOD_LENGTH_SIZE">METHOD_LENGTH_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-SERVICE_LENGTH_SIZE">SERVICE_LENGTH_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TRACING_LENGTH_SIZE">TRACING_LENGTH_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-VERSION">VERSION</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-VERSION_SIZE">VERSION_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Buffer">Buffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-BufferEncoder">BufferEncoder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Encoder">Encoder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-UTF8Encoder">UTF8Encoder</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#metrics-src">metrics/src</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/BaseMeter.js~BaseMeter.html">BaseMeter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Counter.js~Counter.html">Counter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Histogram.js~Histogram.html">Histogram</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Metrics.js~Metrics.html">Metrics</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/MetricsExporter.js~MetricsExporter.html">MetricsExporter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/MetricsSubscriber.js~MetricsSubscriber.html">MetricsSubscriber</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/RawMeterTag.js~RawMeterTag.html">RawMeterTag</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/SimpleMeterRegistry.js~SimpleMeterRegistry.html">SimpleMeterRegistry</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Timer.js~Timer.html">Timer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embedMetricsSingleSubscriber">embedMetricsSingleSubscriber</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEFAULT_PERCENTILES">DEFAULT_PERCENTILES</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#metrics-src-stats">metrics/src/stats</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/ExponentiallyDecayingSample.js~ExponentiallyDecayingSample.html">ExponentiallyDecayingSample</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/ExponentiallyWeightedMovingAverage.js~EWMA.html">EWMA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/Sample.js~Sample.html">Sample</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/UniformSample.js~UniformSample.html">UniformSample</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#tracing-src">tracing/src</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/tracing/src/SpanSubscriber.js~SpanSubscriber.html">SpanSubscriber</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createSpanSingle">createSpanSingle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bufferToMap">bufferToMap</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-deserializeTraceData">deserializeTraceData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mapToBuffer">mapToBuffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-trace">trace</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traceAsChild">traceAsChild</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traceSingle">traceSingle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traceSingleAsChild">traceSingleAsChild</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">233/296</span></h1>
+
+<table class="files-summary" data-ice="files" data-use-coverage="true">
+  <thead>
+    <tr>
+      <td>File</td>
+      <td>Identifier</td>
+      <td class="coverage">Document</td>
+      <td style="display: none;">Size</td>
+      <td style="display: none;">Lines</td>
+      <td style="display: none;">Updated</td>
+    </tr>
+  </thead>
+  <tbody>
+    
+  <tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/core/src/QueuingFlowableProcessor.js.html">packages/core/src/QueuingFlowableProcessor.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">1/1</span></td>
+      <td style="display: none;" data-ice="size">9959 byte</td>
+      <td style="display: none;" data-ice="lines">330</td>
+      <td style="display: none;" data-ice="updated">2019-03-03 18:40:07 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/core/src/RequestHandlingRSocket.js.html#errorLines=37,38">packages/core/src/RequestHandlingRSocket.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/packages/core/src/RequestHandlingRSocket.js~RequestHandlingRSocket.html">RequestHandlingRSocket</a></span></td>
+      <td class="coverage"><span data-ice="coverage">77 %</span><span data-ice="coverageCount" class="coverage-count">7/9</span></td>
+      <td style="display: none;" data-ice="size">5645 byte</td>
+      <td style="display: none;" data-ice="lines">172</td>
+      <td style="display: none;" data-ice="updated">2019-03-01 23:35:31 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/core/src/RpcClient.js.html#errorLines=167,168,235,236,253,257,261,265,269,273,277,281">packages/core/src/RpcClient.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/packages/core/src/RpcClient.js~RpcClient.html">RpcClient</a></span></td>
+      <td class="coverage"><span data-ice="coverage">29 %</span><span data-ice="coverageCount" class="coverage-count">5/17</span></td>
+      <td style="display: none;" data-ice="size">12217 byte</td>
+      <td style="display: none;" data-ice="lines">328</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 21:14:26 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/core/src/SwitchTransformOperator.js.html#errorLines=127,128,46,47,57,58,67,93">packages/core/src/SwitchTransformOperator.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/packages/core/src/SwitchTransformOperator.js~SwitchTransformOperator.html">SwitchTransformOperator</a></span></td>
+      <td class="coverage"><span data-ice="coverage">57 %</span><span data-ice="coverageCount" class="coverage-count">11/19</span></td>
+      <td style="display: none;" data-ice="size">4786 byte</td>
+      <td style="display: none;" data-ice="lines">223</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 00:52:20 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/core/src/index.js.html">packages/core/src/index.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">1445 byte</td>
+      <td style="display: none;" data-ice="lines">46</td>
+      <td style="display: none;" data-ice="updated">2019-03-07 01:57:00 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/frames/src/Metadata.js.html#errorLines=46,48,49,50,51">packages/frames/src/Metadata.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="variable/index.html#static-variable-METHOD_LENGTH_SIZE">METHOD_LENGTH_SIZE</a></span>
+<span><a href="variable/index.html#static-variable-SERVICE_LENGTH_SIZE">SERVICE_LENGTH_SIZE</a></span>
+<span><a href="variable/index.html#static-variable-TRACING_LENGTH_SIZE">TRACING_LENGTH_SIZE</a></span>
+<span><a href="variable/index.html#static-variable-VERSION">VERSION</a></span>
+<span><a href="variable/index.html#static-variable-VERSION_SIZE">VERSION_SIZE</a></span>
+<span><a href="function/index.html#static-function-encodeMetadata">encodeMetadata</a></span>
+<span><a href="function/index.html#static-function-getMetadata">getMetadata</a></span>
+<span><a href="function/index.html#static-function-getMethod">getMethod</a></span>
+<span><a href="function/index.html#static-function-getService">getService</a></span>
+<span><a href="function/index.html#static-function-getTracing">getTracing</a></span>
+<span><a href="function/index.html#static-function-getVersion">getVersion</a></span></td>
+      <td class="coverage"><span data-ice="coverage">54 %</span><span data-ice="coverageCount" class="coverage-count">6/11</span></td>
+      <td style="display: none;" data-ice="size">5721 byte</td>
+      <td style="display: none;" data-ice="lines">200</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 21:35:55 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/frames/src/__tests__/Metadata-test.js.html">packages/frames/src/__tests__/Metadata-test.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">2/2</span></td>
+      <td style="display: none;" data-ice="size">1825 byte</td>
+      <td style="display: none;" data-ice="lines">65</td>
+      <td style="display: none;" data-ice="updated">2019-03-01 23:31:08 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/frames/src/index.js.html">packages/frames/src/index.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">1041 byte</td>
+      <td style="display: none;" data-ice="lines">37</td>
+      <td style="display: none;" data-ice="updated">2019-03-07 01:58:18 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/BaseMeter.js.html">packages/metrics/src/BaseMeter.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/packages/metrics/src/BaseMeter.js~BaseMeter.html">BaseMeter</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">22/22</span></td>
+      <td style="display: none;" data-ice="size">4068 byte</td>
+      <td style="display: none;" data-ice="lines">185</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 21:42:19 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/Counter.js.html#errorLines=29,30,60">packages/metrics/src/Counter.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/packages/metrics/src/Counter.js~Counter.html">Counter</a></span></td>
+      <td class="coverage"><span data-ice="coverage">66 %</span><span data-ice="coverageCount" class="coverage-count">6/9</span></td>
+      <td style="display: none;" data-ice="size">1252 byte</td>
+      <td style="display: none;" data-ice="lines">67</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 00:54:03 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/Histogram.js.html">packages/metrics/src/Histogram.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="variable/index.html#static-variable-DEFAULT_PERCENTILES">DEFAULT_PERCENTILES</a></span>
+<span><a href="class/packages/metrics/src/Histogram.js~Histogram.html">Histogram</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">22/22</span></td>
+      <td style="display: none;" data-ice="size">6588 byte</td>
+      <td style="display: none;" data-ice="lines">270</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 00:20:38 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/IMeter.js.html">packages/metrics/src/IMeter.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">1255 byte</td>
+      <td style="display: none;" data-ice="lines">53</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 00:57:15 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/IMeterRegistry.js.html">packages/metrics/src/IMeterRegistry.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">1278 byte</td>
+      <td style="display: none;" data-ice="lines">50</td>
+      <td style="display: none;" data-ice="updated">2019-03-01 17:07:08 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/Metrics.js.html#errorLines=44">packages/metrics/src/Metrics.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/packages/metrics/src/Metrics.js~Metrics.html">Metrics</a></span></td>
+      <td class="coverage"><span data-ice="coverage">75 %</span><span data-ice="coverageCount" class="coverage-count">3/4</span></td>
+      <td style="display: none;" data-ice="size">5276 byte</td>
+      <td style="display: none;" data-ice="lines">184</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 01:00:12 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/MetricsExporter.js.html">packages/metrics/src/MetricsExporter.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/packages/metrics/src/MetricsExporter.js~MetricsExporter.html">MetricsExporter</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">21/21</span></td>
+      <td style="display: none;" data-ice="size">12272 byte</td>
+      <td style="display: none;" data-ice="lines">432</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 00:59:42 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/MetricsSingleSubscriber.js.html#errorLines=62,63,64,65,66,67,75,76">packages/metrics/src/MetricsSingleSubscriber.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-embedMetricsSingleSubscriber">embedMetricsSingleSubscriber</a></span></td>
+      <td class="coverage"><span data-ice="coverage">46 %</span><span data-ice="coverageCount" class="coverage-count">7/15</span></td>
+      <td style="display: none;" data-ice="size">3307 byte</td>
+      <td style="display: none;" data-ice="lines">141</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 00:21:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/MetricsSubscriber.js.html">packages/metrics/src/MetricsSubscriber.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/packages/metrics/src/MetricsSubscriber.js~MetricsSubscriber.html">MetricsSubscriber</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">16/16</span></td>
+      <td style="display: none;" data-ice="size">2900 byte</td>
+      <td style="display: none;" data-ice="lines">127</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 00:21:55 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/RawMeterTag.js.html">packages/metrics/src/RawMeterTag.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/packages/metrics/src/RawMeterTag.js~RawMeterTag.html">RawMeterTag</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">4/4</span></td>
+      <td style="display: none;" data-ice="size">419 byte</td>
+      <td style="display: none;" data-ice="lines">28</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 00:22:12 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/SimpleMeterRegistry.js.html#errorLines=35">packages/metrics/src/SimpleMeterRegistry.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/packages/metrics/src/SimpleMeterRegistry.js~SimpleMeterRegistry.html">SimpleMeterRegistry</a></span></td>
+      <td class="coverage"><span data-ice="coverage">83 %</span><span data-ice="coverageCount" class="coverage-count">5/6</span></td>
+      <td style="display: none;" data-ice="size">1786 byte</td>
+      <td style="display: none;" data-ice="lines">75</td>
+      <td style="display: none;" data-ice="updated">2019-03-01 23:03:19 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/Timer.js.html#errorLines=37,38">packages/metrics/src/Timer.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/packages/metrics/src/Timer.js~Timer.html">Timer</a></span></td>
+      <td class="coverage"><span data-ice="coverage">86 %</span><span data-ice="coverageCount" class="coverage-count">13/15</span></td>
+      <td style="display: none;" data-ice="size">2627 byte</td>
+      <td style="display: none;" data-ice="lines">111</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 01:00:55 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/__tests__/exponentially_decaying_sample-test.js.html#errorLines=1,4">packages/metrics/src/__tests__/exponentially_decaying_sample-test.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/2</span></td>
+      <td style="display: none;" data-ice="size">1039 byte</td>
+      <td style="display: none;" data-ice="lines">46</td>
+      <td style="display: none;" data-ice="updated">2019-03-05 16:50:25 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/__tests__/exponentially_weighted_moving_average-test.js.html#errorLines=1,2">packages/metrics/src/__tests__/exponentially_weighted_moving_average-test.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">33 %</span><span data-ice="coverageCount" class="coverage-count">1/3</span></td>
+      <td style="display: none;" data-ice="size">942 byte</td>
+      <td style="display: none;" data-ice="lines">33</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 01:06:10 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/__tests__/histogram-test.js.html#errorLines=1">packages/metrics/src/__tests__/histogram-test.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/1</span></td>
+      <td style="display: none;" data-ice="size">719 byte</td>
+      <td style="display: none;" data-ice="lines">24</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 01:06:21 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/__tests__/meter-test.js.html#errorLines=1">packages/metrics/src/__tests__/meter-test.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/1</span></td>
+      <td style="display: none;" data-ice="size">751 byte</td>
+      <td style="display: none;" data-ice="lines">30</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 01:06:27 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/__tests__/timer-test.js.html#errorLines=1">packages/metrics/src/__tests__/timer-test.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/1</span></td>
+      <td style="display: none;" data-ice="size">1119 byte</td>
+      <td style="display: none;" data-ice="lines">36</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 01:06:39 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/__tests__/uniform_sample-test.js.html#errorLines=1">packages/metrics/src/__tests__/uniform_sample-test.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/1</span></td>
+      <td style="display: none;" data-ice="size">867 byte</td>
+      <td style="display: none;" data-ice="lines">27</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 01:06:46 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/index.js.html">packages/metrics/src/index.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">2372 byte</td>
+      <td style="display: none;" data-ice="lines">108</td>
+      <td style="display: none;" data-ice="updated">2019-03-07 01:58:56 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/stats/ExponentiallyDecayingSample.js.html">packages/metrics/src/stats/ExponentiallyDecayingSample.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/packages/metrics/src/stats/ExponentiallyDecayingSample.js~ExponentiallyDecayingSample.html">ExponentiallyDecayingSample</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">18/18</span></td>
+      <td style="display: none;" data-ice="size">3687 byte</td>
+      <td style="display: none;" data-ice="lines">163</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 00:23:44 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/stats/ExponentiallyWeightedMovingAverage.js.html">packages/metrics/src/stats/ExponentiallyWeightedMovingAverage.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/packages/metrics/src/stats/ExponentiallyWeightedMovingAverage.js~EWMA.html">EWMA</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">18/18</span></td>
+      <td style="display: none;" data-ice="size">2332 byte</td>
+      <td style="display: none;" data-ice="lines">121</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 00:23:56 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/stats/ISample.js.html">packages/metrics/src/stats/ISample.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">1478 byte</td>
+      <td style="display: none;" data-ice="lines">55</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 01:03:41 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/stats/Sample.js.html#errorLines=19">packages/metrics/src/stats/Sample.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/packages/metrics/src/stats/Sample.js~Sample.html">Sample</a></span></td>
+      <td class="coverage"><span data-ice="coverage">90 %</span><span data-ice="coverageCount" class="coverage-count">9/10</span></td>
+      <td style="display: none;" data-ice="size">1424 byte</td>
+      <td style="display: none;" data-ice="lines">69</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 01:04:33 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/stats/UniformSample.js.html">packages/metrics/src/stats/UniformSample.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/packages/metrics/src/stats/UniformSample.js~UniformSample.html">UniformSample</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">5/5</span></td>
+      <td style="display: none;" data-ice="size">1325 byte</td>
+      <td style="display: none;" data-ice="lines">55</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 00:25:11 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/stats/index.js.html">packages/metrics/src/stats/index.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">688 byte</td>
+      <td style="display: none;" data-ice="lines">22</td>
+      <td style="display: none;" data-ice="updated">2019-03-07 02:01:25 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/stats/lib/binary_heap.js.html#errorLines=4,7">packages/metrics/src/stats/lib/binary_heap.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/2</span></td>
+      <td style="display: none;" data-ice="size">4054 byte</td>
+      <td style="display: none;" data-ice="lines">133</td>
+      <td style="display: none;" data-ice="updated">2019-03-05 16:50:25 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/metrics/src/stats/lib/utils.js.html">packages/metrics/src/stats/lib/utils.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">1508 byte</td>
+      <td style="display: none;" data-ice="lines">52</td>
+      <td style="display: none;" data-ice="updated">2019-03-07 01:10:33 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/tracing/src/SpanSingle.js.html#errorLines=40,42,67,81">packages/tracing/src/SpanSingle.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-createSpanSingle">createSpanSingle</a></span></td>
+      <td class="coverage"><span data-ice="coverage">69 %</span><span data-ice="coverageCount" class="coverage-count">9/13</span></td>
+      <td style="display: none;" data-ice="size">3252 byte</td>
+      <td style="display: none;" data-ice="lines">158</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 00:28:15 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/tracing/src/SpanSubscriber.js.html#errorLines=29,30">packages/tracing/src/SpanSubscriber.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/packages/tracing/src/SpanSubscriber.js~SpanSubscriber.html">SpanSubscriber</a></span></td>
+      <td class="coverage"><span data-ice="coverage">88 %</span><span data-ice="coverageCount" class="coverage-count">15/17</span></td>
+      <td style="display: none;" data-ice="size">3329 byte</td>
+      <td style="display: none;" data-ice="lines">161</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 01:01:24 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/tracing/src/Tracing.js.html">packages/tracing/src/Tracing.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="function/index.html#static-function-bufferToMap">bufferToMap</a></span>
+<span><a href="function/index.html#static-function-deserializeTraceData">deserializeTraceData</a></span>
+<span><a href="function/index.html#static-function-mapToBuffer">mapToBuffer</a></span>
+<span><a href="function/index.html#static-function-trace">trace</a></span>
+<span><a href="function/index.html#static-function-traceAsChild">traceAsChild</a></span>
+<span><a href="function/index.html#static-function-traceSingle">traceSingle</a></span>
+<span><a href="function/index.html#static-function-traceSingleAsChild">traceSingleAsChild</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">7/7</span></td>
+      <td style="display: none;" data-ice="size">9151 byte</td>
+      <td style="display: none;" data-ice="lines">291</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 01:02:13 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/tracing/src/__tests__/Tracing-test.js.html#errorLines=17,26,27,6">packages/tracing/src/__tests__/Tracing-test.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">0 %</span><span data-ice="coverageCount" class="coverage-count">0/4</span></td>
+      <td style="display: none;" data-ice="size">1117 byte</td>
+      <td style="display: none;" data-ice="lines">42</td>
+      <td style="display: none;" data-ice="updated">2019-03-02 01:12:45 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/packages/tracing/src/index.js.html">packages/tracing/src/index.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">1237 byte</td>
+      <td style="display: none;" data-ice="lines">51</td>
+      <td style="display: none;" data-ice="updated">2019-03-07 01:59:20 (UTC)</td>
+    </tr>
+</tbody>
+</table>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

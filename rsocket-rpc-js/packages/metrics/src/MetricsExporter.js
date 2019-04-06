@@ -1,5 +1,8 @@
 /**
- * Copyright (c) 2017-present, Netifi Inc.
+ * @name MetricsExporter.js
+ * @fileoverview Defines the MetricsExporter class
+ * @copyright Copyright (c) 2017-present, Netifi Inc.
+ * @license Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +17,16 @@
  * limitations under the License.
  *
  * @flow
+ *
+ * @requires NPM:rsocket-types
+ * @requires NPM:rsocket-flowable
+ * @requires metrics_pb
+ * @requires metrics_rsocket_pb
+ * @requires RawMeterTag
+ * @requires Timer
+ * @requires IMeterRegistry
+ * @requires IMeter
+ * @exports MetricsExporter
  */
 
 'use strict';
@@ -36,6 +49,15 @@ import Timer from './Timer';
 import {IMeterRegistry} from './IMeterRegistry';
 import type {IMeter} from './IMeter';
 
+/**
+ * An RSocket native metrics source.
+ * @example
+ * const meters = new SimpleMeterRegistry();
+ * const snapshotClient = new MetricsSnapshotHandlerClient(rsocket);
+ * metricsExporter = new MetricsExporter(snapshotClient, meters, 60, 1024);
+ * metricsExporter.start();
+ * @todo use {@link MetricsExporter#batchSize} to window the snapshots
+ */
 export default class MetricsExporter {
   handler: MetricsSnapshotHandlerClient;
   registry: IMeterRegistry;
@@ -45,20 +67,37 @@ export default class MetricsExporter {
   remoteSubscriber: ?ISubscriber<MetricsSnapshot>;
   remoteCancel: () => void;
 
+  /**
+   * @param {MetricsSnapshotHandlerClient} handler -
+   * @param {IMeterRegistry} registry -
+   * @param {number} exportPeriodSeconds -
+   * @param {number} batchSize - metrics count
+   */
   constructor(
     handler: MetricsSnapshotHandlerClient,
     registry: IMeterRegistry,
     exportPeriodSeconds: number,
     batchSize: number,
   ) {
+    /** @type {MetricsSnapshotHandlerClient} */
     this.handler = handler;
+    /** @type {IMeterRegistry} */
     this.registry = registry;
+    /** @type {number} */
     this.exportPeriodSeconds = exportPeriodSeconds;
+    /** @type {number} */
     this.batchSize = batchSize; // TODO: use this to window the snapshots
   }
 
+  /**
+   * Open the channel and begin to send metrics.
+   * This is not re-entrant since we rely on the periodic event of the
+   * interval timer.
+   *
+   * @throws {Error} if a metrics snapshot stream is already subscribed
+   */
   start() {
-    //Not re-entrant since we rely on the periodic event of the interval timer
+    // Not re-entrant since we rely on the periodic event of the interval timer
     if (this.intervalHandle) {
       throw new Error('A metrics snapshot stream is already subscribed');
     }
@@ -73,12 +112,16 @@ export default class MetricsExporter {
           restart(this);
         },
         onSubscribe: subscription => {
+          /** @type {function} */
           this.remoteCancel = subscription.cancel;
           subscription.request(2147483647); // FaceBook thing - their Flowable only allows this
         },
       });
   }
 
+  /**
+   * Stop sending metrics
+   */
   stop() {
     if (this.remoteCancel) {
       this.remoteCancel();
@@ -86,21 +129,32 @@ export default class MetricsExporter {
 
     if (this.remoteSubscriber) {
       this.remoteSubscriber.onComplete();
+      /** @type {ISubscriber<MetricsSnapshot>} */
       this.remoteSubscriber = null;
     }
 
     if (this.intervalHandle) {
       clearInterval(this.intervalHandle);
+      /** @type {any} */
       this.intervalHandle = null;
     }
   }
 }
 
+/**
+ * Stops and then restarts the given {@link MetricsExporter}.
+ *
+ * @param {MetricsExporter} exporter
+ */
 function restart(exporter: MetricsExporter) {
   exporter.stop();
   exporter.start();
 }
 
+/**
+ * @param {MetricsExporter} exporter
+ * @return {Flowable<MetricsSnapshot>} Subscribe to this Flowable to get periodic metrics updates.
+ */
 function getMetricsSnapshotStream(
   exporter: MetricsExporter,
 ): Flowable<MetricsSnapshot> {
@@ -150,6 +204,11 @@ function getMetricsSnapshotStream(
   });
 }
 
+/**
+ * @param {IMeter} meter
+ * @return {Meter[]}
+ * @throws {Error} if {@link meter} is of an unknown {@link IMeter.type}.
+ */
 function convert(meter: IMeter): Meter[] {
   const meterType = meterTypeLookup(meter.type);
   switch (meterType) {
@@ -166,6 +225,13 @@ function convert(meter: IMeter): Meter[] {
   }
 }
 
+/**
+ * Return a {@link MeterType} enum corresponding to the name of a meter type.
+ *
+ * @param {string} meterType - one of "gauge", "timer", "counter", "longTaskTimer", "distribtionSummary", or "other"
+ * @return a {@link MeterType} enum corresponding to the {@link meterType} string
+ * @throws {Error} if a string not among the above values is submitted as the {@link meterType} parameter
+ */
 function meterTypeLookup(meterType: string): MeterType {
   switch (meterType) {
     case 'gauge':
@@ -185,6 +251,13 @@ function meterTypeLookup(meterType: string): MeterType {
   }
 }
 
+/**
+ * Return a {@link MeterStatistic} enum corresponding to the name of a meter statistic.
+ *
+ * @param {string} statistic - one of "max", "count", "total", "value", "unknown", "duration", "totalTime", or "activeTasks"
+ * @return a {@link MeterStatistic} enum corresponding to the {@link statistic} string
+ * @throws {Error} if a string not among the above values is submitted as the {@link statistic} parameter
+ */
 function statisticTypeLookup(statistic: string): MeterStatistic {
   switch (statistic) {
     case 'max':
@@ -208,6 +281,11 @@ function statisticTypeLookup(statistic: string): MeterStatistic {
   }
 }
 
+/**
+ * @param {IMeter} imeter
+ * @return {Meter[]}
+ * @throws {Error} if {@link imeter} is not a {@link Timer}
+ */
 function convertTimer(imeter: IMeter): Meter[] {
   if (!(imeter instanceof Timer)) {
     throw new Error('Meter is not an instance of Timer');
@@ -218,7 +296,7 @@ function convertTimer(imeter: IMeter): Meter[] {
   const name = timer.name;
   const tags = convertTags(timer.tags);
 
-  //Add meters for percentiles of interest
+  // Add meters for percentiles of interest
   const valuesSnapshot = timer.percentiles();
   Object.keys(valuesSnapshot).forEach(percentile => {
     const value = toNanoseconds(valuesSnapshot[percentile]);
@@ -250,7 +328,7 @@ function convertTimer(imeter: IMeter): Meter[] {
     }
   });
 
-  //add a meter for total count and max time
+  // add a meter for total count and max time
   const histMeter = new Meter();
 
   const meterId = new MeterId();
@@ -277,12 +355,16 @@ function convertTimer(imeter: IMeter): Meter[] {
   return meters;
 }
 
+/**
+ * @param {IMeter} imeter
+ * @return {Meter[]}
+ */
 function basicConverter(imeter: IMeter): Meter[] {
   const meters = [];
   const name = imeter.name;
   const tags = convertTags(imeter.tags);
 
-  //Add meters for different windowed EWMAs
+  // Add meters for different windowed EWMAs
   const valuesSnapshot = imeter.rates();
   Object.keys(valuesSnapshot).forEach(rate => {
     const meter = new Meter();
@@ -314,6 +396,10 @@ function basicConverter(imeter: IMeter): Meter[] {
   return meters;
 }
 
+/**
+ * @param {RawMeterTag[]} tags
+ * @return {MeterTag[]}
+ */
 function convertTags(tags: RawMeterTag[]): MeterTag[] {
   return (tags || []).map(tag => {
     const finalTag = new MeterTag();
@@ -323,11 +409,23 @@ function convertTags(tags: RawMeterTag[]): MeterTag[] {
   });
 }
 
-//Not safe for timestamps, just time measurements
+/**
+ * Convert milliseconds to nanoseconds.
+ * Note: this is not safe for timestamps, just time measurements.
+ *
+ * @param {number} milliseconds - a number of milliseconds to convert
+ * @return {number} the value of {@link milliseconds} converted to nanoseconds
+ */
 function toNanoseconds(milliseconds: number) {
   return milliseconds * 1000 * 1000;
 }
 
+/**
+ * Not currently functional.
+ *
+ * @todo Do something with this?
+ * @param {Skew} skew
+ */
 function recordClockSkew(skew: Skew): void {
   // TODO: do something with this?
   return;

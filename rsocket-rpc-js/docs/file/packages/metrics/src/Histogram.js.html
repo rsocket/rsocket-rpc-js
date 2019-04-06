@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">packages/metrics/src/Histogram.js</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#core-src">core/src</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/core/src/RequestHandlingRSocket.js~RequestHandlingRSocket.html">RequestHandlingRSocket</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/core/src/RpcClient.js~RpcClient.html">RpcClient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/core/src/SwitchTransformOperator.js~SwitchTransformOperator.html">SwitchTransformOperator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ClientConfig">ClientConfig</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-DuplexConnection">DuplexConnection</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Encodable">Encodable</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Flowable">Flowable</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Payload">Payload</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-PayloadSerializers">PayloadSerializers</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ReactiveSocket">ReactiveSocket</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Responder">Responder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Serializer">Serializer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Setup">Setup</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Single">Single</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveStreamTypes.js">ISubscription</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#frames-src">frames/src</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-encodeMetadata">encodeMetadata</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getMetadata">getMetadata</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getMethod">getMethod</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getService">getService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getTracing">getTracing</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getVersion">getVersion</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-METHOD_LENGTH_SIZE">METHOD_LENGTH_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-SERVICE_LENGTH_SIZE">SERVICE_LENGTH_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TRACING_LENGTH_SIZE">TRACING_LENGTH_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-VERSION">VERSION</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-VERSION_SIZE">VERSION_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Buffer">Buffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-BufferEncoder">BufferEncoder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Encoder">Encoder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-UTF8Encoder">UTF8Encoder</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#metrics-src">metrics/src</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/BaseMeter.js~BaseMeter.html">BaseMeter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Counter.js~Counter.html">Counter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Histogram.js~Histogram.html">Histogram</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Metrics.js~Metrics.html">Metrics</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/MetricsExporter.js~MetricsExporter.html">MetricsExporter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/MetricsSubscriber.js~MetricsSubscriber.html">MetricsSubscriber</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/RawMeterTag.js~RawMeterTag.html">RawMeterTag</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/SimpleMeterRegistry.js~SimpleMeterRegistry.html">SimpleMeterRegistry</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Timer.js~Timer.html">Timer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embedMetricsSingleSubscriber">embedMetricsSingleSubscriber</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEFAULT_PERCENTILES">DEFAULT_PERCENTILES</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#metrics-src-stats">metrics/src/stats</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/ExponentiallyDecayingSample.js~ExponentiallyDecayingSample.html">ExponentiallyDecayingSample</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/ExponentiallyWeightedMovingAverage.js~EWMA.html">EWMA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/Sample.js~Sample.html">Sample</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/UniformSample.js~UniformSample.html">UniformSample</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#tracing-src">tracing/src</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/tracing/src/SpanSubscriber.js~SpanSubscriber.html">SpanSubscriber</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createSpanSingle">createSpanSingle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bufferToMap">bufferToMap</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-deserializeTraceData">deserializeTraceData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mapToBuffer">mapToBuffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-trace">trace</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traceAsChild">traceAsChild</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traceSingle">traceSingle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traceSingleAsChild">traceSingleAsChild</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">packages/metrics/src/Histogram.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * @name Histogram.js
+ * @fileoverview Defines the Histogram class.
+ *
+ * @flow
+ *
+ * @requires stats
+ */
+
+&apos;use strict&apos;;
+
+import {
+  ExponentiallyDecayingSample,
+  UniformSample,
+  ISample,
+  Sample,
+} from &apos;./stats&apos;;
+
+/**
+ * The default set of percentiles to use in the Histogram.
+ */
+export const DEFAULT_PERCENTILES = [
+  0.001,
+  0.01,
+  0.05,
+  0.1,
+  0.25,
+  0.5,
+  0.75,
+  0.9,
+  0.95,
+  0.98,
+  0.99,
+  0.999,
+];
+
+/**
+ * A histogram tracks the distribution of items, given a sample type.
+ */
+export class Histogram {
+  sample: ISample;
+  min: ?number;
+  max: ?number;
+  sum: ?number;
+  varianceM: ?number;
+  varianceS: ?number;
+  count: ?number;
+  type: string;
+
+  /**
+   * @param {ISample} sample -
+   */
+  constructor(sample: ISample) {
+    /** @type {ISample} */
+    this.sample = sample || new ExponentiallyDecayingSample(1028, 0.015);
+    /** @type {?number} */
+    this.min = null;
+    /** @type {?number} */
+    this.max = null;
+    /** @type {?number} */
+    this.sum = null;
+    // These are for the Welford algorithm for calculating running variance
+    // without floating-point doom.
+    /** @type {?number} */
+    this.varianceM = null;
+    /** @type {?number} */
+    this.varianceS = null;
+    /** @type {?number} */
+    this.count = 0;
+    /** @type {string} */
+    this.type = &apos;histogram&apos;;
+  }
+
+  /**
+   * Create an exponentially decaying histogram.
+   *
+   * @param {number} [size=1028]
+   * @param {number} [alpha=0.015]
+   * @return {Histogram}
+   */
+  static createExponentialDecayHistogram(
+    size: number,
+    alpha: number,
+  ): Histogram {
+    return new Histogram(
+      new ExponentiallyDecayingSample(size || 1028, alpha || 0.015),
+    );
+  }
+
+  /**
+   * Create a uniformly-sampled histogram.
+   *
+   * @param {number} [size=1028]
+   * @return {Histogram}
+   */
+  static createUniformHistogram(size: number): Histogram {
+    return new Histogram(new UniformSample(size || 1028));
+  }
+
+  /**
+   * Return the histogram to its default values.
+   */
+  clear/* = function*/(): void {
+    this.sample.clear();
+    this.min = null;
+    this.max = null;
+    this.sum = null;
+    this.varianceM = null;
+    this.varianceS = null;
+    this.count = 0;
+  };
+
+  /**
+   * timestamp param primarily used for testing
+   *
+   * @function
+   * @param {number} val
+   * @param {?number} [timestamp]
+   */
+  update/* = function*/(val: number, timestamp?: number): void {
+    this.count++;
+    this.sample.update(val, timestamp);
+    if (this.max === null) {
+      this.max = val;
+    } else {
+      this.max = val &gt; this.max ? val : this.max;
+    }
+    if (this.min === null) {
+      this.min = val;
+    } else {
+      this.min = val &lt; this.min ? val : this.min;
+    }
+    this.sum = this.sum === null ? val : this.sum + val;
+    this.updateVariance(val);
+  };
+
+  /**
+   * Set the value of the Welford algorithm variance.
+   *
+   * @function
+   * @param {number} val
+   */
+  updateVariance/* = function*/(val: number): void {
+    var oldVM = this.varianceM,
+      oldVS = this.varianceS;
+    if (this.count == 1) {
+      this.varianceM = val;
+    } else {
+      this.varianceM = oldVM + (val - oldVM) / this.count;
+      this.varianceS = oldVS + (val - oldVM) * (val - this.varianceM);
+    }
+  };
+
+  /**
+   * Get the values for a set of percentiles.
+   *
+   * @function
+   * @param {?number[]} [percentiles] An array of percentiles, expressed as decimals between zero and one. For example, [0.5, 0.75, 0.9, 0.99]. Default is {@link DEFAULT_PERCENTILES}.
+   * @return {number[]} the values for each percentile level
+   */
+  percentiles/* = function*/(percentiles?: number[]): Object {
+    if (!percentiles) {
+      percentiles = DEFAULT_PERCENTILES;
+    }
+    var values = this.sample
+        .getValues()
+        .map(function(v) {
+          return parseFloat(v);
+        })
+        .sort(function(a, b) {
+          return a - b;
+        }),
+      scores = {},
+      percentile,
+      pos,
+      lower,
+      upper;
+    for (var i = 0; i &lt; percentiles.length; i++) {
+      pos = percentiles[i] * (values.length + 1);
+      percentile = percentiles[i];
+      if (pos &lt; 1) {
+        scores[percentile] = values[0];
+      } else if (pos &gt;= values.length) {
+        scores[percentile] = values[values.length - 1];
+      } else {
+        lower = values[Math.floor(pos) - 1];
+        upper = values[Math.ceil(pos) - 1];
+        scores[percentile] = lower + (pos - Math.floor(pos)) * (upper - lower);
+      }
+    }
+    return scores;
+  };
+
+  /**
+   * Return the average variance using the Welford algorithm.
+   *
+   * @function
+   * @return {?number} the average variance, or null if this is undefined because the count is zero.
+   * @throws {Error} a divide by zero error if this.count==1
+   */
+  variance/* = function*/(): ?number {
+    return this.count &lt; 1 ? null : this.varianceS / (this.count - 1);
+  };
+
+  /**
+   * Return the sum of squares of differences from the current mean.
+   *
+   * @function
+   * @return {?number} the sum of squares of differences from the current mean, or null if this is undefined because the count is zero.
+   */
+  mean/* = function*/(): ?number {
+    return this.count == 0 ? null : this.varianceM;
+  };
+
+  /**
+   * Return the standard deviation, the square root of the average variance.
+   *
+   * @function
+   * @return {?number} the standard deviation, or null if this is undefined because the count is zero.
+   */
+  stdDev/* = function*/(): ?number {
+    return this.count &lt; 1 ? null : Math.sqrt(this.variance());
+  };
+
+  /**
+   * Return the set of values in the sample.
+   *
+   * @function
+   * @return {any[]} an array of the values in the sample
+   */
+  values/* = function*/(): any[] {
+    return this.sample.getValues();
+  };
+
+  /**
+   * @function
+   * @return {Object}
+   * @property {string} type &quot;histogram&quot;
+   * @property {number} min
+   * @property {number} max
+   * @property {number} sum
+   * @property {number} variance
+   * @property {number} mean
+   * @property {number} stdDev
+   * @property {number} count
+   * @property {number} median
+   * @property {number} p75
+   * @property {number} p95
+   * @property {number} p99
+   * @property {number} p999
+   */
+  toObject/* = function*/(): Object {
+    var percentiles = this.percentiles();
+    return {
+      type: &apos;histogram&apos;,
+      min: this.min,
+      max: this.max,
+      sum: this.sum,
+      variance: this.variance(),
+      mean: this.mean(),
+      std_dev: this.stdDev(),
+      count: this.count,
+      median: percentiles[0.5],
+      p75: percentiles[0.75],
+      p95: percentiles[0.95],
+      p99: percentiles[0.99],
+      p999: percentiles[0.999],
+    };
+  };
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

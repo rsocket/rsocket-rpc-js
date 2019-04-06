@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">packages/tracing/src/Tracing.js</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#core-src">core/src</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/core/src/RequestHandlingRSocket.js~RequestHandlingRSocket.html">RequestHandlingRSocket</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/core/src/RpcClient.js~RpcClient.html">RpcClient</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/core/src/SwitchTransformOperator.js~SwitchTransformOperator.html">SwitchTransformOperator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ClientConfig">ClientConfig</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-DuplexConnection">DuplexConnection</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Encodable">Encodable</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Flowable">Flowable</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Payload">Payload</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-PayloadSerializers">PayloadSerializers</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-ReactiveSocket">ReactiveSocket</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Responder">Responder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Serializer">Serializer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Setup">Setup</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Single">Single</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-external">E</span><span data-ice="name"><span><a href="https://github.com/rsocket/rsocket-js/blob/master/packages/rsocket-types/src/ReactiveStreamTypes.js">ISubscription</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#frames-src">frames/src</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-encodeMetadata">encodeMetadata</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getMetadata">getMetadata</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getMethod">getMethod</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getService">getService</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getTracing">getTracing</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-getVersion">getVersion</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-METHOD_LENGTH_SIZE">METHOD_LENGTH_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-SERVICE_LENGTH_SIZE">SERVICE_LENGTH_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TRACING_LENGTH_SIZE">TRACING_LENGTH_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-VERSION">VERSION</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-VERSION_SIZE">VERSION_SIZE</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Buffer">Buffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-BufferEncoder">BufferEncoder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Encoder">Encoder</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-UTF8Encoder">UTF8Encoder</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#metrics-src">metrics/src</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/BaseMeter.js~BaseMeter.html">BaseMeter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Counter.js~Counter.html">Counter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Histogram.js~Histogram.html">Histogram</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Metrics.js~Metrics.html">Metrics</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/MetricsExporter.js~MetricsExporter.html">MetricsExporter</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/MetricsSubscriber.js~MetricsSubscriber.html">MetricsSubscriber</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/RawMeterTag.js~RawMeterTag.html">RawMeterTag</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/SimpleMeterRegistry.js~SimpleMeterRegistry.html">SimpleMeterRegistry</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/Timer.js~Timer.html">Timer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-embedMetricsSingleSubscriber">embedMetricsSingleSubscriber</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-DEFAULT_PERCENTILES">DEFAULT_PERCENTILES</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#metrics-src-stats">metrics/src/stats</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/ExponentiallyDecayingSample.js~ExponentiallyDecayingSample.html">ExponentiallyDecayingSample</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/ExponentiallyWeightedMovingAverage.js~EWMA.html">EWMA</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/Sample.js~Sample.html">Sample</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/metrics/src/stats/UniformSample.js~UniformSample.html">UniformSample</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#tracing-src">tracing/src</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/packages/tracing/src/SpanSubscriber.js~SpanSubscriber.html">SpanSubscriber</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createSpanSingle">createSpanSingle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-bufferToMap">bufferToMap</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-deserializeTraceData">deserializeTraceData</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-mapToBuffer">mapToBuffer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-trace">trace</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traceAsChild">traceAsChild</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traceSingle">traceSingle</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-traceSingleAsChild">traceSingleAsChild</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">packages/tracing/src/Tracing.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * @name Tracing.js
+ * @fileoverview Tracing functionality.
+ * @requires NPM:rsocket-core
+ * @requires NPM:rsocket-types
+ * @requires NPM:rsocket-flowable
+ * @requires NPM:opentracing
+ * @requires NPM:rsocket-rpc-frames
+ * @requires SpanSubscriber
+ * @requires SpanSingle
+ * @exports deserializeTraceData
+ * @exports mapToBuffer
+ * @exports bufferToMap
+ * @exports trace
+ * @exports traceAsChild
+ * @exports traceSingle
+ * @exports traceSingleAsChild
+ */
+
+import {UTF8Encoder, BufferEncoder, createBuffer} from &apos;rsocket-core&apos;;
+import {ISubscriber} from &apos;rsocket-types&apos;;
+import {Flowable, Single} from &apos;rsocket-flowable&apos;;
+
+import {SpanSubscriber} from &apos;./SpanSubscriber&apos;;
+import {createSpanSingle} from &apos;./SpanSingle&apos;;
+import {SpanContext, Tracer, FORMAT_TEXT_MAP} from &apos;opentracing&apos;;
+
+import {getTracing} from &apos;rsocket-rpc-frames&apos;;
+
+/**
+ * @param {?Tracer} tracer - an OpenTracing {@link Tracer}
+ * @param {Buffer} metadata -
+ * @returns {?SpanContext} or null if the tracer is null or there is no tracing data
+ * @see https://opentracing.io/
+ * @see https://opentracing-javascript.surge.sh/classes/tracer.html
+ */
+export function deserializeTraceData(tracer, metadata) {
+  if (!tracer) {
+    return null;
+  }
+
+  const tracingData = getTracing(metadata);
+
+  if (BufferEncoder.byteLength(tracingData) &lt;= 0) {
+    return null;
+  }
+
+  return tracer.extract(FORMAT_TEXT_MAP, bufferToMap(tracingData));
+}
+
+/**
+ * @param {?Object} map -
+ * @returns {Buffer}
+ */
+export function mapToBuffer(map: Object): Buffer {
+  if (!map || Object.keys(map).length &lt;= 0) {
+    return createBuffer(0);
+  }
+
+  const aggregatedTags = Object.keys(map).reduce(
+    (aggregate, key) =&gt; {
+      const val = map[key];
+      const keyLen = UTF8Encoder.byteLength(key);
+      const keyBuf = createBuffer(keyLen);
+      UTF8Encoder.encode(key, keyBuf, 0, keyLen);
+
+      const valLen = UTF8Encoder.byteLength(val);
+      const valBuf = createBuffer(valLen);
+      UTF8Encoder.encode(val, valBuf, 0, valLen);
+
+      const newEntries = aggregate.entries;
+      newEntries.push({keyLen, keyBuf, valLen, valBuf});
+
+      return {
+        // 4 for the sizes plus the actual key and actual value
+        totalSize: aggregate.totalSize + 4 + keyLen + valLen,
+        entries: newEntries,
+      };
+    },
+    {totalSize: 0, entries: []},
+  );
+
+  let offset = 0;
+  const resultBuf = createBuffer(aggregatedTags.totalSize);
+  aggregatedTags.entries.forEach(entry =&gt; {
+    resultBuf.writeUInt16BE(entry.keyLen, offset);
+    offset += 2; // 2 bytes for key length
+
+    BufferEncoder.encode(
+      entry.keyBuf,
+      resultBuf,
+      offset,
+      offset + entry.keyLen,
+    );
+    offset += entry.keyLen;
+
+    resultBuf.writeUInt16BE(entry.valLen, offset);
+    offset += 2;
+
+    BufferEncoder.encode(
+      entry.valBuf,
+      resultBuf,
+      offset,
+      offset + entry.valLen,
+    );
+    offset += entry.valLen;
+  });
+
+  return resultBuf;
+}
+
+/**
+ * @param {!Buffer} buffer - 
+ * @returns {Object}
+ */
+export function bufferToMap(buffer: Buffer): Object {
+  const result = {};
+
+  let offset = 0;
+  while (offset &lt; buffer.length) {
+    let keyLen = buffer.readUInt16BE(offset);
+    offset += 2;
+
+    let key = UTF8Encoder.decode(buffer, offset, offset + keyLen);
+    offset += keyLen;
+
+    let valLen = buffer.readUInt16BE(offset);
+    offset += 2;
+
+    let value = UTF8Encoder.decode(buffer, offset, offset + valLen);
+    offset += valLen;
+
+    result[key] = value;
+  }
+
+  return result;
+}
+
+/**
+ * Allows propagation of a {@link SpanContext} map through a {@link Flowable}.
+ *
+ * @example &lt;caption&gt;Wraps default tags &quot;tag1&quot; and &quot;tag2&quot; and picks up &quot;additionalTag1&quot; and &quot;additionalTag2&quot;:&lt;/caption&gt;
+ * const traceCapture = trace(myTracer, &quot;myOperation&quot;, {tag1: &quot;value&quot;}, {tag2: &quot;another value&quot;});
+ *
+ * ... more code ...
+ *
+ * const subscriberTransformer = traceCapture({additionalTag1: 1, additionalTag2: &quot;two&quot;});
+ *
+ * subscriberTransformer(rsocket.requestStream(serviceRequest))
+ * .subscribe({ ... });
+ *
+ * @param {?Tracer} tracer - an OpenTracing {@link Tracer}
+ * @param {?String} name - an operation name
+ * @param {Object} tags - You can pass a collection of tags in the form of a map/Object and have it woven through a Flowable=&gt;Flowable function.
+ * @returns {function}
+ * @see https://opentracing-javascript.surge.sh/classes/spancontext.html
+ * @see https://opentracing.io/
+ * @see https://opentracing-javascript.surge.sh/classes/tracer.html
+ */
+export function trace&lt;T&gt;(
+  tracer?: Tracer,
+  name?: String,
+  ...tags: Object
+): Object =&gt; (Flowable&lt;T&gt;) =&gt; Flowable&lt;T&gt; {
+  if (tracer &amp;&amp; name) {
+    return (metadata: Object) =&gt; {
+      return (flowable: Flowable&lt;T&gt;) =&gt; {
+        return flowable.lift((subscriber: ISubscriber&lt;T&gt;) =&gt; {
+          return new SpanSubscriber(
+            subscriber,
+            tracer,
+            name,
+            null,
+            metadata,
+            ...tags,
+          );
+        });
+      };
+    };
+  } else {
+    return (map: Object) =&gt; (publisher: Flowable&lt;T&gt;) =&gt; publisher;
+  }
+}
+
+/**
+ * Similar to {@link trace}, except meant to be used on the server side where a
+ * {@link SpanContext} has been passed from a client.
+ * @example
+ * const traceCapture = traceAsChild(myTracer, &quot;myServerOperation&quot;, {serverTag1: &quot;value&quot;}, {serverTag2: &quot;another value&quot;});
+ * const subscriberTransformer = traceCapture(deserializeTraceData(myTracer, requestMetadata));
+ * return subscriberTransformer(serviceImpl.requestStream(serviceRequest));
+ * @param {?Tracer} tracer - an OpenTracing {@link Tracer}
+ * @param {?String} name - an operation name
+ * @param {Object} tags - You can pass a collection of tags in the form of a map/Object and have it woven through a Flowable=&gt;Flowable function.
+ * @returns {function}
+ * @see https://opentracing-javascript.surge.sh/classes/spancontext.html
+ * @see https://opentracing.io/
+ * @see https://opentracing-javascript.surge.sh/classes/tracer.html
+ */
+export function traceAsChild&lt;T&gt;(
+  tracer?: Tracer,
+  name?: String,
+  ...tags: Object
+): SpanContext =&gt; (Flowable&lt;T&gt;) =&gt; Flowable&lt;T&gt; {
+  if (tracer &amp;&amp; name) {
+    return (context: SpanContext) =&gt; {
+      return (flowable: Flowable&lt;T&gt;) =&gt; {
+        return flowable.lift((subscriber: ISubscriber&lt;T&gt;) =&gt; {
+          return new SpanSubscriber(
+            subscriber,
+            tracer,
+            name,
+            context,
+            null,
+            ...tags,
+          );
+        });
+      };
+    };
+  } else {
+    return (context: SpanContext) =&gt; (publisher: Flowable&lt;T&gt;) =&gt; publisher;
+  }
+}
+
+/**
+ * Allows propagation of a {@link SpanContext} map through a Flowable.
+ *
+ * @example &lt;caption&gt;Wraps default tags &quot;tag1&quot; and &quot;tag2&quot; and picks up &quot;additionalTag1&quot; and &quot;additionalTag2&quot;:&lt;/caption&gt;
+ * const traceCapture = trace(myTracer, &quot;myOperation&quot;, {tag1: &quot;value&quot;}, {tag2: &quot;another value&quot;});
+ *
+ * ... more code ...
+ *
+ * const subscriberTransformer = traceCapture({additionalTag1: 1, additionalTag2: &quot;two&quot;});
+ *
+ * subscriberTransformer(rsocket.requestStream(serviceRequest))
+ * .subscribe({ ... });
+ *
+ * @param {?Tracer} tracer - an OpenTracing {@link Tracer}
+ * @param {?String} name - an operation name
+ * @param {Object} tags - You can pass a collection of tags in the form of a map/Object and have it woven through a Single=&gt;Single function.
+ * @returns {function}
+ * @see https://opentracing-javascript.surge.sh/classes/spancontext.html
+ * @see https://opentracing.io/
+ * @see https://opentracing-javascript.surge.sh/classes/tracer.html
+ */
+export function traceSingle&lt;T&gt;(
+  tracer?: Tracer,
+  name?: String,
+  ...tags: Object
+): Object =&gt; (Single&lt;T&gt;) =&gt; Single&lt;T&gt; {
+  if (tracer &amp;&amp; name) {
+    return (metadata: Object) =&gt; {
+      return (single: Single&lt;T&gt;) =&gt; {
+        return createSpanSingle(single, tracer, name, null, metadata, ...tags);
+      };
+    };
+  } else {
+    return (map: Object) =&gt; (single: Single&lt;T&gt;) =&gt; single;
+  }
+}
+
+/**
+ * Similar to {@link traceSingle}, except meant to be used on the server side
+ * where a {@link SpanContext} has been passed from a client.
+ * @example
+ * const traceCapture = traceAsChild(myTracer, &quot;myServerOperation&quot;, {serverTag1: &quot;value&quot;}, {serverTag2: &quot;another value&quot;});
+ * const subscriberTransformer = traceCapture(deserializeTraceData(myTracer, requestMetadata));
+ * return subscriberTransformer(serviceImpl.requestStream(serviceRequest));
+ * @param {?Tracer} tracer - an OpenTracing {@link Tracer}
+ * @param {?String} name - an operation name
+ * @param {Object} tags - You can pass a collection of tags in the form of a map/Object and have it woven through a Single=&gt;Single function.
+ * @returns {function}
+ * @see https://opentracing-javascript.surge.sh/classes/spancontext.html
+ * @see https://opentracing.io/
+ * @see https://opentracing-javascript.surge.sh/classes/tracer.html
+ */
+export function traceSingleAsChild&lt;T&gt;(
+  tracer?: Tracer,
+  name?: String,
+  ...tags: Object
+): SpanContext =&gt; (Single&lt;T&gt;) =&gt; Single&lt;T&gt; {
+  if (tracer &amp;&amp; name) {
+    return (context: SpanContext) =&gt; {
+      return (single: Single&lt;T&gt;) =&gt; {
+        return createSpanSingle(single, tracer, name, context, null, ...tags);
+      };
+    };
+  } else {
+    return (context: SpanContext) =&gt; (single: Single&lt;T&gt;) =&gt; single;
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

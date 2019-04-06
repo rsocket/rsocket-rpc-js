@@ -1,5 +1,4 @@
 /*
-/*
  * Mix in the properties on an object to another object
  * utils.mixin(target, source, [source,] [source, etc.] [merge-flag]);
  * 'merge' recurses, to merge object sub-properties together instead

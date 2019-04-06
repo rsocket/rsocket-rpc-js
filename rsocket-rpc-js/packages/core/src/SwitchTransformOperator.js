@@ -1,5 +1,8 @@
 /**
- * Copyright (c) 2017-present, Netifi Inc.
+ * @name SwitchTransformOperator.js
+ * @fileoverview Defines the SwitchTransformOperator class.
+ * @copyright Copyright (c) 2017-present, Netifi Inc.
+ * @license Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +17,9 @@
  * limitations under the License.
  *
  * @flow
+ *
+ * @requires NPM:rsocket-types
+ * @requires NPM:rsocket-flowable
  */
 
 import type {
@@ -24,8 +30,17 @@ import type {
 } from 'rsocket-types';
 import {Flowable} from 'rsocket-flowable';
 
+/**
+ * MAX_REQUEST_N (from SwitchTransformOperator.js). The maximum number of items
+ * that may be requested.
+ *
+ * @constant
+ * @type {number}
+ */
 const MAX_REQUEST_N = 0x7fffffff; // uint31
 
+/**
+ */
 export default class SwitchTransformOperator<T, R>
   implements ISubscription, ISubscriber<T>, IPublisher<T> {
   _done: boolean;
@@ -37,6 +52,10 @@ export default class SwitchTransformOperator<T, R>
   _subscription: ISubscription;
   _transformer: (first: T, stream: Flowable<T>) => IPublisher<R>;
 
+  /**
+   * @param {ISubscriber} initial -
+   * @param {function} transformer -
+   */
   constructor(
     initial: ISubscriber<R>,
     transformer: (first: T, stream: Flowable<T>) => IPublisher<R>,
@@ -45,6 +64,8 @@ export default class SwitchTransformOperator<T, R>
     this._outer = initial;
   }
 
+  /**
+   */
   cancel() {
     if (this._canceled) {
       return;
@@ -55,6 +76,9 @@ export default class SwitchTransformOperator<T, R>
     this._subscription.cancel();
   }
 
+  /**
+   * @param {?IPartialSubscriber} actual -
+   */
   subscribe(actual?: IPartialSubscriber<T>) {
     if (actual && !this._inner) {
       this._inner = ((actual: any): ISubscriber<T>);
@@ -76,6 +100,9 @@ export default class SwitchTransformOperator<T, R>
     }
   }
 
+  /**
+   * @param {ISubscription} subscription
+   */
   onSubscribe(subscription: ISubscription) {
     if (this._subscription) {
       subscription.cancel();
@@ -86,6 +113,9 @@ export default class SwitchTransformOperator<T, R>
     this._subscription.request(1);
   }
 
+  /**
+   * @param {T} value
+   */
   onNext(value: T) {
     if (this._canceled || this._done) {
       return;
@@ -108,6 +138,9 @@ export default class SwitchTransformOperator<T, R>
     this._inner.onNext(value);
   }
 
+  /**
+   * @param {Error} error
+   */
   onError(error: Error) {
     if (this._canceled || this._done) {
       return;
@@ -130,6 +163,8 @@ export default class SwitchTransformOperator<T, R>
     }
   }
 
+  /**
+   */
   onComplete() {
     if (this._done || this._canceled) {
       return;
@@ -151,6 +186,9 @@ export default class SwitchTransformOperator<T, R>
     }
   }
 
+  /**
+   * @param {number} n
+   */
   request(n: number) {
     if (this._first) {
       const f = this._first;
@@ -175,6 +213,10 @@ export default class SwitchTransformOperator<T, R>
     }
   }
 
+  /**
+   * @param {function} fn
+   * @returns {IPublisher}
+   */
   map<R>(fn: (data: T) => R): IPublisher<R> {
     return new Flowable(subscriber => this.subscribe(subscriber)).map(fn);
   }

@@ -1,5 +1,8 @@
 /**
- * Copyright (c) 2017-present, Netifi Inc.
+ * @name IMeterRegistry.js
+ * @fileoverview Defines the "IMeterRegistry" interface.
+ * @copyright Copyright (c) 2017-present, Netifi Inc.
+ * @license Apache-2.0
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +17,34 @@
  * limitations under the License.
  *
  * @flow
+ *
+ * @requires IMeter
+ * @exports IMeterRegistry
  */
 
 'use strict';
 
 import type {IMeter} from './IMeter';
 
+/**
+ * This represents any container class that can store handles to Meters and
+ * deliver them as a collection.
+ * @interface
+ */
 export interface IMeterRegistry {
+  /**
+   * @function
+   * @param {IMeter} meter
+   */
   registerMeter(meter: IMeter): void;
+  /**
+   * @function
+   * @param {IMeter[]} meters
+   */
   registerMeters(meters: IMeter[]): void;
+  /**
+   * @function
+   * @returns {IMeter[]}
+   */
   meters(): IMeter[];
 }

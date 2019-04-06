@@ -3,6 +3,9 @@ var expect = require('chai').expect,
   it = require('mocha').it,
   Timer = require('../Timer').default;
 
+/**
+ * @test {Timer}
+ */
 describe('Timer', function() {
   it('should properly record durations.', function(done) {
     var timer = new Timer();

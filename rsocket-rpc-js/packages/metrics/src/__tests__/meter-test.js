@@ -3,6 +3,9 @@ var expect = require('chai').expect,
   it = require('mocha').it,
   Meter = require('../BaseMeter').default;
 
+/**
+ * @test {Meter}
+ */
 describe('Meter', function() {
   this.timeout(10000);
   it('should properly record rate and count.', function(done) {
