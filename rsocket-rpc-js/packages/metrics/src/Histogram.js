@@ -100,7 +100,7 @@ export class Histogram {
   /**
    * Return the histogram to its default values.
    */
-  clear /* = function*/(): void {
+  clear = function(): void {
     this.sample.clear();
     this.min = null;
     this.max = null;
@@ -108,7 +108,7 @@ export class Histogram {
     this.varianceM = null;
     this.varianceS = null;
     this.count = 0;
-  }
+  };
 
   /**
    * timestamp param primarily used for testing
@@ -117,7 +117,7 @@ export class Histogram {
    * @param {number} val
    * @param {?number} [timestamp]
    */
-  update /* = function*/(val: number, timestamp?: number): void {
+  update = function(val: number, timestamp?: number): void {
     this.count++;
     this.sample.update(val, timestamp);
     if (this.max === null) {
@@ -132,7 +132,7 @@ export class Histogram {
     }
     this.sum = this.sum === null ? val : this.sum + val;
     this.updateVariance(val);
-  }
+  };
 
   /**
    * Set the value of the Welford algorithm variance.
@@ -140,7 +140,7 @@ export class Histogram {
    * @function
    * @param {number} val
    */
-  updateVariance /* = function*/(val: number): void {
+  updateVariance = function(val: number): void {
     var oldVM = this.varianceM,
       oldVS = this.varianceS;
     if (this.count == 1) {
@@ -149,7 +149,7 @@ export class Histogram {
       this.varianceM = oldVM + (val - oldVM) / this.count;
       this.varianceS = oldVS + (val - oldVM) * (val - this.varianceM);
     }
-  }
+  };
 
   /**
    * Get the values for a set of percentiles.
@@ -158,7 +158,7 @@ export class Histogram {
    * @param {?number[]} [percentiles] An array of percentiles, expressed as decimals between zero and one. For example, [0.5, 0.75, 0.9, 0.99]. Default is {@link DEFAULT_PERCENTILES}.
    * @return {number[]} the values for each percentile level
    */
-  percentiles /* = function*/(percentiles?: number[]): Object {
+  percentiles = function(percentiles?: number[]): Object {
     if (!percentiles) {
       percentiles = DEFAULT_PERCENTILES;
     }
@@ -189,7 +189,7 @@ export class Histogram {
       }
     }
     return scores;
-  }
+  };
 
   /**
    * Return the average variance using the Welford algorithm.
@@ -198,9 +198,9 @@ export class Histogram {
    * @return {?number} the average variance, or null if this is undefined because the count is zero.
    * @throws {Error} a divide by zero error if this.count==1
    */
-  variance /* = function*/(): ?number {
+  variance = function(): ?number {
     return this.count < 1 ? null : this.varianceS / (this.count - 1);
-  }
+  };
 
   /**
    * Return the sum of squares of differences from the current mean.
@@ -208,9 +208,9 @@ export class Histogram {
    * @function
    * @return {?number} the sum of squares of differences from the current mean, or null if this is undefined because the count is zero.
    */
-  mean /* = function*/(): ?number {
+  mean = function(): ?number {
     return this.count == 0 ? null : this.varianceM;
-  }
+  };
 
   /**
    * Return the standard deviation, the square root of the average variance.
@@ -218,9 +218,9 @@ export class Histogram {
    * @function
    * @return {?number} the standard deviation, or null if this is undefined because the count is zero.
    */
-  stdDev /* = function*/(): ?number {
+  stdDev = function(): ?number {
     return this.count < 1 ? null : Math.sqrt(this.variance());
-  }
+  };
 
   /**
    * Return the set of values in the sample.
@@ -228,9 +228,9 @@ export class Histogram {
    * @function
    * @return {any[]} an array of the values in the sample
    */
-  values /* = function*/(): any[] {
+  values = function(): any[] {
     return this.sample.getValues();
-  }
+  };
 
   /**
    * @function
@@ -249,7 +249,7 @@ export class Histogram {
    * @property {number} p99
    * @property {number} p999
    */
-  toObject /* = function*/(): Object {
+  toObject = function(): Object {
     var percentiles = this.percentiles();
     return {
       type: 'histogram',
@@ -266,5 +266,5 @@ export class Histogram {
       p99: percentiles[0.99],
       p999: percentiles[0.999],
     };
-  }
+  };
 }
