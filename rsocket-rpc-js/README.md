@@ -1,6 +1,6 @@
 # RSocket JavaScript RPC
 
-<a href='https://travis-ci.org/netifi/rsocket-rpc'><img src='https://travis-ci.org/netifi/rsocket-rpc.svg?branch=master'></a>
+<a href='https://travis-ci.org/rsocket/rsocket-rpc-js'><img src='https://travis-ci.org/rsocket/rsocket-rpc-js.svg?branch=master'></a>
 
 ## Documentation
 
