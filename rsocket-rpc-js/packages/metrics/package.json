@@ -1,6 +1,6 @@
 {
   "name": "rsocket-rpc-metrics",
-  "version": "0.0.1",
+  "version": "0.1.6",
   "description": "Base metrics definitions for RSocket RPC users",
   "files": [
     "dist/"
@@ -23,7 +23,7 @@
     "rsocket-rpc-protobuf": "^0.0.5"
   },
   "dependencies": {
-    "rsocket-flowable": "^0.0.9",
-    "rsocket-types": "^0.0.9"
+    "rsocket-flowable": "^0.0.10",
+    "rsocket-types": "^0.0.10"
   }
 }

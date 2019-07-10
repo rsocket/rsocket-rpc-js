@@ -1,7 +1,7 @@
 {
   "name": "rsocket-rpc-protobuf",
   "repository": "https://github.com/netifi/rsocket-rpc",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "RSocket RPC JavaScript Codegen Plugin for Protobuf Compiler",
   "contributors": [
     "Ryland Degnan <ryland@netifi.com>",
@@ -39,11 +39,11 @@
     "test": "npm run install && protoc --proto_path=proto --js_out=import_style=commonjs,binary:build --rsocket_rpc_out=build --plugin=protoc-gen-rsocket_rpc=build/Release/rsocket_rpc_js_plugin proto/rsocket/simpleservice.proto"
   },
   "dependencies": {
-    "cmake-js": "^3.6.2",
-    "prebuild-install": "^5.1.0"
+    "cmake-js": "^5.3.0",
+    "prebuild-install": "^5.3.0"
   },
   "devDependencies": {
-    "prebuild": "^8.0.1",
-    "prebuild-ci": "^2.2.3"
+    "prebuild": "^9.0.0",
+    "prebuild-ci": "^3.1.0"
   }
 }

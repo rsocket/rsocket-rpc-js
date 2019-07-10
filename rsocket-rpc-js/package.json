@@ -1,4 +1,5 @@
 {
+  "name": "rsocket-rpc-js",
   "private": true,
   "workspaces": [
     "packages/*"
@@ -55,7 +56,7 @@
     "eslint-plugin-flowtype": "2.40.1",
     "eslint-plugin-prefer-object-spread": "1.2.1",
     "flow-bin": "0.74.0",
-    "lerna": "^2.11.0",
+    "lerna": "^3.5.1",
     "mocha": "4.1.0",
     "prettier": "^1.5.3"
   }

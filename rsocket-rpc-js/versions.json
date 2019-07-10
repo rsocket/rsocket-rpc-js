@@ -1,11 +1,14 @@
 {
-  "rsocket-rpc-frames": {
-    "version": "0.0.0"
-  },
   "rsocket-rpc-core": {
-    "version": "0.0.0"
+    "version": "0.1.6"
+  },
+  "rsocket-rpc-frames": {
+    "version": "0.1.6"
+  },
+  "rsocket-rpc-metrics": {
+    "version": "0.1.6"
   },
   "rsocket-rpc-tracing": {
-    "version": "0.0.0"
+    "version": "0.1.6"
   }
 }
