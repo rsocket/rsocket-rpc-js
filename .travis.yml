@@ -39,15 +39,15 @@ matrix:
     - popd
   - language: cpp
     os: osx
-    osx_image: xcode9.4
+    osx_image: xcode10.1
     compiler: clang
-    env:
-    - HOMEBREW_TEMP="/tmp"
-    - LDFLAGS="/usr/local/lib/libprotobuf.a /usr/local/lib/libprotoc.a"
     before_install:
-    - brew update
-    - EDITOR="sed -i '' 's/system \".\/configure\",/system \".\/configure\", \"--disable-shared\",/g'" brew edit protobuf
-    - brew install protobuf
+    - curl -O -L https://github.com/google/protobuf/releases/download/v3.6.1/protobuf-cpp-3.6.1.tar.gz
+    - tar -xzf protobuf-cpp-3.6.1.tar.gz
+    - pushd protobuf-3.6.1
+    - ./autogen.sh
+    - ./configure --disable-shared && make && sudo make install
+    - popd
     script:
     - pushd rsocket-rpc-protobuf
     - cmake . -Bbuild && make -Cbuild
@@ -55,17 +55,18 @@ matrix:
   - language: cpp
     os: windows
     before_install:
+    - rm -r "/c/Program Files (x86)/Microsoft Visual Studio 14.0"
+    - export PATH=$PATH:"/c/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/HostX86/x64"
     - wget https://github.com/google/protobuf/releases/download/v3.6.1/protobuf-cpp-3.6.1.tar.gz
-    - tar -xzvf protobuf-cpp-3.6.1.tar.gz
+    - tar -xzf protobuf-cpp-3.6.1.tar.gz
     - pushd protobuf-3.6.1/cmake
     - mkdir build && cd build
-    - cmake -DCMAKE_CXX_FLAGS="-std=c++11" -Dprotobuf_BUILD_TESTS=OFF ..
-    - cmake --build . --config Release
+    - cmake -A x64 -DCMAKE_INSTALL_PREFIX="/c/Program Files/protobuf" -DCMAKE_CXX_FLAGS="-std=c++11 -EHsc" -Dprotobuf_BUILD_TESTS=OFF ..
     - cmake --build . --config Release --target install
     - popd
     script:
     - pushd rsocket-rpc-protobuf
     - mkdir build && cd build
-    - cmake -DProtobuf_LIBRARIES=/c/Program\ Files\ \(x86\)/protobuf/lib/ -DProtobuf_INCLUDE_DIR=/c/Program\ Files\ \(x86\)/protobuf/include/ -DProtobuf_LIBRARY=/c/Program\ Files\ \(x86\)/protobuf/lib/libprotobuf.lib -DProtobuf_PROTOC_LIBRARY=/c/Program\ Files\ \(x86\)/protobuf/lib/libprotoc.lib ..
+    - cmake -A x64 -DCMAKE_CXX_FLAGS="-std=c++11 -EHsc" -DProtobuf_LIBRARIES=/c/Program\ Files/protobuf/lib/ -DProtobuf_INCLUDE_DIR=/c/Program\ Files/protobuf/include/ -DProtobuf_LIBRARY=/c/Program\ Files/protobuf/lib/libprotobuf.lib -DProtobuf_PROTOC_LIBRARY=/c/Program\ Files/protobuf/lib/libprotoc.lib ..
     - cmake --build . --config Release
     - popd

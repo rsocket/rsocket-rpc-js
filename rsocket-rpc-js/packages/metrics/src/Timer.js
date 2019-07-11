@@ -10,8 +10,8 @@ import {Histogram} from './Histogram';
 import {ExponentiallyDecayingSample} from './stats';
 
 /*
-*  Basically a timer tracks the rate of events and histograms the durations
-*/
+ *  Basically a timer tracks the rate of events and histograms the durations
+ */
 export default class Timer extends BaseMeter {
   histogram: Histogram;
 

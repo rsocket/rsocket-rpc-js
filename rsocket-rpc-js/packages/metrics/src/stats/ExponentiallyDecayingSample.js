@@ -64,8 +64,8 @@ export default class ExponentiallyDecayingSample<T> extends Sample<T> {
   }
 
   /*
-  * timestamp in milliseconds
-  */
+   * timestamp in milliseconds
+   */
   update(val: T, timestamp?: number): void {
     // Convert timestamp to seconds
     if (timestamp == undefined) {

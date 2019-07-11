@@ -27,8 +27,8 @@ export const DEFAULT_PERCENTILES = [
 ];
 
 /*
-* A histogram tracks the distribution of items, given a sample type 
-*/
+ * A histogram tracks the distribution of items, given a sample type
+ */
 export class Histogram {
   sample: ISample;
   min: ?number;
