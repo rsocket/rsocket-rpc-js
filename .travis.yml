@@ -1,18 +1,10 @@
 matrix:
   include:
-  - language: node_js
-    os: linux
+  - os: linux
     dist: xenial
-    node_js:
-    - 10
+    language: node_js
+    node_js: 10
     cache: yarn
-    addons:
-      apt:
-        sources:
-          - sourceline: 'deb https://dl.yarnpkg.com/debian/ stable main'
-            key_url: 'https://dl.yarnpkg.com/debian/pubkey.gpg'
-        packages:
-          - yarn
     before_install:
     - wget https://github.com/google/protobuf/releases/download/v3.6.1/protobuf-cpp-3.6.1.tar.gz
     - tar -xzvf protobuf-cpp-3.6.1.tar.gz
@@ -26,19 +18,18 @@ matrix:
     - pushd rsocket-rpc-protobuf
     - yarn install && yarn prebuild
     - popd
-  - language: node_js
-    os: osx
+    deploy:
+      provider: script
+      skip_cleanup: true
+      script: cd rsocket-rpc-protobuf && yarn run prebuild --upload-all $PREBUILD_TOKEN
+      on:
+        tags: true
+        repo: rsocket/rsocket-rpc-js
+  - os: osx
     osx_image: xcode10.1
-    node_js:
-    - 10
+    language: node_js
+    node_js: 10
     cache: yarn
-    addons:
-      apt:
-        sources:
-          - sourceline: 'deb https://dl.yarnpkg.com/debian/ stable main'
-            key_url: 'https://dl.yarnpkg.com/debian/pubkey.gpg'
-        packages:
-          - yarn
     before_install:
     - curl -O -L https://github.com/google/protobuf/releases/download/v3.6.1/protobuf-cpp-3.6.1.tar.gz
     - tar -xzf protobuf-cpp-3.6.1.tar.gz
@@ -47,21 +38,20 @@ matrix:
     - ./configure --disable-shared && make && sudo make install
     - popd
     script:
-    - pushd rsocket-rpc-protobuf
+    - pushd rsocket-rpc-protobuf 
     - yarn install && yarn prebuild
     - popd
-  - language: node_js
-    os: windows
-    node_js:
-    - 10
+    deploy:
+      provider: script
+      skip_cleanup: true
+      script: cd rsocket-rpc-protobuf && yarn run prebuild --upload-all $PREBUILD_TOKEN
+      on:
+        tags: true
+        repo: rsocket/rsocket-rpc-js
+  - os: windows
+    language: node_js
+    node_js: 10
     cache: yarn
-    addons:
-      apt:
-        sources:
-          - sourceline: 'deb https://dl.yarnpkg.com/debian/ stable main'
-            key_url: 'https://dl.yarnpkg.com/debian/pubkey.gpg'
-        packages:
-          - yarn
     before_install:
     - wget https://github.com/google/protobuf/releases/download/v3.6.1/protobuf-cpp-3.6.1.tar.gz
     - tar -xzf protobuf-cpp-3.6.1.tar.gz
@@ -78,3 +68,12 @@ matrix:
     - npm config set cmake_Protobuf_PROTOC_LIBRARY="C:/Program Files (x86)/protobuf/lib/libprotoc.lib"
     - yarn install && yarn prebuild
     - popd
+    deploy:
+      provider: script
+      skip_cleanup: true
+      script: cd rsocket-rpc-protobuf && yarn run prebuild --upload-all $PREBUILD_TOKEN
+      on:
+        tags: true
+        repo: rsocket/rsocket-rpc-js
+env:
+  secure: "JzyX+SqRoNT8V6jTtsNArwDGKdU+1SAQ159ZYePgb/Y06eqlulkOAKc/qjZGHNZ3cvQJ0J+FAbvCInq3PyNnSyTFxvu/9agSsBtuWICtA0qh9P7qjSdLoEaho2HhN6EweGrpJt+NRp6x6ij+YmIWvu7DexsE8sS/v7ZBPpD8KfD03SQKFTXjGL3MyeSIGX/4NGilrhIhBBe67sbtnp7dx8HquVsMhVMOciC4PbVP6tiekD4dQ2TJrdMcW8MR0oFmsWZ13OjaT0+BqfyxPxJwuZevto3e8yOiAJKCXkT1bkFERGxqXJdS4guv+8emuv7bPZcrpEy56KAbIRfh3NQLmcmc8dfzOxtq0bTb/mMd7W/+hVmFETcggDxO3jhjVqdvGKltghHJG02xlxrRRjN11LwWWiWj8jT5DFPwZD60bsOVwIs8vzPCO/Rwjz4dLUp8/DHdN67px7G9Z8v+HFnE1udqS0S8iZDge82gVcLGUfl4ZZOvxFuNUGUNGR/qmEu0RXEUanybUQuRl8BlyMbEh3e83WFejHrDV8P9xKML9/Mq7+H4uPKmGn04F50KBjEkxmTbfHQPzb89kGPhaU4aZYt/qZ2kE1uHQB0cuw5xKjfIFvbH57LUsTEqOrOGtuUNSki3+HN76arwWUsyOckrIR4tN9HcSsfDY4tHwzQqoGI="
