@@ -1,0 +1,27 @@
+{
+  "name": "rsocket-rpc-ipc",
+  "version": "0.1.6",
+  "description": "RSocket IPC Client and Server",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/netifi/rsocket-js-rpc.git"
+  },
+  "keywords": [
+    "rsocket"
+  ],
+  "author": "Duncan Alexander <duncan@netifi.com>",
+  "bugs": {
+    "url": "https://github.com/netifi/rsocket-js-rpc/issues"
+  },
+  "homepage": "https://github.com/netifi/rsocket-js-rpc#readme",
+  "dependencies": {
+    "rsocket-types": "0.0.10",
+    "rsocket-core": "0.0.10",
+    "rsocket-flowable": "0.0.10",
+    "fbjs": "1.0.0"
+  }
+}
