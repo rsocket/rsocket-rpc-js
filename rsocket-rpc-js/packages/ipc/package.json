@@ -4,7 +4,11 @@
   "description": "RSocket IPC Client and Server",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run build-js && npm run build-flow",
+    "build-js": "babel-node ../../resources/buildJs.js",
+    "build-flow": "babel-node ../../resources/buildFlow.js",
+    "prepublish": "node ../../resources/prepublish.js"
   },
   "repository": {
     "type": "git",

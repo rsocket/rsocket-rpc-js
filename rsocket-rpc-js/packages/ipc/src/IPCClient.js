@@ -36,18 +36,10 @@ import {CONNECTION_STREAM_ID, FLAGS, FRAME_TYPES} from 'rsocket-core';
 import {MAJOR_VERSION, MINOR_VERSION} from 'rsocket-core/build/RSocketVersion';
 import {createClientMachine} from 'rsocket-core/build/RSocketMachine';
 
+import type {Marshaller} from './Marshaller';
+import {IdentityMarshaller} from './Marshaller';
+
 const MAX_REQUEST_N = 0x7fffffff; // uint31
-
-// Marshaller methods should leave payload metadata alone and only transform the data
-export type Marshaller = {|
-  marshall: (payload: Payload) => Payload,
-  unmarshall: (payload: Payload) => Payload,
-|};
-
-export const IdentityMarshaller: Marshaller = {
-  marshall: payload => payload,
-  unmarshall: payload => payload
-};
 
 export type IpcClientConfig<D, M> = {|
   serializers?: PayloadSerializers<D, M>,
