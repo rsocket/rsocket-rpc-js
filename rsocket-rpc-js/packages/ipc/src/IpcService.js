@@ -34,7 +34,7 @@ import type {
 /**
  * IpcService wraps a Responder in order to manage marshalling and unmarshalling of payload data
  */
-export default class IpcService implements Responder<D, M> {
+export default class IPCRSocketService implements Responder<D, M> {
   _service: string;
   _marshaller: Marshaller;
   _responder: PartialResponder<D, M>;

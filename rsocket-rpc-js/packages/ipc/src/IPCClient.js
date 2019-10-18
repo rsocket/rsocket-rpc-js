@@ -18,6 +18,9 @@
 
 'use strict';
 
+import invariant from 'fbjs/lib/invariant';
+
+import {Flowable, Single} from 'rsocket-flowable';
 import type {
   ConnectionStatus,
   DuplexConnection,
@@ -27,153 +30,101 @@ import type {
   SetupFrame,
   Responder,
 } from 'rsocket-types';
-import type {PayloadSerializers} from 'rsocket-core/build/RSocketSerialization';
-
-import {Flowable, Single, every} from 'rsocket-flowable';
-import invariant from 'fbjs/lib/invariant';
-
-import {CONNECTION_STREAM_ID, FLAGS, FRAME_TYPES} from 'rsocket-core';
-import {MAJOR_VERSION, MINOR_VERSION} from 'rsocket-core/build/RSocketVersion';
-import {createClientMachine} from 'rsocket-core/build/RSocketMachine';
-
+import {trace, traceSingle} from 'rsocket-rpc-tracing';
+import { Tracer } from 'opentracing';
+import {Metrics} from 'rsocket-rpc-metrics';
+import {
+  trace, traceSingle
+} from 'rsocket-rpc-tracing';
 import type {Marshaller} from './Marshaller';
 import {IdentityMarshaller} from './Marshaller';
+import { SpanSubscriber } from '../../tracing/src/SpanSubscriber';
 
 const MAX_REQUEST_N = 0x7fffffff; // uint31
 
-export type IpcClientConfig<D, M> = {|
-  serializers?: PayloadSerializers<D, M>,
-  setup: {|
-    keepAlive: number,
-    lifetime: number,
-    metadata?: Encodable,
-  |},
-  transport: DuplexConnection,
-  responder?: Responder<D, M>,
-  marshaller?: Marshaller
-|};
-
-export default class IpcClient<D, M> {
-  _config: IpcClientConfig<D, M>;
-  _connection: ?Single<ReactiveSocket<D, M>>;
-
-  constructor(config: IpcClientConfig<D, M>) {
-    this._config = config;
-    this._connection = null;
-  }
-
-  close(): void {
-    this._config.transport.close();
-  }
-
-  connect(): Single<ReactiveSocket<D, M>> {
-    invariant(
-      !this._connection,
-      'IpcClient: Unexpected call to connect(), already connected.',
-    );
-    this._connection = new Single(subscriber => {
-      const transport = this._config.transport;
-      let subscription;
-      transport.connectionStatus().subscribe({
-        onNext: status => {
-          if (status.kind === 'CONNECTED') {
-            subscription && subscription.cancel();
-            subscriber.onComplete(new IpcSocket(this._config, transport));
-          } else if (status.kind === 'ERROR') {
-            subscription && subscription.cancel();
-            subscriber.onError(status.error);
-          } else if (status.kind === 'CLOSED') {
-            subscription && subscription.cancel();
-            subscriber.onError(new Error('IpcClient: Connection closed.'));
-          }
-        },
-        onSubscribe: _subscription => {
-          subscriber.onSubscribe(() => _subscription.cancel());
-          subscription = _subscription;
-          subscription.request(MAX_REQUEST_N);
-        },
-      });
-      transport.connect();
-    });
-    return this._connection;
-  }
-}
-
-/**
- * @private
- */
-class IpcSocket<D, M> implements ReactiveSocket<D, M> {
-  _machine: ReactiveSocket<D, M>;
+export default class IPCRSocketClient implements Responder<D, M>{
+  _service: string;
+  _socket: ReactiveSocket<D, M>;
   _marshaller: Marshaller;
+  _meterRegistry?: IMeterRegistry;
+  _tracer? Tracer;
 
-  constructor(config: IpcClientConfig<D, M>, connection: DuplexConnection) {
-    this._marshaller = config.marshaller || IdentityMarshaller;
-    this._machine = createClientMachine(
-      connection,
-      subscriber => connection.receive().subscribe(subscriber),
-      config.serializers,
-      config.responder,
+  constructor(service: string, socket: ReactiveSocket<D, M>, marshaller?: Marshaller, meterRegistry?: IMeterRegistry, tracer?: Tracer) {
+
+    this._service = service;
+    this._socket = socket;
+    this._marshaller = marshaller || IdentityMarshaller;
+    this._meterRegistry = meterRegistry;
+    this._tracer = tracer;
+  }
+
+  // TODO: sort out tag situation
+
+  _getTracingWrapper(stream: boolean, ...tags: Object): func {
+    if (stream) {
+      return trace(this._tracer, this._service, ...tags);
+    }
+    return traceSingle(this._tracer, this._service, ...tags);
+  }
+
+  _getMetricsWrapper(stream: boolean, ...tags: Object): func {
+    if (stream) {
+      return Metrics.timed(this._meterRegistry, this._service, ...tags);
+    }
+    return Metrics.timedSingle(this._meterRegistry, this._service, ...tags);
+  }
+
+  fireAndForget(payload: Payload<D, M>, ...tags: Object): void {
+    const tagMap = {};
+    this._getMetricsWrapper(false, ...tags)(
+      new Single(subscriber => {
+        this._getTracingWrapper(false, ...tags)(tagMap)(
+          new Single(innerSub => {
+            this._socket.fireAndForget(this._marshaller._marshall(payload));
+            innerSub.onSubscribe();
+            innerSub.onComplete();
+          })
+        ).subscribe({ onSubscribe: () => { subscriber.onSubscribe(); }, onComplete: () => { subscriber.onComplete(); } });
+      })
+    ).subscribe();
+  }
+
+  requestResponse(payload: Payload<D, M>, ...tags: Object): Single<Payload<D, M>> {
+    const tagMap = {};
+    return this._getMetricsWrapper(false, ...tags)(
+      this._getTracingWrapper(false, ...tags)(tagMap)(
+          new Single(subscriber => {
+            this._socket.requestResponse(this._marshaller._marshall(payload))
+              .map(this._marshaller._unmarshall)
+              .subscribe(subscriber);
+        })
+      })
     );
-
-    // Send SETUP
-    connection.sendOne(this._buildSetupFrame(config));
-
-    // Send KEEPALIVE frames
-    const {keepAlive} = config.setup;
-    const keepAliveFrames = every(keepAlive).map(() => ({
-      data: null,
-      flags: FLAGS.RESPOND,
-      lastReceivedPosition: 0,
-      streamId: CONNECTION_STREAM_ID,
-      type: FRAME_TYPES.KEEPALIVE,
-    }));
-    connection.send(keepAliveFrames);
   }
 
-  fireAndForget(payload: Payload<D, M>): void {
-    this._machine.fireAndForget(this._marshaller._marshall(payload));
-  }
-
-  requestResponse(payload: Payload<D, M>): Single<Payload<D, M>> {
-    return this._machine.requestResponse(this._marshaller._marshall(payload)).map(this._marshaller._unmarshall);
-  }
-
-  requestStream(payload: Payload<D, M>): Flowable<Payload<D, M>> {
-    return this._machine.requestStream(this._marshaller._marshall(payload)).map(this._marshaller._unmarshall);
+  requestStream(payload: Payload<D, M>, ...tags: Object): Flowable<Payload<D, M>> {
+    const tagMap = {};
+    return this._getMetricsWrapper(true, ...tags)(
+      this._getTracingWrapper(true, ...tags)(tagMap)(
+        new Flowable(subscriber => {
+          this._socket.requestStream(this._marshaller._marshall(payload))
+          .map(this._marshaller._unmarshall)
+          .subscribe(subscriber);
+        })
+      )
+    );
   }
 
   requestChannel(payloads: Flowable<Payload<D, M>>): Flowable<Payload<D, M>> {
-    return this._machine.requestChannel(payloads.map(this._marshaller._marshall)).map(this._marshaller._unmarshall);
-  }
-
-  metadataPush(payload: Payload<D, M>): Single<void> {
-    return this._machine.metadataPush(payload);
-  }
-
-  close(): void {
-    this._machine.close();
-  }
-
-  connectionStatus(): Flowable<ConnectionStatus> {
-    return this._machine.connectionStatus();
-  }
-
-  _buildSetupFrame(config: IpcClientConfig<D, M>): SetupFrame {
-    const {keepAlive, lifetime, metadata} = config.setup;
-
-    return {
-      flags: FLAGS.METADATA,
-      keepAlive,
-      lifetime,
-      majorVersion: MAJOR_VERSION,
-      minorVersion: MINOR_VERSION,
-      metadataMimeType: 'application/binary',
-      metadata,
-      dataMimeType: 'application/binary',
-      data: undefined,
-      resumeToken: null,
-      streamId: CONNECTION_STREAM_ID,
-      type: FRAME_TYPES.SETUP,
-    };
+    const tagMap = {};
+    return this._getMetricsWrapper(true, ...tags)(
+      this._getTracingWrapper(true, ...tags)(tagMap)(
+        new Flowable(subscriber => {
+          this._socket.requestChannel(payloads.map(this._marshaller._marshall))
+            .map(this._marshaller._unmarshall)
+            .subscribe(subscriber);
+        })
+      )
+    );
   }
 }
