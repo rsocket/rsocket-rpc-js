@@ -30,19 +30,20 @@ import type {
   SetupFrame,
   Responder,
 } from 'rsocket-types';
-import {trace, traceSingle} from 'rsocket-rpc-tracing';
+import {trace, traceSingle, mapToBuffer} from 'rsocket-rpc-tracing';
 import { Tracer } from 'opentracing';
 import {Metrics} from 'rsocket-rpc-metrics';
 import {
   trace, traceSingle
 } from 'rsocket-rpc-tracing';
+import {encodeMetadata} from 'rsocket-rpc-frames';
 import type {Marshaller} from './Marshaller';
 import {IdentityMarshaller} from './Marshaller';
 import { SpanSubscriber } from '../../tracing/src/SpanSubscriber';
 
 const MAX_REQUEST_N = 0x7fffffff; // uint31
 
-export default class IPCRSocketClient implements Responder<D, M>{
+export default class IPCRSocketClient {
   _service: string;
   _socket: ReactiveSocket<D, M>;
   _marshaller: Marshaller;
@@ -60,27 +61,30 @@ export default class IPCRSocketClient implements Responder<D, M>{
 
   // TODO: sort out tag situation
 
-  _getTracingWrapper(stream: boolean, ...tags: Object): func {
+  _getTracingWrapper(stream: boolean, method: string): func {
     if (stream) {
-      return trace(this._tracer, this._service, ...tags);
+      return trace(this._tracer, this._service, {'rsocket.service': this._service}, {'rsocket.rpc.role': 'client'}, {'rsocket.rpc.version': ''}, {'method': method});
     }
-    return traceSingle(this._tracer, this._service, ...tags);
+    return traceSingle(this._tracer, this._service, {'rsocket.service': this._service}, {'rsocket.rpc.role': 'client'}, {'rsocket.rpc.version': ''}, {'method': method});
   }
 
-  _getMetricsWrapper(stream: boolean, ...tags: Object): func {
+  _getMetricsWrapper(stream: boolean, method: string): func {
     if (stream) {
-      return Metrics.timed(this._meterRegistry, this._service, ...tags);
+      return Metrics.timed(this._meterRegistry, this._service, {'service': this._service}, {'role': 'client'}, {'method': method});
     }
-    return Metrics.timedSingle(this._meterRegistry, this._service, ...tags);
+    return Metrics.timedSingle(this._meterRegistry, this._service, {'service': this._service}, {'role': 'client'}, {'method': method});
   }
 
-  fireAndForget(payload: Payload<D, M>, ...tags: Object): void {
-    const tagMap = {};
-    this._getMetricsWrapper(false, ...tags)(
+  fireAndForget(method: string, payload: Payload<D, M>): void {
+    const tracingMap = {};
+    this._getMetricsWrapper(false, method)(
       new Single(subscriber => {
-        this._getTracingWrapper(false, ...tags)(tagMap)(
+        this._getTracingWrapper(false, method)(tracingMap)(
           new Single(innerSub => {
-            this._socket.fireAndForget(this._marshaller._marshall(payload));
+            const data = this._marshaller._marshall(payload.data);
+            const tracingMetadata = mapToBuffer(tracingMap);
+            const metadata = encodeMetadata(this._service, method, tracingMetadata, payload.metadata || Buffer.alloc(0));
+            this._socket.fireAndForget({ data, metadata });
             innerSub.onSubscribe();
             innerSub.onComplete();
           })
@@ -89,39 +93,56 @@ export default class IPCRSocketClient implements Responder<D, M>{
     ).subscribe();
   }
 
-  requestResponse(payload: Payload<D, M>, ...tags: Object): Single<Payload<D, M>> {
-    const tagMap = {};
-    return this._getMetricsWrapper(false, ...tags)(
-      this._getTracingWrapper(false, ...tags)(tagMap)(
+  requestResponse(method: string, payload: Payload<D, M>): Single<Payload<D, M>> {
+    const tracingMap = {};
+    return this._getMetricsWrapper(false, method)(
+      this._getTracingWrapper(false, method)(tracingMap)(
           new Single(subscriber => {
-            this._socket.requestResponse(this._marshaller._marshall(payload))
-              .map(this._marshaller._unmarshall)
+            const data = this._marshaller._marshall(payload.data);
+            const tracingMetadata = mapToBuffer(tracingMap);
+            const metadata = encodeMetadata(this._service, method, tracingMetadata, payload.metadata || Buffer.alloc(0));
+            this._socket.requestResponse({ data, metadata })
+              .map(response => {
+                return this._marshaller._unmarshall(response.data);
+              })
               .subscribe(subscriber);
         })
       })
     );
   }
 
-  requestStream(payload: Payload<D, M>, ...tags: Object): Flowable<Payload<D, M>> {
-    const tagMap = {};
-    return this._getMetricsWrapper(true, ...tags)(
-      this._getTracingWrapper(true, ...tags)(tagMap)(
+  requestStream(method: string, payload: Payload<D, M>): Flowable<Payload<D, M>> {
+    const tracingMap = {};
+    return this._getMetricsWrapper(true, method)(
+      this._getTracingWrapper(true, method)(tracingMap)(
         new Flowable(subscriber => {
-          this._socket.requestStream(this._marshaller._marshall(payload))
-          .map(this._marshaller._unmarshall)
-          .subscribe(subscriber);
+          const data = this._marshaller._marshall(payload.data);
+          const tracingMetadata = mapToBuffer(tracingMap);
+          const metadata = encodeMetadata(this._service, method, tracingMetadata, payload.metadata || Buffer.alloc(0));
+          this._socket.requestStream({ data, metadata })
+            .map(response => {
+              return this._marshaller._unmarshall(response.data);
+            })
+            .subscribe(subscriber);
         })
       )
     );
   }
 
-  requestChannel(payloads: Flowable<Payload<D, M>>): Flowable<Payload<D, M>> {
-    const tagMap = {};
-    return this._getMetricsWrapper(true, ...tags)(
-      this._getTracingWrapper(true, ...tags)(tagMap)(
+  requestChannel(method: string, payloads: Flowable<Payload<D, M>>): Flowable<Payload<D, M>> {
+    const tracingMap = {};
+    return this._getMetricsWrapper(true, method)(
+      this._getTracingWrapper(true, method)(tracingMap)(
         new Flowable(subscriber => {
-          this._socket.requestChannel(payloads.map(this._marshaller._marshall))
-            .map(this._marshaller._unmarshall)
+          this._socket.requestChannel(payloads.map(payload => {
+            const data = this._marshaller._marshall(payload.data);
+            const tracingMetadata = mapToBuffer(tracingMap);
+            const metadata = encodeMetadata(this._service, method, tracingMetadata, payload.metadata || Buffer.alloc(0));
+            return { data, metadata };
+          }))
+            .map(response => {
+              return this._marshaller._unmarshall(response.data);
+            })
             .subscribe(subscriber);
         })
       )
