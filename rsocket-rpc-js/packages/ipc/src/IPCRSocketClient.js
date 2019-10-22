@@ -22,24 +22,16 @@ import invariant from 'fbjs/lib/invariant';
 
 import {Flowable, Single} from 'rsocket-flowable';
 import type {
-  ConnectionStatus,
-  DuplexConnection,
-  Encodable,
   Payload,
   ReactiveSocket,
-  SetupFrame,
   Responder,
 } from 'rsocket-types';
 import {trace, traceSingle, mapToBuffer} from 'rsocket-rpc-tracing';
 import { Tracer } from 'opentracing';
 import {Metrics} from 'rsocket-rpc-metrics';
-import {
-  trace, traceSingle
-} from 'rsocket-rpc-tracing';
 import {encodeMetadata} from 'rsocket-rpc-frames';
 import type {Marshaller} from './Marshaller';
 import {IdentityMarshaller} from './Marshaller';
-import { SpanSubscriber } from '../../tracing/src/SpanSubscriber';
 
 const MAX_REQUEST_N = 0x7fffffff; // uint31
 
@@ -59,16 +51,14 @@ export default class IPCRSocketClient {
     this._tracer = tracer;
   }
 
-  // TODO: sort out tag situation
-
-  _getTracingWrapper(stream: boolean, method: string): func {
+  _getTracingWrapper(stream: boolean, method: string): Function {
     if (stream) {
       return trace(this._tracer, this._service, {'rsocket.service': this._service}, {'rsocket.rpc.role': 'client'}, {'rsocket.rpc.version': ''}, {'method': method});
     }
     return traceSingle(this._tracer, this._service, {'rsocket.service': this._service}, {'rsocket.rpc.role': 'client'}, {'rsocket.rpc.version': ''}, {'method': method});
   }
 
-  _getMetricsWrapper(stream: boolean, method: string): func {
+  _getMetricsWrapper(stream: boolean, method: string): Function {
     if (stream) {
       return Metrics.timed(this._meterRegistry, this._service, {'service': this._service}, {'role': 'client'}, {'method': method});
     }
@@ -81,7 +71,7 @@ export default class IPCRSocketClient {
       new Single(subscriber => {
         this._getTracingWrapper(false, method)(tracingMap)(
           new Single(innerSub => {
-            const data = this._marshaller._marshall(payload.data);
+            const data = this._marshaller._marshall(payload);
             const tracingMetadata = mapToBuffer(tracingMap);
             const metadata = encodeMetadata(this._service, method, tracingMetadata, payload.metadata || Buffer.alloc(0));
             this._socket.fireAndForget({ data, metadata });
@@ -98,12 +88,12 @@ export default class IPCRSocketClient {
     return this._getMetricsWrapper(false, method)(
       this._getTracingWrapper(false, method)(tracingMap)(
           new Single(subscriber => {
-            const data = this._marshaller._marshall(payload.data);
+            const data = this._marshaller._marshall(payload);
             const tracingMetadata = mapToBuffer(tracingMap);
             const metadata = encodeMetadata(this._service, method, tracingMetadata, payload.metadata || Buffer.alloc(0));
             this._socket.requestResponse({ data, metadata })
               .map(response => {
-                return this._marshaller._unmarshall(response.data);
+                return this._marshaller._unmarshall(response);
               })
               .subscribe(subscriber);
         })
@@ -116,12 +106,12 @@ export default class IPCRSocketClient {
     return this._getMetricsWrapper(true, method)(
       this._getTracingWrapper(true, method)(tracingMap)(
         new Flowable(subscriber => {
-          const data = this._marshaller._marshall(payload.data);
+          const data = this._marshaller._marshall(payload);
           const tracingMetadata = mapToBuffer(tracingMap);
           const metadata = encodeMetadata(this._service, method, tracingMetadata, payload.metadata || Buffer.alloc(0));
           this._socket.requestStream({ data, metadata })
             .map(response => {
-              return this._marshaller._unmarshall(response.data);
+              return this._marshaller._unmarshall(response);
             })
             .subscribe(subscriber);
         })
@@ -135,13 +125,13 @@ export default class IPCRSocketClient {
       this._getTracingWrapper(true, method)(tracingMap)(
         new Flowable(subscriber => {
           this._socket.requestChannel(payloads.map(payload => {
-            const data = this._marshaller._marshall(payload.data);
+            const data = this._marshaller._marshall(payload);
             const tracingMetadata = mapToBuffer(tracingMap);
             const metadata = encodeMetadata(this._service, method, tracingMetadata, payload.metadata || Buffer.alloc(0));
             return { data, metadata };
           }))
             .map(response => {
-              return this._marshaller._unmarshall(response.data);
+              return this._marshaller._unmarshall(response);
             })
             .subscribe(subscriber);
         })

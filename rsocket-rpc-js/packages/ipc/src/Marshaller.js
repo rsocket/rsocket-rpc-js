@@ -16,7 +16,12 @@
  * @flow
  */
 
+import type {
+  Payload,
+} from 'rsocket-types';
+
 'use strict';
+
 
 // Marshaller methods should leave payload metadata alone and only transform the data
 export type Marshaller = {|

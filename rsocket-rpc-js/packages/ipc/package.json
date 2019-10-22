@@ -27,6 +27,7 @@
     "rsocket-core": "0.0.10",
     "rsocket-flowable": "0.0.10",
     "fbjs": "1.0.0",
+    "rsocket-rpc-core": "0.1.6",
     "rsocket-rpc-metrics": "0.1.6",
     "rsocket-rpc-tracing": "0.1.6",
     "rsocket-rpc-frames": "0.1.6",
