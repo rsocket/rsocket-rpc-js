@@ -21,13 +21,9 @@
 import invariant from 'fbjs/lib/invariant';
 
 import {Flowable, Single} from 'rsocket-flowable';
-import type {
-  Payload,
-  ReactiveSocket,
-  Responder,
-} from 'rsocket-types';
+import type {Payload, ReactiveSocket, Responder} from 'rsocket-types';
 import {trace, traceSingle, mapToBuffer} from 'rsocket-rpc-tracing';
-import { Tracer } from 'opentracing';
+import {Tracer} from 'opentracing';
 import {Metrics, IMeterRegistry} from 'rsocket-rpc-metrics';
 import {encodeMetadata} from 'rsocket-rpc-frames';
 import type {Marshaller} from './Marshaller';
@@ -42,8 +38,13 @@ export default class IPCRSocketClient {
   _meterRegistry: IMeterRegistry;
   _tracer: Tracer;
 
-  constructor(service: string, socket: ReactiveSocket<Buffer, Buffer>, marshaller?: Marshaller, meterRegistry: IMeterRegistry, tracer: Tracer) {
-
+  constructor(
+    service: string,
+    socket: ReactiveSocket<Buffer, Buffer>,
+    marshaller?: Marshaller,
+    meterRegistry: IMeterRegistry,
+    tracer: Tracer,
+  ) {
     this._service = service;
     this._socket = socket;
     this._marshaller = marshaller || IdentityMarshaller;
@@ -53,16 +54,42 @@ export default class IPCRSocketClient {
 
   _getTracingWrapper(stream: boolean, method: string): Function {
     if (stream) {
-      return trace(this._tracer, this._service, {'rsocket.service': this._service}, {'rsocket.rpc.role': 'client'}, {'rsocket.rpc.version': ''}, {'method': method});
+      return trace(
+        this._tracer,
+        this._service,
+        {'rsocket.service': this._service},
+        {'rsocket.rpc.role': 'client'},
+        {'rsocket.rpc.version': ''},
+        {method: method},
+      );
     }
-    return traceSingle(this._tracer, this._service, {'rsocket.service': this._service}, {'rsocket.rpc.role': 'client'}, {'rsocket.rpc.version': ''}, {'method': method});
+    return traceSingle(
+      this._tracer,
+      this._service,
+      {'rsocket.service': this._service},
+      {'rsocket.rpc.role': 'client'},
+      {'rsocket.rpc.version': ''},
+      {method: method},
+    );
   }
 
   _getMetricsWrapper(stream: boolean, method: string): Function {
     if (stream) {
-      return Metrics.timed(this._meterRegistry, this._service, {'service': this._service}, {'role': 'client'}, {'method': method});
+      return Metrics.timed(
+        this._meterRegistry,
+        this._service,
+        {service: this._service},
+        {role: 'client'},
+        {method: method},
+      );
     }
-    return Metrics.timedSingle(this._meterRegistry, this._service, {'service': this._service}, {'role': 'client'}, {'method': method});
+    return Metrics.timedSingle(
+      this._meterRegistry,
+      this._service,
+      {service: this._service},
+      {role: 'client'},
+      {method: method},
+    );
   }
 
   fireAndForget(method: string, payload: Payload<Buffer, Buffer>): void {
@@ -73,63 +100,104 @@ export default class IPCRSocketClient {
           new Single(innerSub => {
             const {data} = this._marshaller.marshall(payload);
             const tracingMetadata = mapToBuffer(tracingMap);
-            const metadata = encodeMetadata(this._service, method, tracingMetadata, payload.metadata || Buffer.alloc(0));
-            this._socket.fireAndForget({ data, metadata });
+            const metadata = encodeMetadata(
+              this._service,
+              method,
+              tracingMetadata,
+              payload.metadata || Buffer.alloc(0),
+            );
+            this._socket.fireAndForget({data, metadata});
             innerSub.onSubscribe();
             innerSub.onComplete();
-          })
-        ).subscribe({ onSubscribe: () => { subscriber.onSubscribe(); }, onComplete: () => { subscriber.onComplete(); } });
-      })
+          }),
+        ).subscribe({
+          onSubscribe: () => {
+            subscriber.onSubscribe();
+          },
+          onComplete: () => {
+            subscriber.onComplete();
+          },
+        });
+      }),
     ).subscribe();
   }
 
-  requestResponse(method: string, payload: Payload<Buffer, Buffer>): Single<Payload<Buffer, Buffer>> {
+  requestResponse(
+    method: string,
+    payload: Payload<Buffer, Buffer>,
+  ): Single<Payload<Buffer, Buffer>> {
     const tracingMap = {};
     return this._getMetricsWrapper(false, method)(
       this._getTracingWrapper(false, method)(tracingMap)(
-          new Single(subscriber => {
-            const {data} = this._marshaller.marshall(payload);
-            const tracingMetadata = mapToBuffer(tracingMap);
-            const metadata = encodeMetadata(this._service, method, tracingMetadata, payload.metadata || Buffer.alloc(0));
-            this._socket.requestResponse({ data, metadata })
-              .map(this._marshaller.unmarshall)
-              .subscribe(subscriber);
-        })
-      )
+        new Single(subscriber => {
+          const {data} = this._marshaller.marshall(payload);
+          const tracingMetadata = mapToBuffer(tracingMap);
+          const metadata = encodeMetadata(
+            this._service,
+            method,
+            tracingMetadata,
+            payload.metadata || Buffer.alloc(0),
+          );
+          this._socket
+            .requestResponse({data, metadata})
+            .map(this._marshaller.unmarshall)
+            .subscribe(subscriber);
+        }),
+      ),
     );
   }
 
-  requestStream(method: string, payload: Payload<Buffer, Buffer>): Flowable<Payload<Buffer, Buffer>> {
+  requestStream(
+    method: string,
+    payload: Payload<Buffer, Buffer>,
+  ): Flowable<Payload<Buffer, Buffer>> {
     const tracingMap = {};
     return this._getMetricsWrapper(true, method)(
       this._getTracingWrapper(true, method)(tracingMap)(
         new Flowable(subscriber => {
           const {data} = this._marshaller.marshall(payload);
           const tracingMetadata = mapToBuffer(tracingMap);
-          const metadata = encodeMetadata(this._service, method, tracingMetadata, payload.metadata || Buffer.alloc(0));
-          this._socket.requestStream({ data, metadata })
+          const metadata = encodeMetadata(
+            this._service,
+            method,
+            tracingMetadata,
+            payload.metadata || Buffer.alloc(0),
+          );
+          this._socket
+            .requestStream({data, metadata})
             .map(this._marshaller.unmarshall)
             .subscribe(subscriber);
-        })
-      )
+        }),
+      ),
     );
   }
 
-  requestChannel(method: string, payloads: Flowable<Payload<Buffer, Buffer>>): Flowable<Payload<Buffer, Buffer>> {
+  requestChannel(
+    method: string,
+    payloads: Flowable<Payload<Buffer, Buffer>>,
+  ): Flowable<Payload<Buffer, Buffer>> {
     const tracingMap = {};
     return this._getMetricsWrapper(true, method)(
       this._getTracingWrapper(true, method)(tracingMap)(
         new Flowable(subscriber => {
-          this._socket.requestChannel(payloads.map(payload => {
-            const {data} = this._marshaller.marshall(payload);
-            const tracingMetadata = mapToBuffer(tracingMap);
-            const metadata = encodeMetadata(this._service, method, tracingMetadata, payload.metadata || Buffer.alloc(0));
-            return { data, metadata };
-          }))
+          this._socket
+            .requestChannel(
+              payloads.map(payload => {
+                const {data} = this._marshaller.marshall(payload);
+                const tracingMetadata = mapToBuffer(tracingMap);
+                const metadata = encodeMetadata(
+                  this._service,
+                  method,
+                  tracingMetadata,
+                  payload.metadata || Buffer.alloc(0),
+                );
+                return {data, metadata};
+              }),
+            )
             .map(this._marshaller.unmarshall)
             .subscribe(subscriber);
-        })
-      )
+        }),
+      ),
     );
   }
 }

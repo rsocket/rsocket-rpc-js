@@ -16,17 +16,12 @@
  * @flow
  */
 
-import type {Payload} from 'rsocket-types';
+'use strict';
 
-('use strict');
+import IPCRSocketClient from './IPCRSocketClient';
+import IPCRSocketService from './IPCRSocketService';
+import type {Marshaller} from './Marshaller';
 
-// Marshaller methods should leave payload metadata alone and only transform the data
-export type Marshaller = {|
-  marshall: (payload: Payload<Buffer, Buffer>) => Payload<Buffer, Buffer>,
-  unmarshall: (payload: Payload<Buffer, Buffer>) => Payload<Buffer, Buffer>,
-|};
+export type {Marshaller};
 
-export const IdentityMarshaller: Marshaller = {
-  marshall: payload => payload,
-  unmarshall: payload => payload,
-};
+export {IPCRSocketClient, IPCRSocketService};

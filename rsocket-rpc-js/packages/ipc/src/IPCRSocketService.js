@@ -21,13 +21,14 @@
 import invariant from 'fbjs/lib/invariant';
 
 import {Flowable, Single} from 'rsocket-flowable';
-import type {
-  Payload,
-  ReactiveSocket,
-  Responder,
-} from 'rsocket-types';
-import {traceAsChild, traceSingleAsChild, mapToBuffer, deserializeTraceData} from 'rsocket-rpc-tracing';
-import { Tracer } from 'opentracing';
+import type {Payload, ReactiveSocket, Responder} from 'rsocket-types';
+import {
+  traceAsChild,
+  traceSingleAsChild,
+  mapToBuffer,
+  deserializeTraceData,
+} from 'rsocket-rpc-tracing';
+import {Tracer} from 'opentracing';
 import {Metrics, IMeterRegistry} from 'rsocket-rpc-metrics';
 import {encodeMetadata, getMetadata, getMethod} from 'rsocket-rpc-frames';
 import {SwitchTransformOperator} from 'rsocket-rpc-core';
@@ -35,8 +36,14 @@ import {SwitchTransformOperator} from 'rsocket-rpc-core';
 import type {Marshaller} from './Marshaller';
 import {IdentityMarshaller} from './Marshaller';
 
-type FlowableHandler = (data: any, metadata: any) => Flowable<Payload<Buffer, Buffer>>;
-type SingleHandler = (data: any, metadata: any) => Single<Payload<Buffer, Buffer>>;
+type FlowableHandler = (
+  data: any,
+  metadata: any,
+) => Flowable<Payload<Buffer, Buffer>>;
+type SingleHandler = (
+  data: any,
+  metadata: any,
+) => Single<Payload<Buffer, Buffer>>;
 
 type HandlerMethod = FlowableHandler | SingleHandler;
 
@@ -44,20 +51,26 @@ type HandlerMethod = FlowableHandler | SingleHandler;
  * Handlers are classes or object literals passed in to services that provide methods expected by a service
  */
 type Handler = {
-  [key: string]: HandlerMethod
+  [key: string]: HandlerMethod,
 };
 
 /**
  * IPCRSocketService wraps a Handler in order to manage marshalling and unmarshalling of payload data
  */
-export default class IPCRSocketService implements Responder<Buffer, Buffer>{
+export default class IPCRSocketService implements Responder<Buffer, Buffer> {
   _service: string;
   _marshaller: Marshaller;
   _handler: Handler;
   _meterRegistry: IMeterRegistry;
   _tracer: Tracer;
 
-  constructor(service: string, marshaller: Marshaller, handler: Handler, meterRegistry: IMeterRegistry, tracer: Tracer) {
+  constructor(
+    service: string,
+    marshaller: Marshaller,
+    handler: Handler,
+    meterRegistry: IMeterRegistry,
+    tracer: Tracer,
+  ) {
     this._service = service;
     this._marshaller = marshaller;
     this._handler = handler;
@@ -67,16 +80,42 @@ export default class IPCRSocketService implements Responder<Buffer, Buffer>{
 
   _getTracingWrapper(stream: boolean, method: string): Function {
     if (stream) {
-      return traceAsChild(this._tracer, this._service, {'rsocket.rpc.service': this._service}, {'rsocket.rpc.role': 'server'}, {'rsocket.rpc.version': ''}, {'method': method});
+      return traceAsChild(
+        this._tracer,
+        this._service,
+        {'rsocket.rpc.service': this._service},
+        {'rsocket.rpc.role': 'server'},
+        {'rsocket.rpc.version': ''},
+        {method: method},
+      );
     }
-    return traceSingleAsChild(this._tracer, this._service, {'rsocket.rpc.service': this._service}, {'rsocket.rpc.role': 'server'}, {'rsocket.rpc.version': ''}, {'method': method});
+    return traceSingleAsChild(
+      this._tracer,
+      this._service,
+      {'rsocket.rpc.service': this._service},
+      {'rsocket.rpc.role': 'server'},
+      {'rsocket.rpc.version': ''},
+      {method: method},
+    );
   }
 
   _getMetricsWrapper(stream: boolean, method: string): Function {
     if (stream) {
-      return Metrics.timed(this._meterRegistry, this._service, {'service': this._service}, {'role': 'server'}, {'method': method});
+      return Metrics.timed(
+        this._meterRegistry,
+        this._service,
+        {service: this._service},
+        {role: 'server'},
+        {method: method},
+      );
     }
-    return Metrics.timedSingle(this._meterRegistry, this._service, {'service': this._service}, {'role': 'server'}, {'method': method});
+    return Metrics.timedSingle(
+      this._meterRegistry,
+      this._service,
+      {service: this._service},
+      {role: 'server'},
+      {method: method},
+    );
   }
 
   _getMethod(payload: Payload<Buffer, Buffer>): string {
@@ -97,65 +136,86 @@ export default class IPCRSocketService implements Responder<Buffer, Buffer>{
       new Single(subscriber => {
         this._getTracingWrapper(false, method)(spanContext)(
           new Single(innerSub => {
-            const { data, metadata } = this._marshaller.unmarshall(payload);
+            const {data, metadata} = this._marshaller.unmarshall(payload);
             this._handler[method](data, metadata);
             innerSub.onSubscribe();
             innerSub.onComplete();
-          })
-          .subscribe({ onSubscribe: () => { subscriber.onSubscribe(); }, onComplete: () => { subscriber.onComplete(); } })
-        )
-      }).subscribe()
+          }).subscribe({
+            onSubscribe: () => {
+              subscriber.onSubscribe();
+            },
+            onComplete: () => {
+              subscriber.onComplete();
+            },
+          }),
+        );
+      }).subscribe(),
     );
   }
 
-  requestResponse(payload: Payload<Buffer, Buffer>): Single<Payload<Buffer, Buffer>> {
+  requestResponse(
+    payload: Payload<Buffer, Buffer>,
+  ): Single<Payload<Buffer, Buffer>> {
     const method: string = this._getMethod(payload);
     const spanContext = deserializeTraceData(this._tracer, payload.metadata);
     return this._getMetricsWrapper(false, method)(
       this._getTracingWrapper(false, method)(spanContext)(
         new Single(subscriber => {
-          const { data, metadata } = this._marshaller.unmarshall(payload);
-          return this._handler[method](data, metadata)
-            .map(this._marshaller.marshall)
-            // $FlowFixMe
-            .subscribe(subscriber);
-        })
-      )
+          const {data, metadata} = this._marshaller.unmarshall(payload);
+          return (
+            this._handler[method](data, metadata)
+              .map(this._marshaller.marshall)
+              // $FlowFixMe
+              .subscribe(subscriber)
+          );
+        }),
+      ),
     );
   }
 
-  requestStream(payload: Payload<Buffer, Buffer>): Flowable<Payload<Buffer, Buffer>> {
+  requestStream(
+    payload: Payload<Buffer, Buffer>,
+  ): Flowable<Payload<Buffer, Buffer>> {
     const method: string = this._getMethod(payload);
     const spanContext = deserializeTraceData(this._tracer, payload.metadata);
     return this._getMetricsWrapper(true, method)(
       this._getTracingWrapper(true, method)(spanContext)(
         new Flowable(subscriber => {
-          const { data, metadata } = this._marshaller.unmarshall(payload);
+          const {data, metadata} = this._marshaller.unmarshall(payload);
           return this._handler[method](data, metadata)
             .map(this._marshaller.marshall)
             .subscribe(subscriber);
-        })
-      )
+        }),
+      ),
     );
   }
 
   requestChannel(payloads: Flowable<Payload<Buffer, Buffer>>) {
     return new Flowable(subscriber => {
       return payloads.subscribe(subscriber);
-    })
-      .lift(sub => {
-        return new SwitchTransformOperator(sub, (firstPayload, restOfPayloads) => {
+    }).lift(sub => {
+      return new SwitchTransformOperator(
+        sub,
+        (firstPayload, restOfPayloads) => {
           const method: string = this._getMethod(firstPayload);
-          const spanContext = deserializeTraceData(this._tracer, firstPayload.metadata);
-          const unmarshalledData = restOfPayloads.map(this._marshaller.unmarshall).map(payload => payload.data);
+          const spanContext = deserializeTraceData(
+            this._tracer,
+            firstPayload.metadata,
+          );
+          const unmarshalledData = restOfPayloads
+            .map(this._marshaller.unmarshall)
+            .map(payload => payload.data);
           return this._getMetricsWrapper(true, method)(
             this._getTracingWrapper(true, method)(spanContext)(
-              this._handler[method](unmarshalledData, firstPayload.metadata)
-                .map(this._marshaller.marshall)
-            )
+              this._handler[method](
+                unmarshalledData,
+                firstPayload.metadata,
+              ).map(this._marshaller.marshall),
+            ),
           );
-        });
-      });
+        },
+      );
+    });
   }
 
   metadataPush(payload: Payload<Buffer, Buffer>): Single<void> {
