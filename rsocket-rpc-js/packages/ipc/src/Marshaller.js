@@ -25,8 +25,8 @@ import type {
 
 // Marshaller methods should leave payload metadata alone and only transform the data
 export type Marshaller = {|
-  marshall: (payload: Payload) => Payload,
-  unmarshall: (payload: Payload) => Payload,
+  marshall: (payload: Payload<Buffer, Buffer>) => Payload<Buffer, Buffer>,
+  unmarshall: (payload: Payload<Buffer, Buffer>) => Payload<Buffer, Buffer>,
 |};
 
 export const IdentityMarshaller: Marshaller = {
