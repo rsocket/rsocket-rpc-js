@@ -17,20 +17,22 @@
   "keywords": [
     "rsocket"
   ],
-  "author": "Duncan Alexander <duncan@netifi.com>",
+  "contributors": [
+     "Duncan Alexander <duncan@netifi.com>"
+  ],
   "bugs": {
     "url": "https://github.com/netifi/rsocket-js-rpc/issues"
   },
   "homepage": "https://github.com/netifi/rsocket-js-rpc#readme",
   "dependencies": {
-    "rsocket-types": "0.0.10",
-    "rsocket-core": "0.0.10",
-    "rsocket-flowable": "0.0.10",
+    "rsocket-types": "^0.0.10",
+    "rsocket-core": "^0.0.10",
+    "rsocket-flowable": "^0.0.10",
     "fbjs": "1.0.0",
-    "rsocket-rpc-core": "0.1.6",
-    "rsocket-rpc-metrics": "0.1.6",
-    "rsocket-rpc-tracing": "0.1.6",
-    "rsocket-rpc-frames": "0.1.6",
+    "rsocket-rpc-core": "^0.1.6",
+    "rsocket-rpc-metrics": "^0.1.6",
+    "rsocket-rpc-tracing": "^0.1.6",
+    "rsocket-rpc-frames": "^0.1.6",
     "opentracing": "^0.14.3"
   }
 }

@@ -92,7 +92,7 @@ export default class IPCRSocketClient {
     );
   }
 
-  fireAndForget(method: string, payload: Payload<Buffer, Buffer>): void {
+  fireAndForget(method: string, payload: Payload<any, any>): void {
     const tracingMap = {};
     this._getMetricsWrapper(false, method)(
       new Single(subscriber => {
@@ -124,7 +124,7 @@ export default class IPCRSocketClient {
 
   requestResponse(
     method: string,
-    payload: Payload<Buffer, Buffer>,
+    payload: Payload<any, any>,
   ): Single<Payload<Buffer, Buffer>> {
     const tracingMap = {};
     return this._getMetricsWrapper(false, method)(
@@ -149,7 +149,7 @@ export default class IPCRSocketClient {
 
   requestStream(
     method: string,
-    payload: Payload<Buffer, Buffer>,
+    payload: Payload<any, any>,
   ): Flowable<Payload<Buffer, Buffer>> {
     const tracingMap = {};
     return this._getMetricsWrapper(true, method)(
@@ -174,7 +174,7 @@ export default class IPCRSocketClient {
 
   requestChannel(
     method: string,
-    payloads: Flowable<Payload<Buffer, Buffer>>,
+    payloads: Flowable<Payload<any, any>>,
   ): Flowable<Payload<Buffer, Buffer>> {
     const tracingMap = {};
     return this._getMetricsWrapper(true, method)(

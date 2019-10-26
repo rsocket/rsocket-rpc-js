@@ -22,8 +22,8 @@ import type {Payload} from 'rsocket-types';
 
 // Marshaller methods should leave payload metadata alone and only transform the data
 export type Marshaller = {|
-  marshall: (payload: Payload<Buffer, Buffer>) => Payload<Buffer, Buffer>,
-  unmarshall: (payload: Payload<Buffer, Buffer>) => Payload<Buffer, Buffer>,
+  marshall: (payload: Payload<T, T>) => Payload<T, T>,
+  unmarshall: (payload: Payload<T, T>) => Payload<T, T>,
 |};
 
 export const IdentityMarshaller: Marshaller = {
