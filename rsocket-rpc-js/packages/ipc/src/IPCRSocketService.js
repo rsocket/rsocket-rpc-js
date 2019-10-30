@@ -191,10 +191,9 @@ export default class IPCRSocketService implements Responder<Buffer, Buffer> {
   }
 
   requestChannel(payloads: Flowable<Payload<Buffer, Buffer>>) {
-    return new Flowable(subscriber => {
-      return payloads.subscribe(subscriber);
-    }).lift(sub => {
-      return new SwitchTransformOperator(
+    return new Flowable(subscriber => payloads.subscribe(subscriber))
+    .lift(sub => 
+      new SwitchTransformOperator(
         sub,
         (firstPayload, restOfPayloads) => {
           const method: string = this._getMethod(firstPayload);
@@ -210,12 +209,12 @@ export default class IPCRSocketService implements Responder<Buffer, Buffer> {
               this._handler[method](
                 unmarshalledData,
                 firstPayload.metadata,
-              ).map(this._marshaller.marshall),
-            ),
+              ).map(this._marshaller.marshall)
+            )
           );
         },
-      );
-    });
+      )
+    );
   }
 
   metadataPush(payload: Payload<Buffer, Buffer>): Single<void> {
